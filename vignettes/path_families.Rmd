@@ -1,0 +1,132 @@
+---
+title: "Path famililes"
+author: "Tobias Stephan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Path families}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(thermochron)
+library(ggplot2)
+library(dplyr)
+library(ggalt)
+```
+
+This document provides a brief working example to demonstrate how to cluster paths 
+from HeFTy inverse thermal history models.
+
+Load some example data:
+```{r data}
+data(tT_paths1)
+
+paths <- tT_paths1$paths |> 
+  arrange(Fit, Comp_GOF) |> 
+  mutate(segment = fct_reorder(segment, Comp_GOF))
+```
+```{r data2}
+mean_path <- tT_paths1$weighted_mean_path
+
+constraints <- tT_paths1$constraints
+constraint_box <- do.call(rbind, lapply(seq_along(constraints), function(i) {
+  data.frame(
+    x = c(constraints$max_time[i], constraints$max_time[i], constraints$min_time[i], constraints$min_time[i]),
+    y = c(constraints$max_temp[i], constraints$min_temp[i], constraints$min_temp[i], constraints$max_temp[i]),
+    group = constraints$constraint[i]
+  )
+}))
+```
+
+Filter the data (time, and temperature range):
+
+```{r filter_setting}
+max_time <- 500
+max_temperature <- 250
+```
+
+```{r filter}
+paths_filtered <- paths |>
+  dplyr::filter(time <= max_time, temperature <= max_temperature) # change filter settings here
+```
+
+
+```{r paths, message=TRUE, warning=TRUE}
+ggplot(paths_filtered, aes(time, temperature, group = segment, color = Comp_GOF)) +
+  geom_path() +
+  labs(
+    title = "Modelled t-T paths",
+    x = "Time (Ma)",
+    y = bquote("Temperature (" * degree * "C)")
+  ) +
+  geom_path(
+    data = mean_path, aes(time, temperature),
+    color = "black", linewidth = 1, linetype = "dashed", inherit.aes = FALSE
+  ) +
+  geom_polygon(
+    data = constraint_box, aes(x, y, group = group),
+    fill = NA, color = "black", linetype = "dotted", lwd = .9, inherit.aes = FALSE
+  ) +
+  scale_color_viridis_b(
+    "Goodnes-of-fit (GOF)",
+    limits = c(0, .51),
+    breaks = seq(0, 1, .1),
+    oob = scales::squish
+  ) +
+  scale_x_reverse(position = "top") +
+  scale_y_reverse() +
+  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
+```
+
+
+
+
+```{r cluster}
+path_families <- paths_filtered |>
+  cluster_paths(cluster = 3) |>
+  group_by(cluster) |>
+  right_join(paths_filtered, join_by(segment))
+
+path_families_binned <- densify_cluster(path_families) |> 
+  path_statistics()
+```
+
+Plot the cluster modeled t-T paths:
+```{r cluster_plot}
+ggplot(data = path_families_binned) +
+  geom_ribbon(
+    aes(x = time_median, ymin = temp_5, ymax = temp_95, group = cluster, fill = cluster),
+    stat = "stepribbon",
+    inherit.aes = FALSE, 
+    alpha = .5
+  ) +
+  geom_step(
+    aes(x = time_median, y = temp_median, color = cluster),
+    lwd = 1.5
+  ) +
+  scale_color_viridis_d(aesthetics = c("fill", "color")) +
+
+  # Axes settings:
+  scale_y_reverse() +
+  scale_x_reverse(position = "top") +
+
+  # Labels:
+  labs(
+    title = "Example",
+    subtitle = "Path families",
+    x = "Time (Ma)",
+    y = bquote("Temperature (" * degree * "C)")
+  ) +
+  # facet_wrap(vars(cluster)) +
+  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
+```
+

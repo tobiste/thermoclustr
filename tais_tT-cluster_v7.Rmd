@@ -1,0 +1,370 @@
+---
+title: "Cluster modelled t-T paths"
+author: "Tobias Stephan"
+date: "2025-01-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,dev = "ragg_png",
+                      dpi = 400)
+```
+
+## R Markdown
+
+```{r install, message=TRUE, warning=TRUE}
+# remotes::install_github("tobiste/HeFTy.SmoothR", auth_token = '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') # comment this line out after installation
+library(HeFTy.SmoothR)
+library(tidyverse)
+library(patchwork)
+library(ggtext)
+library(scico)
+library(ggtext)
+library(glue)
+library(viridis)
+library(systemfonts)
+library(ggalt)
+
+theme_set(theme_classic(base_family = "Roboto Condensed", base_size = 12))
+theme_update(
+  panel.border = element_rect(color = 'black', fill = NA, linewidth = rel(1)),
+  axis.line = element_blank(),
+  #text = element_markdown(),
+  axis.title = element_markdown(color = 'grey10'),
+  legend.title = element_text(color = 'grey10'), 
+  plot.title.position = 'plot',
+  plot.subtitle.position = 'plot',
+  #legend.position = 'bottom',
+  plot.title = element_markdown(face = 'bold', color = 'grey10'),
+  plot.subtitle = element_markdown(color = 'darkgray', face = 'bold'),
+  plot.caption  = element_markdown(color = 'darkgray'),
+  strip.background = element_rect(fill = 'lightgrey', color = NA),
+  strip.text.y = element_markdown(color = 'white', angle = 0, face = 'bold')
+)
+set.seed(1234)
+```
+
+Import the data from file
+```{r data_import, message=TRUE, warning=TRUE}
+#fname <- "C:/Users/taisf/Desktop/112-9-30-zr-inv.txt" # change file path here
+fname <- "C:/Users/tstephan/Downloads/112-9-30-zr-inv.txt" # change file path here
+# fname <- file.choose() # uncomment this line to select the file interactively
+
+my_data <- read_hefty(fname)
+my_paths <- my_data$paths |> 
+  arrange(Fit, Comp_GOF) |> 
+  mutate(segment = fct_reorder(segment, Comp_GOF))
+
+mean_path <- my_data$weighted_mean_path
+
+constraints <- my_data$constraints
+constraint_box <- do.call(rbind, lapply(seq_along(constraints), function(i) {
+  data.frame(
+    x = c(constraints$max_time[i], constraints$max_time[i], constraints$min_time[i], constraints$min_time[i]),
+    y = c(constraints$max_temp[i], constraints$min_temp[i], constraints$min_temp[i], constraints$max_temp[i]),
+    group = constraints$constraint[i]
+  )
+}))
+
+```
+
+```{r sample_name}
+sample_name <- 'Sample' # change sample name here
+
+use_viridis <- FALSE
+viridis_option <- 'G' # options are 'A' for magma, 'B' for inferno, 'C' for plasma, 'D' for viridis, 'E' for cividis, 'F' for rocket, 'G' for mako, 'H' for turbo
+sico_palette <- 'vanimo' 
+```
+
+Filter the data (time, and temperature range):
+
+```{r filter_setting}
+max_time <- 500
+max_temperature <- 250
+```
+
+```{r filter}
+my_data_filtered <- my_paths |>
+  dplyr::filter(time <= max_time, temperature <= max_temperature) # change filter settings here
+```
+
+## Plot the paths 
+
+```{r paths, message=TRUE, warning=TRUE}
+add_constraints <- TRUE
+add_mean_path <- TRUE
+
+plot1 <- ggplot(my_data_filtered, aes(time, temperature, group = segment, color = Comp_GOF)) +
+  geom_path() +
+  labs(
+    title = "Modelled t-T paths",
+    x = "**Time** (Ma)",
+    y = "**Temperature** (&deg;C)"
+  ) +
+  {
+    if (add_mean_path) {
+      geom_path(
+        data = mean_path, aes(time, temperature),
+        color = "black", linewidth = 1, linetype = "dashed", inherit.aes = FALSE
+      )
+    }
+  } +
+  {
+    if (add_constraints) {
+      geom_polygon(
+        data = constraint_box, aes(x, y, group = group),
+        fill = NA, color = "black", linetype = "dotted", lwd = .9, inherit.aes = FALSE
+      )
+    }
+  } +
+  {
+    if (use_viridis) {
+      scale_color_viridis_b(
+        "Goodnes-of-fit (GOF)",
+        limits = c(0, .51),
+        breaks = seq(0, 1, .1),
+        oob = scales::squish,
+        option = viridis_option
+      )
+    } else {
+      scale_color_scico(
+        "Goodnes-of-fit (GOF)",
+        palette = sico_palette,
+        limits = c(0, .51),
+        breaks = seq(0, 1, .1),
+        oob = scales::squish,
+      )
+    }
+  } +
+  scale_x_reverse(position = "top") +
+  scale_y_reverse() +
+  guides(color = guide_colourbar(
+    title.position = "top", 
+    title.hjust = .5, 
+    barwidth = unit(20, "lines"), 
+    barheight = unit(.5, "lines"))
+    ) +
+  theme(
+    legend.position = "bottom"
+  ) +
+  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
+print(plot1)
+```
+
+## Plot the path density
+
+```{r density}
+plot2 <- my_data_filtered |>
+  plot_path_density_filled(GOF_rank = Inf) +
+  labs(
+    title = "Path kernel density",
+    x = "**Time** (Ma)",
+    y = "**Temperature** (&deg;C)"
+  ) +  
+  {if (use_viridis){
+    scale_fill_viridis_d(option = viridis_option) 
+  }
+    else {
+      scale_fill_scico_d(palette = sico_palette)
+    }
+    } +
+  scale_x_continuous(transform = "reverse", position = "top") +
+  scale_y_continuous(transform = "reverse") +
+  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0)) +
+  guides(fill = "none")
+
+print(plot2)
+```
+
+
+
+## Cluster the paths
+
+Enter cluster settings here:
+```{r cluster_set}
+cluster_method <- "kmeans" # options are "kmeans", "hclust", and "gam"
+number_of_clusters <- 3
+```
+
+Perform the clustering using the above settings and calculate binned statistics:
+```{r cluster}
+data_cluster <- my_data_filtered |>
+  cluster_paths(cluster = number_of_clusters, method = cluster_method) |>
+  group_by(cluster) |>
+  mutate(n = n()) |>
+  right_join(my_data_filtered, join_by(segment))
+
+data_cluster_binned <- densify_cluster(data_cluster) |> 
+  path_statistics()
+```
+
+### Plot the cluster modelled t-T paths
+
+Plot settings:
+```{r plot_settings}
+show_bars <- TRUE
+show_median_lines <- TRUE
+
+use_default_colors <- TRUE # if true colors will be selected automatically from the viridis palette. if not, colors will be picked from color specification below.
+
+# Specify your custom colors for each clusters here:
+my_cluster_colors <- c(
+  '1' = 'darkred',
+  '2' = 'dodgerblue',
+  '3' = 'seagreen'
+)
+
+path_opacity <- .1
+```
+
+Plot the cluster modeled t-T paths:
+```{r cluster_plot}
+plot3 <- ggplot(data = data_cluster, aes(time, temperature, color = cluster, fill = cluster)) +
+  {
+    if (show_bars) {
+      geom_ribbon(data = data_cluster_binned, 
+                  aes(x = time_median,  ymin=temp_5, ymax=temp_95, group = cluster),
+                  stat="stepribbon",
+                  fill = "grey75", color = "grey90", inherit.aes = FALSE, alpha = 1
+      )
+    }
+  } +
+  geom_line(aes(group = segment), alpha = path_opacity, show.legend = FALSE) +
+  {
+    if (show_median_lines) { #
+      geom_step(
+        data = data_cluster_binned, aes(x = time_median, y = temp_median),
+        lwd = 1.5, color = "grey20", show.legend = FALSE
+      )
+    }
+  } +
+  geom_text(
+    data = data_cluster |> select(cluster, n) |> distinct(),
+    aes(label = glue("N: {n}")),
+    x = 0, y = -(max_temperature-20), color = "black", hjust = 1
+  ) +
+  
+   # Color settings:
+  {
+    if (use_default_colors) {{
+      if(use_viridis){
+      scale_color_viridis_d(aesthetics = c("fill", "color"), end = .9, option = viridis_option)
+      } else {
+        scale_color_scico_d(palette = sico_palette, aesthetics = c("fill", "color"))
+      }}
+    } else {
+      scale_color_manual(values = my_cluster_colors)
+    }
+  } +
+  
+  # Axes settings:
+  scale_y_reverse() +
+  scale_x_reverse(position = "top") +
+  
+  # Labels:
+  labs(
+    title = sample_name,
+    subtitle = "Path clusters", 
+    caption = glue("Cluster method: {cluster_method}"), 
+    x = "**Time** (Ma)", 
+    y = "**Temperature** (&deg;C)"
+    ) +
+  
+  # Theme settings:
+  
+  theme(
+    #strip.background = element_rect(fill = NA, linewidth = 0),
+    #strip.placement = "outside",
+    #strip.text.y = element_text(angle=0),
+    panel.grid.major = element_line(color = 'grey')
+    ) +
+  facet_wrap(vars(cluster), ncol = 1, strip.position = "right") +
+  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
+
+print(plot3)
+```
+
+## Summary plot
+Plot all plots in one figure:
+```{r summary}
+print(plot1 + plot2 + plot3)
+```
+
+## Save plots
+```{r save}
+file_extension <- 'png' # change file format here
+scale <- 0.5 # change font and line widths scaling factor here
+
+path1 <- gsub('.txt', paste0('_paths.', file_extension), fname)
+path2 <- gsub('.txt', paste0('_path_density.', file_extension), fname)
+path3 <- gsub('.txt', paste0('_clusters.', file_extension), fname)
+
+# width and height are in inches
+ggsave(path1, plot1, width = 11, height = 8, scale = scale, dpi  = 600) # save paths
+ggsave(path2, plot2, width = 11, height = 8, scale = scale, dpi  = 600) # save density
+ggsave(path3, plot3, width = 11, height = 11, dpi = 600, scale = scale) # save clusters
+```
+
+
+### Single clusters plots
+
+```{r single_clusters}
+for (i in 1:number_of_clusters) {
+  plot_cluster <- ggplot(data = data_cluster |> filter(cluster == i), aes(time, temperature, color = cluster, fill = cluster)) +
+    {
+    if (show_bars) { #
+       geom_ribbon(data = data_cluster_binned |> filter(cluster == i), 
+                  aes(x = time_median, ymin=temp_5, ymax=temp_95, group = cluster),
+                  stat="stepribbon",
+                  fill = "grey75", color = "grey90", inherit.aes = FALSE, alpha = 1
+      )
+    }
+  } +
+  geom_line(aes(group = segment), alpha = path_opacity, show.legend = FALSE) +
+  {
+    if (show_median_lines) { #
+      geom_step(
+        data = data_cluster_binned |> filter(cluster == i) , aes(x = time_median, y = temp_median),
+        lwd = 1.5, color = "grey20", show.legend = FALSE
+      )
+    }
+  } +
+  geom_text(
+    data = data_cluster  |> filter(cluster == i) |> select(cluster, n) |> distinct(),
+    aes(label = paste0("N: ", n)),
+    x = 0, y = -(max_temperature-10), color = "black", hjust = 1.1
+  ) +
+  
+   # Color settings:
+  {
+    if (use_default_colors) {
+      scale_color_viridis_d(aesthetics = c("fill", "color"), end = .9, option = viridis_option)
+    } else {
+      scale_color_manual(values = my_cluster_colors)
+    }
+  } +
+  
+  # Axes settings:
+  scale_y_reverse() +
+  scale_x_reverse(position = "top") +
+  
+  # Labels:
+  labs(
+    title = sample_name,
+    subtitle = glue("Path cluster {i}"),
+    caption = glue("Cluster method: {cluster_method}"), 
+    x = "**Time** (Ma)", 
+    y = "**Temperature** (&deg;C)"
+    ) +
+  
+  # Theme settings:
+  theme(
+    panel.grid.major = element_line(color = 'grey')
+    ) +
+  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
+  
+  path3_i <- gsub('.txt', paste0('_cluster-', i, '.', file_extension), fname)
+  ggsave(path3_i, plot_cluster, width = 11, height = 8, scale = scale)
+}
+```
+

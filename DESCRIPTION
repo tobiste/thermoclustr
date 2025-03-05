@@ -1,0 +1,28 @@
+Package: thermochron
+Title: Analyzing Inverse Thermal History Models
+Version: 0.0.0.9001
+Authors@R: c(
+    person("Tobias", "Stephan", , "tobias.stephan1@yahoo.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-9290-014X")),
+    person("Tais", "Fontes Pinto", , "tais.fontespinto@ucalgary.ca", role = c("aut", "cph"))
+  )
+Description: Density estimates and cluster methods for HeFTy-modeled
+    time-temperature cooling paths.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Depends: 
+    R (>= 2.10)
+Suggests: 
+    knitr,
+    rmarkdown,
+    roxygen2,
+    scico (>= 1.5.0),
+    spelling,
+    testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+Import: ggplot, dplyr, sf, forcats, smoothr, readxl
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1

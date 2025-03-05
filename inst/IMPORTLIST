@@ -1,0 +1,7 @@
+as.matrix = base
+merge = base
+ncol = base
+readLines = base
+split = base
+t = base
+unique = base
