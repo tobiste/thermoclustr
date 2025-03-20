@@ -7,11 +7,13 @@
 path_statistics(x, breaks = 50)
 }
 \arguments{
-\item{x}{t-T and GOF data of the modeled paths. Output of \code{\link[=read_hefty]{read_hefty()}}.}
+\item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}) or
+a \code{data.frame} containing the \code{time} and \code{temperature} columns of the modeled
+paths.}
 
 \item{breaks}{either a numeric vector of two or more unique cut points or a
 single number (greater than or equal to 2) giving the number of intervals
-into which x is to be cut.}
+into which \code{x} is to be cut.}
 }
 \value{
 tibble.

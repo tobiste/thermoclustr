@@ -89,8 +89,8 @@ read_hefty_xlsx <- function(fname) {
 #'
 #' @param fname path to the .txt file that contains the HeFTy outputs
 #'
-#' @return `list` of the individual paths, the constraints, the weighted mean
-#' path and the grain summary statistics.
+#' @return object of class `"HeFTy"`, i.e. `list` of the individual paths, 
+#' the constraints, the weighted mean path and the grain summary statistics.
 #'
 #' @importFrom dplyr across as_tibble everything matches rename
 #'
@@ -165,10 +165,12 @@ read_hefty <- function(fname) {
     rename("grain" = V1, "mean" = V2, sd = V3, min = V4, max = V5) |>
     mutate(across(!matches("grain"), as.numeric))
 
-  list(
+  res <- list(
     paths = paths,
     constraints = constraints,
     weighted_mean_path = wm,
     summary = grain_summary
   )
+  class(res) <- append(class(res), 'HeFTy')
+  return(res)
 }

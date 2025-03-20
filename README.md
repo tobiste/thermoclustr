@@ -24,33 +24,101 @@ devtools::install_github("tobiste/thermochron")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The following minimal example shows how to import data, visualize the
+paths and the path density as well as how to filter, and cluster the tT
+paths into 3 path families.
 
 ``` r
 library(thermochron)
-## basic example code
+library(dplyr)
+#> Warning: package 'dplyr' was built under R version 4.3.3
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(ggplot2)
+#> Warning: package 'ggplot2' was built under R version 4.3.3
+
+# load example dataset of a HeFTy model output
+path2myfile <- system.file("112-9-30-zr-inv.txt", package = "thermochron")
+tT_paths <- read_hefty(path2myfile)
+#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
+#> `.name_repair` is omitted as of tibble 2.0.0.
+#> ℹ Using compatibility `.name_repair`.
+#> ℹ The deprecated feature was likely used in the thermochron package.
+#>   Please report the issue to the authors.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+The HeFTy model contains the modeled paths, the initial model
+constraints, the weighted mean path, and some summary statistics on the
+mineral grains. {thermochron} imports the model as a `list` that
+contains the aforementioned features as list entries.
+
+Thus, to visualize the paths with need to extract the `path` object from
+the imported model `tT_paths`:
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+tT_paths$paths |> 
+  ggplot(aes(time, temperature, color = Comp_GOF, group = segment)) +
+  geom_path() +
+  scale_color_viridis_c() +
+  scale_x_reverse(position = "top") +
+  scale_y_reverse()
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+<img src="man/figures/README-plot-1.png" width="100%" />
 
-You can also embed plots, for example:
+The path density can be visualized using `plot_path_density_filled()`:
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+``` r
+plot_path_density_filled(tT_paths, show.legend = FALSE) +
+  scale_x_reverse(position = "top") +
+  scale_y_reverse()
+```
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+<img src="man/figures/README-density-1.png" width="100%" />
+
+To cluster a subset of the data, the following steps are required:
+
+``` r
+# extract the paths and filter to time range of interest:
+my_paths <- tT_paths$paths |> 
+  dplyr::filter(time <= 500, temperature <= 200)
+
+# cluster the paths
+my_paths_cluster <- cluster_paths(my_paths, cluster = 3)
+
+# Join with path dataset
+my_paths_clustered <- dplyr::left_join(
+  my_paths,
+  my_paths_cluster,
+  dplyr::join_by(segment)
+)
+```
+
+Finally, the visualization of the clustered tT paths:
+
+``` r
+my_paths_clustered |>
+  ggplot(
+    aes(
+      x = time, 
+      y = temperature,
+      color = cluster,
+      alpha = Comp_GOF,
+      group = segment
+    )
+  ) +
+  geom_path() +
+  scale_x_reverse(position = "top") +
+  scale_y_reverse()
+```
+
+<img src="man/figures/README-plot2-1.png" width="100%" />

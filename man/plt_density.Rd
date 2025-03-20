@@ -11,7 +11,9 @@ plot_path_density_filled(x, bins = 50L, densify = TRUE, show.legend = NA, ...)
 plot_path_density(x, bins = 50L, densify = TRUE, show.legend = NA, ...)
 }
 \arguments{
-\item{x}{data.frame containing the t-T paths. Output of \code{\link[=read_hefty]{read_hefty()}} or \code{\link[=densify_paths]{densify_paths()}}}
+\item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}),
+a \code{data.frame} containing the \code{time}, \code{temperature} columns of the modeled
+paths, or output of \code{\link[=densify_paths]{densify_paths()}}.}
 
 \item{bins}{integer. Amount of bins used for the kernel density estimate. 50 by default.}
 

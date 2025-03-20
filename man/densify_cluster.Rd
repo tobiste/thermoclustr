@@ -14,7 +14,8 @@ densify_cluster(
 )
 }
 \arguments{
-\item{x}{clustered t-T paths. Output of \code{\link[=cluster_paths]{cluster_paths()}}.}
+\item{x}{clustered t-T paths. Output of \code{\link[=cluster_paths]{cluster_paths()}} merged (or joined)
+with paths.}
 
 \item{GOF_rank}{numeric. Selects only the \code{GOF_rank}-th highest GOF ranked paths.
 If all GOFs should be used, set to \code{Inf}. Default is \code{10}.}

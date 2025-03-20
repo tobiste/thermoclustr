@@ -34,6 +34,7 @@ paths <- tT_paths1$paths |>
   arrange(Fit, Comp_GOF) |> 
   mutate(segment = fct_reorder(segment, Comp_GOF))
 ```
+
 ```{r data2}
 mean_path <- tT_paths1$weighted_mean_path
 

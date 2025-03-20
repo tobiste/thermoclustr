@@ -14,7 +14,9 @@ densify_paths(
 )
 }
 \arguments{
-\item{x}{t-T and GOF data of the modeled paths. Output of \code{\link[=read_hefty]{read_hefty()}}.}
+\item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}), or a
+\code{data.frame} containing the \code{time}, \code{temperature}, and \code{Comp_GOF} columns of the
+modeled paths.}
 
 \item{GOF_rank}{numeric. Selects only the \code{GOF_rank}-th highest GOF ranked paths.
 If all GOFs should be used, set to \code{Inf}. Default is \code{10}.}

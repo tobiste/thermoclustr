@@ -10,8 +10,8 @@ read_hefty(fname)
 \item{fname}{path to the .txt file that contains the HeFTy outputs}
 }
 \value{
-\code{list} of the individual paths, the constraints, the weighted mean
-path and the grain summary statistics.
+object of class \code{"HeFTy"}, i.e. \code{list} of the individual paths,
+the constraints, the weighted mean path and the grain summary statistics.
 }
 \description{
 Read time, temperature and GOF data of modeled thermal history paths out of

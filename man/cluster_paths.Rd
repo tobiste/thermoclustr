@@ -8,22 +8,33 @@ cluster_paths(
   x,
   cluster,
   dist = c("Hausdorff", "Frechet", "Euclidean"),
-  method = c("hclust", "kmeans", "pam"),
+  method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan"),
   ...
 )
 }
 \arguments{
-\item{x}{t-T and GOF data of the modeled paths. Output of \code{\link[=read_hefty]{read_hefty()}}.}
+\item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}), an
+object of \code{"tTdiss"} (output of \code{\link[=path_diss]{path_diss()}}),
+or a \code{data.frame} containing the \code{time}, \code{temperature} columns of the
+modeled paths.}
 
-\item{cluster}{an integer scalar or vector with the desired number of groups}
+\item{cluster}{an integer scalar or vector with the desired number of groups.
+Ignored when \code{dist} equal to \code{dbscan} or \code{hdbscan} (\strong{see Note}).}
 
-\item{dist}{character; algorithm to calculate a dissimilarity matrix
-(distance) for lines; one of \code{Euclidean}, \code{Hausdorff} (the default) or
-\code{Frechet}.}
+\item{dist}{character. Algorithm to calculate a dissimilarity matrix
+(distance) for lines; one of \code{Hausdorff} (the default),
+\code{Frechet}, or \code{Euclidean}.}
 
-\item{method}{character. Clustering method to use; one of \code{"hclust"}
-(for \code{\link[stats:hclust]{stats::hclust()}}, the default), \code{"kmeans"} (for \code{\link[stats:kmeans]{stats::kmeans()}}),
-or \code{"pam"} (for \code{\link[cluster:pam]{cluster::pam()}}.}
+\item{method}{character. Clustering method to use. Currently implemented are
+\describe{
+\item{\code{"hclust"}}{for Hierarchical Clustering using \code{\link[stats:hclust]{stats::hclust()}}, the default)}
+\item{\code{"kmeans"}}{for K-Means Clustering using \code{\link[stats:kmeans]{stats::kmeans()}})}
+\item{\code{"pam"}}{for Partitioning Around Medoids using \code{\link[cluster:pam]{cluster::pam()}}}
+\item{\code{"dbscan"}}{for Density-based Spatial Clustering of Applications with
+Noise (DBSCAN) using \code{\link[dbscan:dbscan]{dbscan::dbscan()}} (\strong{see Note})}
+\item{\code{"hdbscan"}}{for Hierarchical DBSCAN using \code{\link[dbscan:hdbscan]{dbscan::hdbscan()}}
+(\strong{see Note})}
+}}
 
 \item{...}{additional arguments passed to cluster method.}
 }
@@ -34,10 +45,22 @@ a tibble with the path \code{segment} (integer) and \code{cluster} (factor)
 Groups t-T paths into "path families" based on the \emph{Hausdorff distance}
 between paths.
 }
+\note{
+that \code{dbscan} and \code{hdbscan} methods require \code{eps} and \code{minPts} arguments.
+Optimal \code{eps} values can be visually estimated from the "knee" in a k-nearest
+neighbor distance plot using:
+\code{\link[dbscan:kNNdist]{dbscan::kNNdistplot()}}
+}
 \examples{
 \dontrun{
+# example data
 data(tT_paths1)
-tT_paths_subset <- subset(tT_paths1, Comp_GOF >= 0.5)
+tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.5)
+
+# cluster the paths
 cluster_paths(tT_paths_subset, cluster = 3)
 }
+}
+\seealso{
+\code{\link[=path_diss]{path_diss()}}
 }

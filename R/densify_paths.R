@@ -2,7 +2,9 @@
 #'
 #' Adds extra points between the vertices of the path segments
 #'
-#' @param x t-T and GOF data of the modeled paths. Output of [read_hefty()].
+#' @param x either an object of class `"HeFTy"` (output of [read_hefty()]), or a
+#' `data.frame` containing the `time`, `temperature`, and `Comp_GOF` columns of the 
+#' modeled paths.
 #' @param GOF_rank numeric. Selects only the `GOF_rank`-th highest GOF ranked paths.
 #' If all GOFs should be used, set to `Inf`. Default is `10`.
 #' @param n integer. Adds `n` (10 by
@@ -38,6 +40,7 @@
 #' data(tT_paths1)
 #' densify_paths(tT_paths1)
 densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples = 100L, replace = FALSE) {
+  if (inherits(x, "HeFTy")) x <- x$paths
   L1 <- L2 <- X <- Y <- numeric()
   segment <- time <- temperature <- NULL
 
@@ -97,7 +100,8 @@ densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples 
 
 #' Densify clustered paths
 #'
-#' @param x clustered t-T paths. Output of [cluster_paths()].
+#' @param x clustered t-T paths. Output of [cluster_paths()] merged (or joined) 
+#' with paths.
 #' @inheritParams densify_paths
 #'
 #' @return tibble
