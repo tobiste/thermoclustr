@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(HeFTy.SmoothR)
+library(thermochron)
 
-test_check("HeFTy.SmoothR")
+test_check("thermochron")

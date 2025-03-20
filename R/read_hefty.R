@@ -31,15 +31,6 @@ assign_segment <- function(x) { # create new function called assign_segment
 
 #' Read time, temperature and GOF data from HeFTy output from excel file
 #'
-#'
-#' @description
-#' `r lifecycle::badge("superseded")`
-#'
-#'  `read_hefty_xlsx()` has been superseded in favor of [read_hefty()] to allow
-#' direct import from HeFTy output files with out additional format
-#' manipulation. The function `read_hefty_xlsx()`will be removed in a future
-#' release.
-#'
 #' @param fname path to the excel spreadsheet that contains the HeFTy outputs, i.e. the t-T-paths in sheet 1 and the GOF values in sheet 2
 #'
 #' @return `data.frame` of the combined data
@@ -49,8 +40,6 @@ assign_segment <- function(x) { # create new function called assign_segment
 #' @importFrom dplyr mutate as_tibble between case_when
 #'
 #' @seealso [read_hefty()]
-#'
-#' @export
 #'
 #' @examples
 #' \dontrun{

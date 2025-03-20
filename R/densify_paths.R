@@ -6,7 +6,7 @@
 #' `data.frame` containing the `time`, `temperature`, and `Comp_GOF` columns of the 
 #' modeled paths.
 #' @param GOF_rank numeric. Selects only the `GOF_rank`-th highest GOF ranked paths.
-#' If all GOFs should be used, set to `Inf`. Default is `10`.
+#' If all GOFs should be used, set to `Inf`. Default is 10.
 #' @param n integer. Adds `n` (10 by
 #' default) equally-spaced extra points along each path
 #' segment (between vertices).

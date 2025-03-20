@@ -49,21 +49,15 @@ Open R and install and load the necessary packages. You can install the
 packages by running the following code:
 
 ```{r packages1, eval=FALSE, include=TRUE}
-install.packages("scico")
-library(scico)
-
 install.packages("ggplot2")
-library(ggplot2)
+remotes::install_github("tobiste/thermochron")
 ```
 
-```{r packages2, include=FALSE,eval=TRUE}
-library(ggplot2)
-```
 
 Next, install the {thermochron} package by running the following code:
 
-```{r packages3, eval=FALSE, include=TRUE}
-remotes::install_github("tobiste/thermochron")
+```{r packages2, include=TRUE,eval=TRUE}
+library(ggplot2)
 library(thermochron)
 ```
 
@@ -79,8 +73,13 @@ path2myfile <- 'inst/112-9-30-zr-inv.txt'
 Next, you import the .txt file into R by using the function
 `read_hefty()`:
 
-```{r data}
+```{r data, eval=FALSE, include=TRUE}
 tT_paths <- read_hefty(path2myfile)$paths
+```
+```{r data1, eval=TRUE, include=FALSE}
+data("tT_paths1")
+tT_paths <- tT_paths1
+rm(tT_paths1)
 ```
 
 ## Part II

@@ -1,5 +1,5 @@
 ---
-title: "Path famililes"
+title: "Path families"
 author: "Tobias Stephan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -21,6 +21,8 @@ library(thermochron)
 library(ggplot2)
 library(dplyr)
 library(ggalt)
+library(forcats)
+library(scales)
 ```
 
 This document provides a brief working example to demonstrate how to cluster paths 
@@ -81,7 +83,7 @@ ggplot(paths_filtered, aes(time, temperature, group = segment, color = Comp_GOF)
     "Goodnes-of-fit (GOF)",
     limits = c(0, .51),
     breaks = seq(0, 1, .1),
-    oob = scales::squish
+    oob = squish
   ) +
   scale_x_reverse(position = "top") +
   scale_y_reverse() +

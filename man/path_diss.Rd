@@ -2,19 +2,18 @@
 % Please edit documentation in R/path_cluster.R
 \name{path_diss}
 \alias{path_diss}
-\title{Dissimilarity matrix for t-T paths}
+\title{Dissimilarity of t-T paths}
 \usage{
-path_diss(x, method = c("Hausdorff", "Frechet", "Euclidean"), densify = 0)
+path_diss(x, method = c("Hausdorff", "Frechet"), densify = 0)
 }
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}) or
 a \code{data.frame} containing the \code{time}, \code{temperature} columns of the modeled paths.}
 
 \item{method}{character. Algorithm to calculate a dissimilarity matrix
-(distance) for lines; one of \code{Hausdorff} (the default),
-\code{Frechet}, or \code{Euclidean}.}
+(distance) for lines; either \code{Hausdorff} (the default) or \code{Frechet}.}
 
-\item{densify}{for \code{dist} equal to \code{Hausdorff} or \code{Frechet}, optionally use a value
+\item{densify}{numeric. optionally use a value
 between 0 and 1 to densify the geometry description.}
 }
 \value{
@@ -25,7 +24,8 @@ between 0 and 1 to densify the geometry description.}
 }
 }
 \description{
-Dissimilarity matrix for t-T paths
+Calculates the dissimilarity matrix between t-T paths using the \emph{Hausdorff} or
+\emph{Fréchet distance}
 }
 \details{
 The Hausdorff distance is the greatest of all the distances from a

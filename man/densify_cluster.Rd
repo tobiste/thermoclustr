@@ -18,7 +18,7 @@ densify_cluster(
 with paths.}
 
 \item{GOF_rank}{numeric. Selects only the \code{GOF_rank}-th highest GOF ranked paths.
-If all GOFs should be used, set to \code{Inf}. Default is \code{10}.}
+If all GOFs should be used, set to \code{Inf}. Default is 10.}
 
 \item{n}{integer. Adds \code{n} (10 by
 default) equally-spaced extra points along each path

@@ -7,7 +7,7 @@
 cluster_paths(
   x,
   cluster,
-  dist = c("Hausdorff", "Frechet", "Euclidean"),
+  dist = c("Hausdorff", "Frechet"),
   method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan"),
   ...
 )
@@ -22,8 +22,8 @@ modeled paths.}
 Ignored when \code{dist} equal to \code{dbscan} or \code{hdbscan} (\strong{see Note}).}
 
 \item{dist}{character. Algorithm to calculate a dissimilarity matrix
-(distance) for lines; one of \code{Hausdorff} (the default),
-\code{Frechet}, or \code{Euclidean}.}
+(distance) for lines; either \code{Hausdorff} (the default), or
+\code{Frechet}.}
 
 \item{method}{character. Clustering method to use. Currently implemented are
 \describe{
@@ -42,8 +42,8 @@ Noise (DBSCAN) using \code{\link[dbscan:dbscan]{dbscan::dbscan()}} (\strong{see 
 a tibble with the path \code{segment} (integer) and \code{cluster} (factor)
 }
 \description{
-Groups t-T paths into "path families" based on the \emph{Hausdorff distance}
-between paths.
+Groups t-T paths into "path families" based on the \emph{Hausdorff} or
+\emph{Fréchet distance} between paths.
 }
 \note{
 that \code{dbscan} and \code{hdbscan} methods require \code{eps} and \code{minPts} arguments.

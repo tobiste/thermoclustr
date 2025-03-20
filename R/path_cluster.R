@@ -1,7 +1,7 @@
 #' Cluster thermal histories
 #'
-#' Groups t-T paths into "path families" based on the *Hausdorff distance*
-#' between paths.
+#' Groups t-T paths into "path families" based on the *Hausdorff* or 
+#' *Fréchet distance* between paths.
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]), an 
 #' object of `"tTdiss"` (output of [path_diss()]), 
@@ -10,8 +10,8 @@
 #' @param cluster an integer scalar or vector with the desired number of groups.
 #' Ignored when `dist` equal to `dbscan` or `hdbscan` (**see Note**).
 #' @param dist character. Algorithm to calculate a dissimilarity matrix
-#' (distance) for lines; one of `Hausdorff` (the default),
-#' `Frechet`, or `Euclidean`.
+#' (distance) for lines; either `Hausdorff` (the default), or
+#' `Frechet`.
 #' @param method character. Clustering method to use. Currently implemented are
 #' \describe{
 #'  \item{`"hclust"`}{for Hierarchical Clustering using [stats::hclust()], the default)}
@@ -52,7 +52,7 @@
 #' }
 cluster_paths <- function(
     x, cluster,
-    dist = c("Hausdorff", "Frechet", "Euclidean"),
+    dist = c("Hausdorff", "Frechet"),
     method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan"),
     ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
@@ -81,14 +81,16 @@ cluster_paths <- function(
 
 
 
-#' Dissimilarity matrix for t-T paths
+#' Dissimilarity of t-T paths 
+#' 
+#' Calculates the dissimilarity matrix between t-T paths using the *Hausdorff* or 
+#' *Fréchet distance*
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]) or 
 #' a `data.frame` containing the `time`, `temperature` columns of the modeled paths.
 #' @param method character. Algorithm to calculate a dissimilarity matrix
-#' (distance) for lines; one of `Hausdorff` (the default),
-#' `Frechet`, or `Euclidean`.
-#' @param densify for `dist` equal to `Hausdorff` or `Frechet`, optionally use a value
+#' (distance) for lines; either `Hausdorff` (the default) or `Frechet`.
+#' @param densify numeric. optionally use a value
 #' between 0 and 1 to densify the geometry description.
 #'
 #' @returns `tTdiss` object, i.e. a list containing
@@ -115,7 +117,7 @@ cluster_paths <- function(
 #'
 #' # the `diss` object of the output can be used for clustering, e.g.:
 #' stats::kmeans(tT_diss$diss, centers = 3)
-path_diss <- function(x, method = c("Hausdorff", "Frechet", "Euclidean"), densify = 0) {
+path_diss <- function(x, method = c("Hausdorff", "Frechet"), densify = 0) {
   if(inherits(x, 'HeFTy')) x <- x$paths
   stopifnot(inherits(x, "data.frame"))
   

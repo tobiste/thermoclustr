@@ -13,12 +13,7 @@ read_hefty_xlsx(fname)
 \code{data.frame} of the combined data
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
-
-\code{read_hefty_xlsx()} has been superseded in favor of \code{\link[=read_hefty]{read_hefty()}} to allow
-direct import from HeFTy output files with out additional format
-manipulation. The function \code{read_hefty_xlsx()}will be removed in a future
-release.
+Read time, temperature and GOF data from HeFTy output from excel file
 }
 \examples{
 \dontrun{

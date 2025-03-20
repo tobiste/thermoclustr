@@ -20,7 +20,9 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/tobiste/thermochron/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermochron?branch=main)
 <!-- badges: end -->
 
-The goal of thermochron is to ...
+The goal of thermochron is to provide tools to further analyze thermal history 
+models in thermochronology, including estimating cooling path densities, and 
+path families.
 
 ## Installation
 
