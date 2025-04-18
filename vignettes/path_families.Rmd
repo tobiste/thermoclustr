@@ -163,13 +163,13 @@ plot_nb2 <- fviz_nbclust(tT_diss$diss, kmeans, method = "silhouette", k.max = 10
 # Gap statistic
 # nboot = 10 to keep the function speedy.
 # recommended value: nboot = 100 for your analysis.
-set.seed(123)
-plot_nb3 <- fviz_nbclust(tT_diss$diss, kmeans, method = "gap_stat", k.max = 10, nstart = 25, 
-                         nboot = 10, 
-                         verbose = FALSE, print.summary = FALSE) +
-  labs(subtitle = "Gap statistic method")
+# set.seed(123)
+# plot_nb3 <- fviz_nbclust(tT_diss$diss, kmeans, method = "gap_stat", k.max = 10, nstart = 25, 
+#                          nboot = 10, 
+#                          verbose = FALSE, print.summary = FALSE) +
+#   labs(subtitle = "Gap statistic method")
 
-plot_nb1 + plot_nb2 + plot_nb3
+plot_nb1 + plot_nb2 #+ plot_nb3
 ```
 
 ## Cluster the data

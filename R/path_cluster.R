@@ -22,10 +22,10 @@
 #'  \item{`"hdbscan"`}{for Hierarchical DBSCAN using [dbscan::hdbscan()]
 #'  (**see Note**)}
 #'  \item{`"specc"`}{for Spectral Clustering using [kernlab::specc()]}
-#'  \item{`"agnes"`} for agglomerative hierarchical clustering using [cluster::agnes()]
-#'  \item{`"diana"`} for divisive hierarchical clustering using [cluster::diana()]
-#'  \item{`"clara"`} Clustering Large Applications using [cluster::clara()]
-#'  \item{`"fanny"`} Fuzzy Analysis Clustering using [cluster::fanny()]
+#'  \item{`"agnes"`}{for agglomerative hierarchical clustering using [cluster::agnes()]}
+#'  \item{`"diana"`}{for divisive hierarchical clustering using [cluster::diana()]}
+#'  \item{`"clara"`}{Clustering Large Applications using [cluster::clara()]}
+#'  \item{`"fanny"`}{Fuzzy Analysis Clustering using [cluster::fanny()]}
 #' }
 #' @param ... additional arguments passed to cluster method.
 #'
