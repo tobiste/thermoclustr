@@ -8,7 +8,8 @@ cluster_paths(
   x,
   cluster,
   dist = c("Hausdorff", "Frechet"),
-  method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan"),
+  method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan", "diana", "agnes",
+    "mona", "clara", "fanny"),
   ...
 )
 }
@@ -35,6 +36,10 @@ Noise (DBSCAN) using \code{\link[dbscan:dbscan]{dbscan::dbscan()}} (\strong{see 
 \item{\code{"hdbscan"}}{for Hierarchical DBSCAN using \code{\link[dbscan:hdbscan]{dbscan::hdbscan()}}
 (\strong{see Note})}
 \item{\code{"specc"}}{for Spectral Clustering using \code{\link[kernlab:specc]{kernlab::specc()}}}
+\item{\code{"agnes"}} for agglomerative hierarchical clustering using \code{\link[cluster:agnes]{cluster::agnes()}}
+\item{\code{"diana"}} for divisive hierarchical clustering using \code{\link[cluster:diana]{cluster::diana()}}
+\item{\code{"clara"}} Clustering Large Applications using \code{\link[cluster:clara]{cluster::clara()}}
+\item{\code{"fanny"}} Fuzzy Analysis Clustering using \code{\link[cluster:fanny]{cluster::fanny()}}
 }}
 
 \item{...}{additional arguments passed to cluster method.}

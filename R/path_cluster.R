@@ -22,6 +22,10 @@
 #'  \item{`"hdbscan"`}{for Hierarchical DBSCAN using [dbscan::hdbscan()]
 #'  (**see Note**)}
 #'  \item{`"specc"`}{for Spectral Clustering using [kernlab::specc()]}
+#'  \item{`"agnes"`} for agglomerative hierarchical clustering using [cluster::agnes()]
+#'  \item{`"diana"`} for divisive hierarchical clustering using [cluster::diana()]
+#'  \item{`"clara"`} Clustering Large Applications using [cluster::clara()]
+#'  \item{`"fanny"`} Fuzzy Analysis Clustering using [cluster::fanny()]
 #' }
 #' @param ... additional arguments passed to cluster method.
 #'
@@ -36,7 +40,8 @@
 #' @importFrom sf st_as_sf st_distance
 #' @importFrom dplyr summarise group_by tibble
 #' @importFrom stats hclust cutree as.dist kmeans
-#' @importFrom cluster pam
+#' @importFrom cluster pam agnes diana clara fanny 
+#' @importFrom kernlab specc
 #' @importFrom forcats as_factor
 #' @importFrom dbscan dbscan hdbscan
 #'
@@ -54,7 +59,7 @@
 cluster_paths <- function(
     x, cluster,
     dist = c("Hausdorff", "Frechet"),
-    method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan"),
+    method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan", "diana", "agnes", "mona", "clara", "fanny"),
     ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
   if (!inherits(x, "tTdiss")) x <- path_diss(x, dist)
@@ -77,6 +82,16 @@ cluster_paths <- function(
   } else if (method == "specc") {
     cl <- kernlab::specc(dmat, centers = cluster, ...) |> 
       as.integer()
+  } else if(method == "diana"){
+    cl <- cluster::diana(dmat, ...) |>
+      stats::cutree(k = cluster)
+  } else if(method == "agnes"){
+    cl <- cluster::agnes(dmat, ...) |>
+      stats::cutree(k = cluster)
+  } else if(method == "clara"){
+    cl <- cluster::clara(dmat, k = cluster, ...)$clustering
+  } else if(method == "fanny"){
+    cl <- cluster::fanny(dmat, k = cluster, ...)$clustering
   }
 
   dplyr::tibble(segment = paths$segment, cluster = forcats::as_factor(cl))
