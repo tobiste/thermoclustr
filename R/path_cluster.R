@@ -21,6 +21,7 @@
 #'  Noise (DBSCAN) using [dbscan::dbscan()] (**see Note**)}
 #'  \item{`"hdbscan"`}{for Hierarchical DBSCAN using [dbscan::hdbscan()]
 #'  (**see Note**)}
+#'  \item{`"specc"`}{for Spectral Clustering using [kernlab::specc()]}
 #' }
 #' @param ... additional arguments passed to cluster method.
 #'
@@ -53,7 +54,7 @@
 cluster_paths <- function(
     x, cluster,
     dist = c("Hausdorff", "Frechet"),
-    method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan"),
+    method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan"),
     ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
   if (!inherits(x, "tTdiss")) x <- path_diss(x, dist)
@@ -73,6 +74,9 @@ cluster_paths <- function(
     cl <- dbscan::dbscan(dmat, ...)$cluster
   } else if (method == "hdbscan") {
     cl <- dbscan::hdbscan(dmat, ...)$cluster
+  } else if (method == "specc") {
+    cl <- kernlab::specc(dmat, centers = cluster, ...) |> 
+      as.integer()
   }
 
   dplyr::tibble(segment = paths$segment, cluster = forcats::as_factor(cl))

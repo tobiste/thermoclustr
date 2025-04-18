@@ -8,7 +8,7 @@ cluster_paths(
   x,
   cluster,
   dist = c("Hausdorff", "Frechet"),
-  method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan"),
+  method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan"),
   ...
 )
 }
@@ -34,6 +34,7 @@ Ignored when \code{dist} equal to \code{dbscan} or \code{hdbscan} (\strong{see N
 Noise (DBSCAN) using \code{\link[dbscan:dbscan]{dbscan::dbscan()}} (\strong{see Note})}
 \item{\code{"hdbscan"}}{for Hierarchical DBSCAN using \code{\link[dbscan:hdbscan]{dbscan::hdbscan()}}
 (\strong{see Note})}
+\item{\code{"specc"}}{for Spectral Clustering using \code{\link[kernlab:specc]{kernlab::specc()}}}
 }}
 
 \item{...}{additional arguments passed to cluster method.}

@@ -23,12 +23,16 @@ library(dplyr)
 library(ggalt)
 library(forcats)
 library(scales)
+library(factoextra)
+library(hopkins)
+library(patchwork)
 ```
 
-This document provides a brief working example to demonstrate how to cluster paths 
-from HeFTy inverse thermal history models.
+This document provides a brief working example to demonstrate how to
+cluster paths from HeFTy inverse thermal history models.
 
 Load some example data:
+
 ```{r data}
 data(tT_paths1)
 
@@ -50,18 +54,18 @@ constraint_box <- do.call(rbind, lapply(seq_along(constraints), function(i) {
 }))
 ```
 
-Filter the data (time, and temperature range):
+Analyze a subset of the data by filtering the time and temperature
+range:
 
 ```{r filter_setting}
 max_time <- 500
 max_temperature <- 250
-```
 
-```{r filter}
 paths_filtered <- paths |>
   dplyr::filter(time <= max_time, temperature <= max_temperature) # change filter settings here
 ```
 
+Visualize the filtered t-T paths:
 
 ```{r paths, message=TRUE, warning=TRUE}
 ggplot(paths_filtered, aes(time, temperature, group = segment, color = Comp_GOF)) +
@@ -90,8 +94,85 @@ ggplot(paths_filtered, aes(time, temperature, group = segment, color = Comp_GOF)
   coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
 ```
 
+# Clustering
+
+Calculate the dissimilarities between the paths using the Hausdorff distance 
+
+```{r dissimilarity}
+tT_diss <- path_diss(paths_filtered, method = 'Hausdorff')
+```
+
+> Alternative measure is the Fréchet distance using `method = 'Frechet'`.
 
 
+## Is the data clustered?
+
+Whether the data is actually clustered can be checked using the Hopkins statistic (H), i.e. the mean nearest neighbor distance in the random data set divided by the sum of the mean nearest
+neighbor distances in the real and across the simulated data set
+
+How to interpret the Hopkins statistics? If data D were uniformly
+distributed, then the distances between the reals and the simulated data would be close to each other, and thus H would be about 0.5. 
+However, if clusters are present in D, then
+the distances for artificial points would be substantially
+larger than for the real ones in expectation, and thus the
+value of H will increase (Han, Kamber, and Pei 2012).
+
+A value for H higher than 0.75 indicates a clustering tendency at the
+90% confidence level.
+
+The null and the alternative hypotheses are defined as follow:
+
+-    Null hypothesis: the data set D is uniformly distributed (i.e., no
+    meaningful clusters)
+
+-   Alternative hypothesis: the data set D is not uniformly distributed
+    (i.e., contains meaningful clusters)
+
+
+
+> We can conduct the Hopkins Statistic test iteratively, using 0.5 as the threshold to reject the alternative hypothesis. That is, if H < 0.5, then it is unlikely that D has statistically significant clusters. 
+Put in other words, If the value of Hopkins statistic is close to 1, then we can reject the null hypothesis and conclude that the dataset D is significantly a clusterable data.
+
+```{r hopkins}
+# Compute Hopkins statistic for dataset
+#res <- get_clust_tendency(tT_diss$diss, n = nrow(tT_diss$diss)-1, graph = FALSE)
+#res$hopkins_stat
+
+# using the {hopkins} package
+hopkins::hopkins(tT_diss$diss, d = 2)
+```
+
+
+
+## How many clusters?
+There are several ways to estimate the optimal number of clusters using
+the function `fviz_nbclust()` from the `{factoextra}` package:
+
+```{r nbcl}
+# Elbow method
+plot_nb1 <- fviz_nbclust(tT_diss$diss, kmeans, method = "wss", k.max = 10, nstart = 25, 
+                         verbose = FALSE, print.summary = FALSE) +
+  geom_vline(xintercept = 3, linetype = 2) +
+  labs(subtitle = "Elbow method")
+
+# Silhouette method
+plot_nb2 <- fviz_nbclust(tT_diss$diss, kmeans, method = "silhouette", k.max = 10, nstart = 25, 
+                         verbose = FALSE, print.summary = FALSE) +
+  labs(subtitle = "Silhouette method")
+
+# Gap statistic
+# nboot = 10 to keep the function speedy.
+# recommended value: nboot = 100 for your analysis.
+set.seed(123)
+plot_nb3 <- fviz_nbclust(tT_diss$diss, kmeans, method = "gap_stat", k.max = 10, nstart = 25, 
+                         nboot = 10, 
+                         verbose = FALSE, print.summary = FALSE) +
+  labs(subtitle = "Gap statistic method")
+
+plot_nb1 + plot_nb2 + plot_nb3
+```
+
+## Cluster the data
 
 ```{r cluster}
 path_families <- paths_filtered |>
@@ -104,6 +185,7 @@ path_families_binned <- densify_cluster(path_families) |>
 ```
 
 Plot the cluster modeled t-T paths:
+
 ```{r cluster_plot}
 ggplot(data = path_families_binned) +
   geom_ribbon(
@@ -132,4 +214,3 @@ ggplot(data = path_families_binned) +
   # facet_wrap(vars(cluster)) +
   coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
 ```
-

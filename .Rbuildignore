@@ -9,3 +9,5 @@
 ^.Rprofile$
 ^codecov\.yml$
 ^LICENSE\.md$
+^doc$
+^Meta$
