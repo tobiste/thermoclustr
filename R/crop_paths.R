@@ -14,8 +14,12 @@
 #' data(tT_paths1)
 #' crop_paths(tT_paths1, time = c(0, 300), temperature = c(0, 200))
 crop_paths <- function(x, time = c(0, Inf), temperature = c(0, Inf)) {
-  stopifnot(inherits(x, "HeFTy"))
-  paths <- dplyr::distinct(x$paths)
+  stopifnot(inherits(x, "HeFTy") || inherits(x, "data.frame"))
+  if(inherits(x, "HeFTy")){
+    paths <- dplyr::distinct(x$paths)
+  } else {
+    paths <- x
+  }
 
   time_range <- sort(time)
   temperature_range <- sort(temperature)
@@ -42,10 +46,16 @@ crop_paths <- function(x, time = c(0, Inf), temperature = c(0, Inf)) {
   coords <- sf::st_coordinates(paths_sf) |>
     dplyr::as_tibble()
 
-  x$paths <- sf::st_drop_geometry(paths_sf) |>
+  paths_cropped <- sf::st_drop_geometry(paths_sf) |>
     dplyr::bind_cols(coords) |>
     dplyr::select(segment, time = X, temperature = Y, Fit, Comp_GOF) |>
     dplyr::distinct()
 
-  return(x)
+  if(inherits(x, "HeFTy")) {
+    res <- x
+    res$paths <- paths_cropped
+  } else {
+    res <- paths_cropped
+  }
+  return(res)
 }

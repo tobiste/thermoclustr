@@ -82,7 +82,7 @@ cluster_paths <- function(
   paths <- x$paths
 
   if (method == "hclust") {
-    cl <- stats::hclust(stats::as.dist(dmat), ...) |>
+    cl <- stats::hclust(dmat, ...) |>
       stats::cutree(k = cluster)
   } else if (method == "kmeans") {
     cl <- stats::kmeans(dmat, centers = cluster, ...)$cluster
@@ -93,7 +93,7 @@ cluster_paths <- function(
   } else if (method == "hdbscan") {
     cl <- dbscan::hdbscan(dmat, ...)$cluster
   } else if (method == "specc") {
-    cl <- kernlab::specc(dmat, centers = cluster, ...) |>
+    cl <- kernlab::specc(as.matrix(dmat), centers = cluster, ...) |>
       as.integer()
   } else if (method == "diana") {
     cl <- cluster::diana(dmat, ...) |>
@@ -102,7 +102,7 @@ cluster_paths <- function(
     cl <- cluster::agnes(dmat, ...) |>
       stats::cutree(k = cluster)
   } else if (method == "clara") {
-    cl <- cluster::clara(dmat, k = cluster, ...)$clustering
+    cl <- cluster::clara(as.matrix(dmat), k = cluster, ...)$clustering
   } else if (method == "fanny") {
     cl <- cluster::fanny(dmat, k = cluster, ...)$clustering
   }
