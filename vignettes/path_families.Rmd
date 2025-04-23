@@ -61,14 +61,17 @@ range:
 max_time <- 500
 max_temperature <- 250
 
-paths_filtered <- paths |>
-  dplyr::filter(time <= max_time, temperature <= max_temperature) # change filter settings here
+paths_filtered <- crop_paths(
+  tT_paths1, 
+  time = c(0, max_time), 
+  temperature = c(0, max_temperature)
+  )# change filter settings here
 ```
 
 Visualize the filtered t-T paths:
 
 ```{r paths, message=TRUE, warning=TRUE}
-ggplot(paths_filtered, aes(time, temperature, group = segment, color = Comp_GOF)) +
+ggplot(paths_filtered$paths, aes(time, temperature, group = segment, color = Comp_GOF)) +
   geom_path() +
   labs(
     title = "Modelled t-T paths",
@@ -99,7 +102,7 @@ ggplot(paths_filtered, aes(time, temperature, group = segment, color = Comp_GOF)
 Calculate the dissimilarities between the paths using the Hausdorff distance 
 
 ```{r dissimilarity}
-tT_diss <- path_diss(paths_filtered, method = "Hausdorff")
+tT_diss <- path_diss(paths_filtered, dist = "Hausdorff")
 ```
 
 > Alternative measure is the Fréchet distance using `method = 'Frechet'`.
@@ -134,12 +137,7 @@ The null and the alternative hypotheses are defined as follow:
 Put in other words, If the value of Hopkins statistic is close to 1, then we can reject the null hypothesis and conclude that the dataset D is significantly a clusterable data.
 
 ```{r hopkins}
-# Compute Hopkins statistic for dataset
-# res <- get_clust_tendency(tT_diss$diss, n = nrow(tT_diss$diss)-1, graph = FALSE)
-# res$hopkins_stat
-
-# using the {hopkins} package
-hopkins::hopkins(tT_diss$diss, d = 2)
+tT_diss$hopkins
 ```
 
 
@@ -150,7 +148,7 @@ the function `fviz_nbclust()` from the `{factoextra}` package:
 
 ```{r nbcl}
 # Elbow method
-plot_nb1 <- fviz_nbclust(tT_diss$diss, kmeans,
+plot_nb1 <- fviz_nbclust(as.matrix(tT_diss$diss), kmeans,
   method = "wss", k.max = 10, nstart = 25,
   verbose = FALSE, print.summary = FALSE
 ) +
@@ -158,7 +156,7 @@ plot_nb1 <- fviz_nbclust(tT_diss$diss, kmeans,
   labs(subtitle = "Elbow method")
 
 # Silhouette method
-plot_nb2 <- fviz_nbclust(tT_diss$diss, kmeans,
+plot_nb2 <- fviz_nbclust(as.matrix(tT_diss$diss), kmeans,
   method = "silhouette", k.max = 10, nstart = 25,
   verbose = FALSE, print.summary = FALSE
 ) +
@@ -182,7 +180,7 @@ plot_nb1 + plot_nb2 #+ plot_nb3
 path_families <- paths_filtered |>
   cluster_paths(cluster = 3, method = "hclust") |>
   group_by(cluster) |>
-  right_join(paths_filtered, join_by(segment))
+  right_join(paths_filtered$paths, join_by(segment))
 
 path_families_binned <- densify_cluster(path_families) |>
   path_statistics()
