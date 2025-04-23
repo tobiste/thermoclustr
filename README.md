@@ -67,7 +67,7 @@ Thus, to visualize the paths with need to extract the `path` object from
 the imported model `tT_paths`:
 
 ``` r
-tT_paths$paths |> 
+tT_paths$paths |>
   ggplot(aes(time, temperature, color = Comp_GOF, group = segment)) +
   geom_path() +
   scale_color_viridis_c() +
@@ -90,17 +90,16 @@ plot_path_density_filled(tT_paths, show.legend = FALSE) +
 To cluster a subset of the data, the following steps are required:
 
 ``` r
-# extract the paths and filter to time range of interest:
-my_paths <- tT_paths$paths |> 
-  dplyr::filter(time <= 500, temperature <= 200)
+# Extract the paths and filter to time range of interest:
+tT_paths_filtered <- crop_paths(tT_paths, time = c(0, 500), temperature = c(0, 250))
 
-# cluster the paths
-my_paths_cluster <- cluster_paths(my_paths, cluster = 3)
+# Cluster the paths
+paths_cluster <- cluster_paths(tT_paths_filtered, cluster = 3)
 
 # Join with path dataset
-my_paths_clustered <- dplyr::left_join(
-  my_paths,
-  my_paths_cluster,
+paths_clustered <- dplyr::left_join(
+  tT_paths_filtered$paths,
+  paths_cluster,
   dplyr::join_by(segment)
 )
 ```
@@ -108,10 +107,10 @@ my_paths_clustered <- dplyr::left_join(
 Finally, the visualization of the clustered tT paths:
 
 ``` r
-my_paths_clustered |>
+paths_clustered |>
   ggplot(
     aes(
-      x = time, 
+      x = time,
       y = temperature,
       color = cluster,
       alpha = Comp_GOF,
@@ -120,7 +119,8 @@ my_paths_clustered |>
   ) +
   geom_path() +
   scale_x_reverse(position = "top") +
-  scale_y_reverse()
+  scale_y_reverse() +
+  scale_color_viridis_d()
 ```
 
 <img src="man/figures/README-plot2-1.png" width="100%" />

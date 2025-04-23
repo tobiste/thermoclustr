@@ -2,30 +2,34 @@
 % Please edit documentation in R/path_cluster.R
 \name{path_diss}
 \alias{path_diss}
-\title{Dissimilarity of t-T paths}
+\title{Dissimilarity of thermochronologic cooling paths}
 \usage{
-path_diss(x, method = c("Hausdorff", "Frechet"), densify = 0)
+path_diss(x, dist = c("Hausdorff", "Frechet"), densify = 0, ...)
 }
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}) or
 a \code{data.frame} containing the \code{time}, \code{temperature} columns of the modeled paths.}
 
-\item{method}{character. Algorithm to calculate a dissimilarity matrix
+\item{dist}{character. Algorithm to calculate a dissimilarity matrix
 (distance) for lines; either \code{Hausdorff} (the default) or \code{Frechet}.}
 
 \item{densify}{numeric. optionally use a value
 between 0 and 1 to densify the geometry description.}
+
+\item{...}{(optional) arguments passed to \code{\link[=cluster_tendency]{cluster_tendency()}}.}
 }
 \value{
 \code{tTdiss} object, i.e. a list containing
 \describe{
 \item{\code{paths}}{t-T paths as \code{sf} object in time-temperature space}
 \item{\code{diss}}{the \eqn{n \times n} dissimilarity matrix (\eqn{n} is number of paths)}
+\item{\code{method}}{the dissimilarity algorithm used}
+\item{\code{hopkins}}{the Hopkins statistic and its p-value.}
 }
 }
 \description{
-Calculates the dissimilarity matrix between t-T paths using the \emph{Hausdorff} or
-\emph{Fréchet distance}
+Calculates the dissimilarity matrix and Hopkins statistic for
+thermochronologic cooling paths using the \emph{Hausdorff} or the \emph{Fréchet distance}.
 }
 \details{
 The Hausdorff distance is the greatest of all the distances from a
@@ -36,7 +40,7 @@ ordering of the points along the curves (the "flow").
 \examples{
 # example data
 data(tT_paths1)
-tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.5)
+tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
 
 # calculate the dissimilarities of the paths:
 tT_diss <- path_diss(tT_paths_subset, densify = 1)

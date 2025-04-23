@@ -3,7 +3,7 @@
 #' Adds extra points between the vertices of the path segments
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]), or a
-#' `data.frame` containing the `time`, `temperature`, and `Comp_GOF` columns of the 
+#' `data.frame` containing the `time`, `temperature`, and `Comp_GOF` columns of the
 #' modeled paths.
 #' @param GOF_rank numeric. Selects only the `GOF_rank`-th highest GOF ranked paths.
 #' If all GOFs should be used, set to `Inf`. Default is 10.
@@ -58,7 +58,7 @@ densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples 
   # Subset data by random N number of segments (If Desired)
 
   ## get unique segments
-  remaining_segments <- hs.input |> 
+  remaining_segments <- hs.input |>
     dplyr::distinct(segment) |> # distinct() gets unique records from the desired field, segments
     dplyr::pull(segment)
 
@@ -78,13 +78,13 @@ densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples 
     replace = replace
   )
 
-  res <- hs.input |>  # filter the original data for the segments selected in unique_segments
-    dplyr::filter(segment %in% subset_segments) |>  # include only rows that match the selected segments
-    dplyr::mutate(x = time, y = temperature) |> 
-    sf::st_as_sf(coords = c("x", "y")) |>  # make a spatial feature where x and y are the spatial coordinates
-    dplyr::group_by(segment) |> 
-    dplyr::summarise(do_union = FALSE) |> 
-    sf::st_cast("LINESTRING") |> 
+  res <- hs.input |> # filter the original data for the segments selected in unique_segments
+    dplyr::filter(segment %in% subset_segments) |> # include only rows that match the selected segments
+    dplyr::mutate(x = time, y = temperature) |>
+    sf::st_as_sf(coords = c("x", "y")) |> # make a spatial feature where x and y are the spatial coordinates
+    dplyr::group_by(segment) |>
+    dplyr::summarise(do_union = FALSE) |>
+    sf::st_cast("LINESTRING") |>
     smoothr::densify(n = n, max_distance = max_distance) # this sets the number of points that will be added to each segment. This can be changed as desired
 
 
@@ -94,13 +94,13 @@ densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples 
   res_coords |>
     dplyr::as_tibble() |>
     dplyr::left_join(lookup, dplyr::join_by(L1)) |>
-    dplyr::rename(time = X, temperature = Y)  |> 
+    dplyr::rename(time = X, temperature = Y) |>
     dplyr::select(-dplyr::any_of(c("L1", "L2")))
 }
 
 #' Densify clustered paths
 #'
-#' @param x clustered t-T paths. Output of [cluster_paths()] merged (or joined) 
+#' @param x clustered t-T paths. Output of [cluster_paths()] merged (or joined)
 #' with paths.
 #' @inheritParams densify_paths
 #'
@@ -120,13 +120,13 @@ densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples 
 #' }
 densify_cluster <- function(x, GOF_rank = Inf, n = 10L, max_distance = 1, samples = 500, replace = TRUE) {
   time <- temperature <- segment <- cluster <- NULL
-  x1 <- split(x, x$cluster, drop = TRUE)  |> 
+  x1 <- split(x, x$cluster, drop = TRUE) |>
     lapply(
       FUN = densify_paths,
       GOF_rank, n, max_distance, samples, replace
     )
-  
-    do.call(rbind, x1) |>
+
+  do.call(rbind, x1) |>
     dplyr::left_join(
       dplyr::select(x, -time, -temperature) |> dplyr::distinct(),
       dplyr::join_by(segment),

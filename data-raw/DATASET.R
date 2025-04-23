@@ -11,16 +11,15 @@
 # tT_paths1 <- read_hefty_xlsx(fname)
 # usethis::use_data(tT_paths1, overwrite = TRUE, compress = "xz")
 
-fname1 <- 'inst/112-9-30-zr-inv.txt'
-fname2 <- 'inst/112-74_50_H3_50-inv.txt'
+fname1 <- "inst/112-9-30-zr-inv.txt"
+fname2 <- "inst/112-74_50_H3_50-inv.txt"
 tais1 <- read_hefty(fname1)
 tais2 <- read_hefty(fname2)
-saveRDS(tais1, 'inst/112-9-30-zr-inv.rds')
-saveRDS(tais2, 'inst/74_50_H3_50-inv.rds')
+saveRDS(tais1, "inst/112-9-30-zr-inv.rds")
+saveRDS(tais2, "inst/74_50_H3_50-inv.rds")
 
 tT_paths1 <- tais1
 usethis::use_data(tT_paths1, overwrite = TRUE, compress = "xz")
 
 tT_paths2 <- tais2
 usethis::use_data(tT_paths2, overwrite = TRUE, compress = "xz")
-

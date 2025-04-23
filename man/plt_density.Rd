@@ -6,9 +6,24 @@
 \alias{plot_path_density}
 \title{Path Density Plot}
 \usage{
-plot_path_density_filled(x, bins = 50L, densify = TRUE, show.legend = NA, ...)
+plot_path_density_filled(
+  x,
+  bins = 50L,
+  densify = TRUE,
+  show.legend = NA,
+  geom = "density_2d_filled",
+  n = 100L,
+  ...
+)
 
-plot_path_density(x, bins = 50L, densify = TRUE, show.legend = NA, ...)
+plot_path_density(
+  x,
+  bins = 50L,
+  densify = TRUE,
+  show.legend = NA,
+  n = 100L,
+  ...
+)
 }
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}),
@@ -25,6 +40,12 @@ the default, includes if any aesthetics are mapped. \code{FALSE} never includes,
 and \code{TRUE} always includes. It can also be a named logical vector to finely
 select the aesthetics to display.}
 
+\item{geom}{Use to override the default connection between
+\code{\link[ggplot2:geom_density_2d]{ggplot2::geom_density_2d()}} and \code{\link[ggplot2:geom_density_2d]{ggplot2::stat_density_2d()}}.
+For more information at overriding these connections, see how the stat and geom arguments work.}
+
+\item{n}{integer. Number of grid points in each direction.}
+
 \item{...}{Arguments passed on to \code{\link[=densify_paths]{densify_paths()}} (only if \code{densify=TRUE}).}
 }
 \value{
@@ -38,4 +59,5 @@ ggplot
 data(tT_paths1)
 plot_path_density(tT_paths1)
 plot_path_density_filled(tT_paths1)
+plot_path_density_filled(tT_paths1, geom = "raster")
 }

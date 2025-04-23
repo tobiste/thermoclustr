@@ -17,6 +17,7 @@ Imports:
     dplyr,
     forcats,
     ggplot2,
+    hopkins,
     kernlab,
     readxl,
     sf,
@@ -24,7 +25,6 @@ Imports:
 Suggests: 
     factoextra,
     ggalt,
-    hopkins,
     knitr,
     patchwork,
     rmarkdown,

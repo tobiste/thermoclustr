@@ -64,7 +64,7 @@ library(thermochron)
 Define the path to your .txt file. For example:
 
 ```{r fname}
-path2myfile <- 'inst/112-9-30-zr-inv.txt'
+path2myfile <- "inst/112-9-30-zr-inv.txt"
 ```
 
 > Be aware that R uses forward-slashes (/) to separate folders.

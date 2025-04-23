@@ -2,14 +2,15 @@
 % Please edit documentation in R/path_cluster.R
 \name{cluster_paths}
 \alias{cluster_paths}
-\title{Cluster thermal histories}
+\title{Clustering thermal histories models}
 \usage{
 cluster_paths(
   x,
   cluster,
   dist = c("Hausdorff", "Frechet"),
   method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan", "diana", "agnes",
-    "mona", "clara", "fanny"),
+    "clara", "fanny"),
+  naming = c("asis", "GOF", "size"),
   ...
 )
 }
@@ -28,19 +29,25 @@ Ignored when \code{dist} equal to \code{dbscan} or \code{hdbscan} (\strong{see N
 
 \item{method}{character. Clustering method to use. Currently implemented are
 \describe{
-\item{\code{"hclust"}}{for Hierarchical Clustering using \code{\link[stats:hclust]{stats::hclust()}}, the default)}
-\item{\code{"kmeans"}}{for K-Means Clustering using \code{\link[stats:kmeans]{stats::kmeans()}})}
-\item{\code{"pam"}}{for Partitioning Around Medoids using \code{\link[cluster:pam]{cluster::pam()}}}
-\item{\code{"dbscan"}}{for Density-based Spatial Clustering of Applications with
+\item{\code{"hclust"}}{Hierarchical Clustering using \code{\link[stats:hclust]{stats::hclust()}}, the default)}
+\item{\code{"kmeans"}}{K-Means Clustering using \code{\link[stats:kmeans]{stats::kmeans()}})}
+\item{\code{"pam"}}{Partitioning Around Medoids using \code{\link[cluster:pam]{cluster::pam()}}}
+\item{\code{"dbscan"}}{Density-based Spatial Clustering of Applications with
 Noise (DBSCAN) using \code{\link[dbscan:dbscan]{dbscan::dbscan()}} (\strong{see Note})}
-\item{\code{"hdbscan"}}{for Hierarchical DBSCAN using \code{\link[dbscan:hdbscan]{dbscan::hdbscan()}}
+\item{\code{"hdbscan"}}{Hierarchical DBSCAN using \code{\link[dbscan:hdbscan]{dbscan::hdbscan()}}
 (\strong{see Note})}
-\item{\code{"specc"}}{for Spectral Clustering using \code{\link[kernlab:specc]{kernlab::specc()}}}
-\item{\code{"agnes"}}{for agglomerative hierarchical clustering using \code{\link[cluster:agnes]{cluster::agnes()}}}
-\item{\code{"diana"}}{for divisive hierarchical clustering using \code{\link[cluster:diana]{cluster::diana()}}}
+\item{\code{"specc"}}{Spectral Clustering using \code{\link[kernlab:specc]{kernlab::specc()}}}
+\item{\code{"agnes"}}{Agglomerative hierarchical clustering using \code{\link[cluster:agnes]{cluster::agnes()}}}
+\item{\code{"diana"}}{Divisive hierarchical clustering using \code{\link[cluster:diana]{cluster::diana()}}}
 \item{\code{"clara"}}{Clustering Large Applications using \code{\link[cluster:clara]{cluster::clara()}}}
 \item{\code{"fanny"}}{Fuzzy Analysis Clustering using \code{\link[cluster:fanny]{cluster::fanny()}}}
 }}
+
+\item{naming}{character. Naming scheme for clusters. One of
+\code{"asis"} (output of underlying cluster algorithm),
+\code{"GOF"} (ranks of the mean GOF values within clusters), and
+\code{"size"} (ranks of the size of clusters).
+Outliers detected by \code{dbscan} of \code{hdbscan} will always named as \code{0}.}
 
 \item{...}{additional arguments passed to cluster method.}
 }
@@ -58,14 +65,12 @@ neighbor distance plot using:
 \code{\link[dbscan:kNNdist]{dbscan::kNNdistplot()}}
 }
 \examples{
-\dontrun{
 # example data
 data(tT_paths1)
-tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.5)
+tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
 
 # cluster the paths
-cluster_paths(tT_paths_subset, cluster = 3)
-}
+cluster_paths(tT_paths1, cluster = 3)
 }
 \seealso{
 \code{\link[=path_diss]{path_diss()}}

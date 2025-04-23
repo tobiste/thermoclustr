@@ -52,8 +52,8 @@ read_hefty_xlsx <- function(fname) {
   x <- readxl::read_xlsx(fname, sheet = 1, col_names = FALSE) # load t-T data
   GOF <- readxl::read_xlsx(fname, sheet = 2, col_names = TRUE) # load GOF sheet
 
-  hs.input <- dplyr::select(x, -1) |>  # select and remove the '...1' from the column names
-    combine_rows() |>  # run combine_rows function
+  hs.input <- dplyr::select(x, -1) |> # select and remove the '...1' from the column names
+    combine_rows() |> # run combine_rows function
     dplyr::mutate(segment = assign_segment(time)) # run Assign_segment function on the time column of hs.input; then mutate function takes output of assign_segment
 
   merge(hs.input, GOF, by = "segment") |>
@@ -78,7 +78,7 @@ read_hefty_xlsx <- function(fname) {
 #'
 #' @param fname path to the .txt file that contains the HeFTy outputs
 #'
-#' @return object of class `"HeFTy"`, i.e. `list` of the individual paths, 
+#' @return object of class `"HeFTy"`, i.e. `list` of the individual paths,
 #' the constraints, the weighted mean path and the grain summary statistics.
 #'
 #' @importFrom dplyr across as_tibble everything matches rename
@@ -94,7 +94,7 @@ read_hefty <- function(fname) {
 
   # extract individual paths
   individual_paths_loc <- grep("Individual paths", file)
-  individual_paths_mat <-  do.call(rbind, file[(individual_paths_loc + 4):length(file)])
+  individual_paths_mat <- do.call(rbind, file[(individual_paths_loc + 4):length(file)])
 
   odd <- seq_along(individual_paths_mat[, 1]) %% 2 == 0
 
@@ -113,7 +113,7 @@ read_hefty <- function(fname) {
       Fit = forcats::fct(Fit, levels = c(NA, "Acceptable", "Good", "Best"))
     )
 
-  time_loc <- grep('Time', individual_paths_mat[1, ]) + 1
+  time_loc <- grep("Time", individual_paths_mat[1, ]) + 1
   paths <- individual_paths_mat[, time_loc:ncol(individual_paths_mat)] |>
     as_tibble() |>
     combine_rows() |>
@@ -127,7 +127,7 @@ read_hefty <- function(fname) {
 
   # extract weighted mean path
   wm_path_loc <- grep("Weighted mean path", file)
-  wm <- do.call(rbind, file[wm_path_loc + c(1, 2)] ) |>
+  wm <- do.call(rbind, file[wm_path_loc + c(1, 2)]) |>
     t() |>
     utils::tail(-1) |>
     as_tibble() |>
@@ -147,7 +147,7 @@ read_hefty <- function(fname) {
     )
 
   summaries_loc <- grep("Summaries", file)
-  grain_summary <-  do.call(rbind, file[summaries_loc:(wm_path_loc - 1)]) |>
+  grain_summary <- do.call(rbind, file[summaries_loc:(wm_path_loc - 1)]) |>
     t() |>
     utils::tail(-1) |>
     as_tibble() |>
@@ -160,6 +160,6 @@ read_hefty <- function(fname) {
     weighted_mean_path = wm,
     summary = grain_summary
   )
-  class(res) <- append(class(res), 'HeFTy')
+  class(res) <- append(class(res), "HeFTy")
   return(res)
 }
