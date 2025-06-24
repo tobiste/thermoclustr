@@ -150,7 +150,13 @@ cluster_paths <- function(
 #' @param dist character. Algorithm to calculate a dissimilarity matrix
 #' (distance) for lines; either `Hausdorff` (the default) or `Frechet`.
 #' @param densify numeric. optionally use a value
-#' between 0 and 1 to densify the geometry description.
+#' between 0 and 1 to densify the geometry description. Default is 0.
+#' @param simplify numeric. Optional tolerance parameter to specify the
+#' amount of simplification of path geometries in order to save processing time.
+#' The tolerance is in the same unit as temperature and should relate to the
+#' expected temperature spread.
+#' The simplification is applied before the densification.
+#' Some good values are 0.5, 2.5, 5, and 10. Default is 0.
 #' @param ... (optional) arguments passed to [cluster_tendency()].
 #'
 #' @returns `tTdiss` object, i.e. a list containing
@@ -166,6 +172,7 @@ cluster_paths <- function(
 #' The Fréchet distance additionally takes into account the location and
 #' ordering of the points along the curves (the "flow").
 #'
+#' @importFrom sf st_simplify st_distance st_as_sf st_cast sf_use_s2
 #' @importFrom hopkins hopkins
 #'
 #' @export
@@ -181,21 +188,28 @@ cluster_paths <- function(
 #'
 #' # the `diss` object of the output can be used for clustering, e.g.:
 #' stats::kmeans(tT_diss$diss, centers = 3)
-path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, ...) {
+path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
   stopifnot(inherits(x, "data.frame"))
 
   segment <- NULL
   dist <- match.arg(dist)
 
-  paths <- x |>
-    sf::st_as_sf(coords = c("time", "temperature")) |>
-    dplyr::group_by(segment) |>
-    dplyr::summarise(do_union = FALSE) |>
-    sf::st_cast("LINESTRING")
+  suppressMessages({
+    sf::sf_use_s2(FALSE)
+    paths <- x |>
+      sf::st_as_sf(coords = c("time", "temperature")) |>
+      dplyr::group_by(segment) |>
+      dplyr::summarise(do_union = FALSE) |>
+      sf::st_cast("LINESTRING")
 
-  dmat <- sf::st_distance(paths, which = dist, par = densify) |> 
-    as.dist()
+    # Simplify paths to save calc. time
+    paths$geometry <- sf::st_simplify(paths$geometry, dTolerance = simplify)
+
+    dmat <- sf::st_distance(paths, which = dist, par = densify) |>
+      as.dist()
+    sf::sf_use_s2(TRUE)
+  })
 
   h <- cluster_tendency(dmat, ...)
 
@@ -214,7 +228,7 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, ...) {
 #'
 #' @param x either an object of class `"tTdiss"` (output of [path_diss()]) or a
 #' distance matrix.
-#' @param m integer. Number of rows to sample from `x`. If `NULL`, all 
+#' @param m integer. Number of rows to sample from `x`. If `NULL`, all
 #' rows are considered.
 #' @param method character. Either `"simple"` (default) or `"torus"`.
 #'
@@ -245,7 +259,7 @@ cluster_tendency <- function(x, m = NULL, method = c("simple", "torus")) {
 
   mds <- stats::cmdscale(x)
   if (is.null(m)) {
-    m <- nrow(mds)-1
+    m <- nrow(mds) - 1
     # m <- ceiling(nrow(mds)/10)
   }
   method <- match.arg(method)

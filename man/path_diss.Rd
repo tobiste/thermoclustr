@@ -4,7 +4,7 @@
 \alias{path_diss}
 \title{Dissimilarity of thermochronologic cooling paths}
 \usage{
-path_diss(x, dist = c("Hausdorff", "Frechet"), densify = 0, ...)
+path_diss(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...)
 }
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}) or
@@ -14,7 +14,14 @@ a \code{data.frame} containing the \code{time}, \code{temperature} columns of th
 (distance) for lines; either \code{Hausdorff} (the default) or \code{Frechet}.}
 
 \item{densify}{numeric. optionally use a value
-between 0 and 1 to densify the geometry description.}
+between 0 and 1 to densify the geometry description. Default is 0.}
+
+\item{simplify}{numeric. Optional tolerance parameter to specify the
+amount of simplification of path geometries in order to save processing time.
+The tolerance is in the same unit as temperature and should relate to the
+expected temperature spread.
+The simplification is applied before the densification.
+Some good values are 0.5, 2.5, 5, and 10. Default is 0.}
 
 \item{...}{(optional) arguments passed to \code{\link[=cluster_tendency]{cluster_tendency()}}.}
 }
