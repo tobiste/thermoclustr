@@ -139,11 +139,17 @@ cluster_paths <- function(
 
 
 
+path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
+  x <- sf::st_geometry(x)
+  sf:::CPL_geos_dist(x, x, which, par) |> as.dist()
+}
 
-#' Dissimilarity of thermochronologic cooling paths
+
+
+#' Dissimilarity of thermochronology cooling paths
 #'
 #' Calculates the dissimilarity matrix and Hopkins statistic for
-#' thermochronologic cooling paths using the *Hausdorff* or the *Fréchet distance*.
+#' thermochronology cooling paths using the *Hausdorff* or the *Fréchet distance*.
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]) or
 #' a `data.frame` containing the `time`, `temperature` columns of the modeled paths.
@@ -191,35 +197,61 @@ cluster_paths <- function(
 path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
   stopifnot(inherits(x, "data.frame"))
-
+  
   segment <- NULL
   dist <- match.arg(dist)
-
+  
   suppressMessages({
     sf::sf_use_s2(FALSE)
     paths <- x |>
       sf::st_as_sf(coords = c("time", "temperature")) |>
       dplyr::group_by(segment) |>
       dplyr::summarise(do_union = FALSE) |>
-      sf::st_cast("LINESTRING")
-
-    # Simplify paths to save calc. time
-    paths$geometry <- sf::st_simplify(paths$geometry, dTolerance = simplify)
-
-    dmat <- sf::st_distance(paths, which = dist, par = densify) |>
-      as.dist()
+      sf::st_cast("LINESTRING") |> 
+      sf::st_simplify(dTolerance = simplify) 
+    
+    dmat <- path_distances(paths, which = dist, par = densify)
     sf::sf_use_s2(TRUE)
   })
-
+  
   h <- cluster_tendency(dmat, ...)
-
+  
   res <- list(paths = paths, diss = dmat, hopkins = h, dist = dist)
   class(res) <- append(class(res), "tTdiss")
   return(res)
 }
 
+# path_diss_fast <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
+#   if (inherits(x, "HeFTy")) x <- x$paths
+#   stopifnot(inherits(x, "data.frame"))
+# 
+#   segment <- NULL
+#   dist <- match.arg(dist)
+# 
+#   suppressMessages({
+#     sf::sf_use_s2(FALSE)
+#     paths <- x |>
+#       sf::st_as_sf(coords = c("time", "temperature")) |>
+#       dplyr::group_by(segment) |>
+#       dplyr::summarise(do_union = FALSE) |>
+#       sf::st_cast("LINESTRING") |> 
+#       sf::st_simplify(dTolerance = simplify)
+#     sf::sf_use_s2(TRUE)
+#   })
+#   
+#   paths_mat <- split(paths, paths$segment) |> 
+#     lapply(sf::st_coordinates)
+#   
+#   dmat <- hausdorff_dmat(paths_mat)
+# 
+#   h <- cluster_tendency(dmat, ...)
+# 
+#   res <- list(paths = paths, diss = dmat, hopkins = h, dist = dist)
+#   class(res) <- append(class(res), "tTdiss")
+#   return(res)
+# }
 
-#' Cluster tendency of thermochronologic cooling paths
+#' Cluster tendency of thermochronology cooling paths
 #'
 #' Calculate the Hopkins statistic of Hausdorff or Fréchet distance matrices
 #' to check clusterability of thermochronologic cooling paths.
@@ -268,3 +300,4 @@ cluster_tendency <- function(x, m = NULL, method = c("simple", "torus")) {
   p <- hopkins::hopkins.pval(h, m)
   setNames(c(h, p), c("statistic", "p-value"))
 }
+

@@ -2,7 +2,7 @@
 % Please edit documentation in R/path_cluster.R
 \name{path_diss}
 \alias{path_diss}
-\title{Dissimilarity of thermochronologic cooling paths}
+\title{Dissimilarity of thermochronology cooling paths}
 \usage{
 path_diss(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...)
 }
@@ -36,7 +36,7 @@ Some good values are 0.5, 2.5, 5, and 10. Default is 0.}
 }
 \description{
 Calculates the dissimilarity matrix and Hopkins statistic for
-thermochronologic cooling paths using the \emph{Hausdorff} or the \emph{Fréchet distance}.
+thermochronology cooling paths using the \emph{Hausdorff} or the \emph{Fréchet distance}.
 }
 \details{
 The Hausdorff distance is the greatest of all the distances from a

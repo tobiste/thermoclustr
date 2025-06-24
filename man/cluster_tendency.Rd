@@ -2,7 +2,7 @@
 % Please edit documentation in R/path_cluster.R
 \name{cluster_tendency}
 \alias{cluster_tendency}
-\title{Cluster tendency of thermochronologic cooling paths}
+\title{Cluster tendency of thermochronology cooling paths}
 \usage{
 cluster_tendency(x, m = NULL, method = c("simple", "torus"))
 }
