@@ -284,7 +284,7 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
 #' # calculate the dissimilarities of the paths:
 #' tT_diss <- path_diss(tT_paths_subset, densify = 1)
 #'
-#' set.seed(1)
+#' set.seed(20250411)
 #' cluster_tendency(tT_diss$diss) # H=0.867, p=0.003
 cluster_tendency <- function(x, m = NULL, method = c("simple", "torus")) {
   if (inherits(x, "tTdiss")) x <- x$diss

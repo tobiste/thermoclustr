@@ -41,7 +41,7 @@ theme_update(
   strip.background = element_rect(fill = 'lightgrey', color = NA),
   strip.text.y = element_markdown(color = 'white', angle = 0, face = 'bold')
 )
-set.seed(1234)
+set.seed(20250411)
 ```
 
 Import the data from file

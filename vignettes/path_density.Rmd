@@ -90,7 +90,7 @@ To plot the density of the paths, you simply use the function
 `plot_path_density()`:
 
 ```{r seed1, include=FALSE}
-set.seed(123)
+set.seed(20250411)
 ```
 
 ```{r plot1, out.width="100%"}
@@ -116,7 +116,7 @@ parameters - `bins` - the number of filled contours.
     the computation time.
 
 ```{r seed2, include=FALSE}
-set.seed(123)
+set.seed(20250411)
 ```
 
 ```{r plot2, out.width="100%"}

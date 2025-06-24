@@ -37,6 +37,6 @@ tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 # calculate the dissimilarities of the paths:
 tT_diss <- path_diss(tT_paths_subset, densify = 1)
 
-set.seed(1)
+set.seed(20250411)
 cluster_tendency(tT_diss$diss) # H=0.867, p=0.003
 }

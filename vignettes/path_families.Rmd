@@ -165,7 +165,7 @@ plot_nb2 <- fviz_nbclust(as.matrix(tT_diss$diss), kmeans,
 # Gap statistic
 # nboot = 10 to keep the function speedy.
 # recommended value: nboot = 100 for your analysis.
-# set.seed(123)
+# set.seed(20250411)
 # plot_nb3 <- fviz_nbclust(tT_diss$diss, kmeans, method = "gap_stat", k.max = 10, nstart = 25,
 #                          nboot = 10,
 #                          verbose = FALSE, print.summary = FALSE) +
