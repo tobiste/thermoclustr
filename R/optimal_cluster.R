@@ -1,4 +1,9 @@
-# locate elbow in elbow curve of wss (within-cluster sum of squares):
+#' Locate elbow in elbow curve of wss (within-cluster sum of squares) 
+#'
+#' @param wss_values numeric vector of wss values.
+#'
+#' @returns integer index of the elbow point in the wss curve.
+#' @noRd
 find_elbow <- function(wss_values) {
   n_points <- length(wss_values)
   all_coords <- cbind(1:n_points, wss_values)
