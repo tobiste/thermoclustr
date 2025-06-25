@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 hausdorff_rcpp <- function(P, Q) {
-    .Call(`_thermochron_hausdorff_rcpp`, P, Q)
+    .Call('_thermochron_hausdorff_rcpp', PACKAGE = 'thermochron', P, Q)
 }
 
 hausdorff_matrix_rcpp <- function(x_list) {
-    .Call(`_thermochron_hausdorff_matrix_rcpp`, x_list)
+    .Call('_thermochron_hausdorff_matrix_rcpp', PACKAGE = 'thermochron', x_list)
 }
 

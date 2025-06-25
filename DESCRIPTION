@@ -1,6 +1,6 @@
 Package: thermochron
 Title: Analyzing Inverse Thermal History Models
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Authors@R: c(
     person("Tobias", "Stephan", , "tobias.stephan1@yahoo.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9290-014X")),
@@ -16,6 +16,7 @@ Imports:
     data.table,
     dbscan,
     dplyr,
+    factoextra,
     forcats,
     ggplot2,
     hopkins,
@@ -25,7 +26,6 @@ Imports:
     sf,
     smoothr
 Suggests: 
-    factoextra,
     ggalt,
     knitr,
     patchwork,

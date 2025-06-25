@@ -5,14 +5,14 @@
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]), an
 #' object of `"tTdiss"` (output of [path_diss()]),
-#' or a `data.frame` containing the `time`, `temperature` columns of the
+#' or a `data.frame` containing the `time`, `temperature`, and `segment` columns of the
 #' modeled paths.
 #' @param cluster an integer scalar or vector with the desired number of groups.
 #' Ignored when `dist` equal to `dbscan` or `hdbscan` (**see Note**).
 #' @param dist character. Algorithm to calculate a dissimilarity matrix
 #' (distance) for lines; either `Hausdorff` (the default), or
 #' `Frechet`.
-#' @param method character. Clustering method to use. Currently implemented are
+#' @param method character. Clustering method to be applied. Currently implemented are
 #' \describe{
 #'  \item{`"hclust"`}{Hierarchical Clustering using [stats::hclust()], the default)}
 #'  \item{`"kmeans"`}{K-Means Clustering using [stats::kmeans()])}
@@ -36,8 +36,11 @@
 #'
 #' @note that `dbscan` and `hdbscan` methods require `eps` and `minPts` arguments.
 #' Optimal `eps` values can be visually estimated from the "knee" in a k-nearest
-#' neighbor distance plot using:
-#' [dbscan::kNNdistplot()]
+#' neighbor distance plot using [dbscan::kNNdistplot()]'.
+#' 
+#' @details If you want to use a different clustering method that is not built 
+#' in the current version of `thermochron`, you can use the dist ance matrix 
+#' produced by [path_diss()] and feed your cluster algorithm.
 #'
 #' @return a tibble with the path `segment` (integer) and `cluster` (factor)
 #' @export
@@ -50,12 +53,13 @@
 #' @importFrom forcats as_factor
 #' @importFrom dbscan dbscan hdbscan
 #'
-#' @seealso [path_diss()]
+#' @seealso [path_diss()] for calculating dissimilarities and [path_nbclust()] 
+#' for determing the optimal number of clusters.
 #'
 #' @examples
 #' # example data
 #' data(tT_paths1)
-#' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
+#' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'
 #' # cluster the paths
 #' cluster_paths(tT_paths1, cluster = 3)
@@ -152,7 +156,7 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' thermochronology cooling paths using the *Hausdorff* or the *Fréchet distance*.
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]) or
-#' a `data.frame` containing the `time`, `temperature` columns of the modeled paths.
+#' a `data.frame` containing the `time`, `temperature`, and `segment` columns of the modeled paths.
 #' @param dist character. Algorithm to calculate a dissimilarity matrix
 #' (distance) for lines; either `Hausdorff` (the default) or `Frechet`.
 #' @param densify numeric. optionally use a value
@@ -162,7 +166,7 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' The tolerance is in the same unit as temperature and should relate to the
 #' expected temperature spread.
 #' The simplification is applied before the densification.
-#' Some good values are 0.5, 2.5, 5, and 10. Default is 0.
+#' Some good values are 0.5, 2.5, 5, and 10. Default is 0 (no simplification).
 #' @param ... (optional) arguments passed to [cluster_tendency()].
 #'
 #' @returns `tTdiss` object, i.e. a list containing
@@ -177,6 +181,18 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' point in one set to the closest point in the other set.
 #' The Fréchet distance additionally takes into account the location and
 #' ordering of the points along the curves (the "flow").
+#' 
+#' @note The algorithm calculates the pairwise dissimilarities between the n 
+#' paths and creates a n x n matrix. 
+#' A large number of paths may end up in very long processing times and can 
+#' cause memory issues. 
+#' Thus, it is recommended to filter the paths beforehand using either 
+#' [crop_paths()] or [subset()] to, for example, 
+#' include only paths with large GOF (see examples), 
+#' or create a random subset using, e.g., [sample()] (see examples).
+#' Additionally, 
+#' the `simplify` parameter can be adjusted to reduce the number of vertices 
+#' along the paths to speed up the processing time.  
 #'
 #' @importFrom sf st_simplify st_distance st_as_sf st_cast sf_use_s2
 #' @importFrom hopkins hopkins
@@ -186,17 +202,23 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' @examples
 #' # example data
 #' data(tT_paths1)
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
+#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'
 #' # calculate the dissimilarities of the paths:
 #' tT_diss <- path_diss(tT_paths_subset, densify = 1)
-#' print(tT_diss)
 #'
-#' # the `diss` object of the output can be used for clustering, e.g.:
+#' # the `diss` object of the output can be used for clustering using any 
+#' # available cluster algorithm, e.g.:
 #' stats::kmeans(tT_diss$diss, centers = 3)
+#' 
+#' # using a random subset of paths (in case of too large data):
+#' set.seed(20250411)
+#' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) # select 100 random path segments
+#' tT_paths_rnd <- subset(tT_paths1$paths, segment %in% random_segments)
+#' tT_diss_rnd <- path_diss(tT_paths_rnd)
 path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
-  stopifnot(inherits(x, "data.frame"))
+  stopifnot(inherits(x, "data.frame") & c('time', 'temperature', 'segment') %in% colnames(x))
   
   segment <- NULL
   dist <- match.arg(dist)

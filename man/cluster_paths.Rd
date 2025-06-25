@@ -17,7 +17,7 @@ cluster_paths(
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}), an
 object of \code{"tTdiss"} (output of \code{\link[=path_diss]{path_diss()}}),
-or a \code{data.frame} containing the \code{time}, \code{temperature} columns of the
+or a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{segment} columns of the
 modeled paths.}
 
 \item{cluster}{an integer scalar or vector with the desired number of groups.
@@ -27,7 +27,7 @@ Ignored when \code{dist} equal to \code{dbscan} or \code{hdbscan} (\strong{see N
 (distance) for lines; either \code{Hausdorff} (the default), or
 \code{Frechet}.}
 
-\item{method}{character. Clustering method to use. Currently implemented are
+\item{method}{character. Clustering method to be applied. Currently implemented are
 \describe{
 \item{\code{"hclust"}}{Hierarchical Clustering using \code{\link[stats:hclust]{stats::hclust()}}, the default)}
 \item{\code{"kmeans"}}{K-Means Clustering using \code{\link[stats:kmeans]{stats::kmeans()}})}
@@ -58,20 +58,25 @@ a tibble with the path \code{segment} (integer) and \code{cluster} (factor)
 Groups t-T paths into "path families" based on the \emph{Hausdorff} or
 \emph{Fréchet distance} between paths.
 }
+\details{
+If you want to use a different clustering method that is not built
+in the current version of \code{thermochron}, you can use the dist ance matrix
+produced by \code{\link[=path_diss]{path_diss()}} and feed your cluster algorithm.
+}
 \note{
 that \code{dbscan} and \code{hdbscan} methods require \code{eps} and \code{minPts} arguments.
 Optimal \code{eps} values can be visually estimated from the "knee" in a k-nearest
-neighbor distance plot using:
-\code{\link[dbscan:kNNdist]{dbscan::kNNdistplot()}}
+neighbor distance plot using \code{\link[dbscan:kNNdist]{dbscan::kNNdistplot()}}'.
 }
 \examples{
 # example data
 data(tT_paths1)
-tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
+tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 
 # cluster the paths
 cluster_paths(tT_paths1, cluster = 3)
 }
 \seealso{
-\code{\link[=path_diss]{path_diss()}}
+\code{\link[=path_diss]{path_diss()}} for calculating dissimilarities and \code{\link[=path_nbclust]{path_nbclust()}}
+for determing the optimal number of clusters.
 }
