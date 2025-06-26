@@ -44,7 +44,7 @@ library(dplyr)
 library(ggplot2)
 
 # load example dataset of a HeFTy model output
-path2myfile <- system.file("112-9-30-zr-inv.txt", package = "thermochron")
+path2myfile <- system.file("112-72_30_H1_50-inv.txt", package = "thermochron")
 tT_paths <- read_hefty(path2myfile)
 ```
 
@@ -57,10 +57,14 @@ Thus, to visualize the paths with need to extract the `path` object from the
 imported model `tT_paths`:
 
 ```{r plot}
+# (Optional) Create a subset of interest of the data:
+tT_paths <- crop_paths(tT_paths, time = c(0, 400), temperature = c(0, 250)) 
+
+
 tT_paths$paths |>
   ggplot(aes(time, temperature, color = Comp_GOF, group = segment)) +
   geom_path() +
-  scale_color_viridis_c() +
+  scale_color_viridis_c('GOF') +
   scale_x_reverse(position = "top") +
   scale_y_reverse()
 ```
@@ -73,20 +77,17 @@ plot_path_density_filled(tT_paths, show.legend = FALSE) +
   scale_y_reverse()
 ```
 
-To cluster a subset of the data, the following steps are required:
+To cluster the data, the following steps are required:
 
 ```{r cluster}
-# Extract the paths and filter to time range of interest:
-tT_paths_filtered <- crop_paths(tT_paths, time = c(0, 500), temperature = c(0, 250))
-
 # Cluster the paths
-paths_cluster <- cluster_paths(tT_paths_filtered, cluster = 3)
+paths_cluster <- cluster_paths(tT_paths, cluster = 2)
 
 # Join with path dataset
-paths_clustered <- dplyr::left_join(
-  tT_paths_filtered$paths,
+paths_clustered <- merge(
+  tT_paths$paths,
   paths_cluster,
-  dplyr::join_by(segment)
+  by = 'segment'
 )
 ```
 
@@ -106,5 +107,5 @@ paths_clustered |>
   geom_path() +
   scale_x_reverse(position = "top") +
   scale_y_reverse() +
-  scale_color_viridis_d()
+  scale_color_viridis_d('GOF')
 ```

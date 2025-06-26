@@ -32,7 +32,7 @@ Some good values are 0.5, 2.5, 5, and 10. Default is 0 (no simplification).}
 \item{\code{diss}}{the \eqn{n \times n} dissimilarity matrix (\eqn{n} is number of paths)}
 \item{\code{method}}{the dissimilarity algorithm used}
 \item{\code{hopkins}}{the Hopkins statistic and its p-value.}
-\item{\code{mds}}{the MDS coordinates of the dissimilarity matrix}
+\item{\code{mds}}{the multidimensional scaling coordinates of the dissimilarity matrix}
 }
 }
 \description{
@@ -70,9 +70,12 @@ tT_diss <- path_diss(tT_paths_subset, densify = 1)
 # available cluster algorithm, e.g.:
 stats::kmeans(tT_diss$diss, centers = 3)
 
-# using a random subset of paths (in case of too large data):
+# using a random subset of paths (in case of too large data)
 set.seed(20250411)
-random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) # select 100 random path segments
+
+## select 100 random path segments:
+random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) 
 tT_paths_rnd <- subset(tT_paths1$paths, segment \%in\% random_segments)
+
 tT_diss_rnd <- path_diss(tT_paths_rnd)
 }

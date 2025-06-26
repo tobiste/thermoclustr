@@ -19,7 +19,7 @@ median_cluster_paths <- function(x, paths, nb) {
     )
 }
 
-#' Homogenize path familiy names from several samples
+#' Homogenize path family names from several samples
 #'
 #' Compares cluster results from several samples because the [cluster_paths()]
 #' algorithm assigns arbitrary cluster names to the sample that can vary for
@@ -48,7 +48,7 @@ median_cluster_paths <- function(x, paths, nb) {
 #' \item{'dist'}{Used dissimilarity measure}
 #' \item{'cluster'}{data.frame with the old and new cluster assignments of the
 #' median paths (segments).}
-#' \item{'mds'}{data.frame with the MDS coordinates of the dissimilarity of the
+#' \item{'mds'}{data.frame with the multidimensional scaling coordinates of the dissimilarity of the
 #' median paths}
 #' \item{'cluster_method'}{the clustering method used}
 #' }

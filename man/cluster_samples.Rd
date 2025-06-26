@@ -2,7 +2,7 @@
 % Please edit documentation in R/sample_cluster.R
 \name{cluster_samples}
 \alias{cluster_samples}
-\title{Homogenize path familiy names from several samples}
+\title{Homogenize path family names from several samples}
 \usage{
 cluster_samples(x, method = "hdbscan", minPts = 2, ...)
 }
@@ -26,7 +26,7 @@ list.
 \item{'dist'}{Used dissimilarity measure}
 \item{'cluster'}{data.frame with the old and new cluster assignments of the
 median paths (segments).}
-\item{'mds'}{data.frame with the MDS coordinates of the dissimilarity of the
+\item{'mds'}{data.frame with the multidimensional scaling coordinates of the dissimilarity of the
 median paths}
 \item{'cluster_method'}{the clustering method used}
 }

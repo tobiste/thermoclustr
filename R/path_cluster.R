@@ -187,7 +187,7 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' \item{`diss`}{the \eqn{n \times n} dissimilarity matrix (\eqn{n} is number of paths)}
 #' \item{`method`}{the dissimilarity algorithm used}
 #' \item{`hopkins`}{the Hopkins statistic and its p-value.}
-#' \item{`mds`}{the MDS coordinates of the dissimilarity matrix}
+#' \item{`mds`}{the multidimensional scaling coordinates of the dissimilarity matrix}
 #' }
 #'
 #' @details The Hausdorff distance is the greatest of all the distances from a
@@ -224,10 +224,13 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' # available cluster algorithm, e.g.:
 #' stats::kmeans(tT_diss$diss, centers = 3)
 #'
-#' # using a random subset of paths (in case of too large data):
+#' # using a random subset of paths (in case of too large data)
 #' set.seed(20250411)
-#' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) # select 100 random path segments
+#' 
+#' ## select 100 random path segments:
+#' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) 
 #' tT_paths_rnd <- subset(tT_paths1$paths, segment %in% random_segments)
+#' 
 #' tT_diss_rnd <- path_diss(tT_paths_rnd)
 path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
