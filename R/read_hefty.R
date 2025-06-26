@@ -6,12 +6,12 @@ combine_rows <- function(x) {
 
   time.col <- as.vector(t(odd_rows))
   temp.col <- as.vector(t(even_rows))
-  
+
   # n_pairs <- nrow(xm) / 2
-  # 
+  #
   # time.col <- matrix(xm[seq(1, nrow(xm), 2), ], ncol = ncol(xm), byrow = FALSE)
   # temp.col <- matrix(xm[seq(2, nrow(xm), 2), ], ncol = ncol(xm), byrow = FALSE)
-  # 
+  #
   data.frame(
     time = as.numeric(time.col),
     temperature = as.numeric(temp.col),
@@ -22,7 +22,7 @@ combine_rows <- function(x) {
 assign_segment <- function(x) { # create new function called assign_segment
   # n <- length(x)
   # segment <- integer(n)
-  # 
+  #
   # segment[1] <- 1L # create a vector with first value of 1
   # for (i in 2:n) { # start with index 2 of vector (second position in vector)
   #   if (x[i] < x[i - 1]) { # if the value of x (time) in position i is less than the value of x in the previous position (i -1),
@@ -32,13 +32,13 @@ assign_segment <- function(x) { # create new function called assign_segment
   #   }
   # }
   # return(forcats::as_factor(segment)) # return the output of segment as a factor (this is easier for ggplot according to Tobi)
-  
+
   # Find where x increases or stays the same (mark with 1), where it decreases mark 0
   increases <- c(TRUE, x[-1] >= x[-length(x)])
-  
+
   # Cumulative sum of increases gives segment number
   segment <- cumsum(increases)
-  
+
   # Return factor
   as.factor(segment)
 }
@@ -47,20 +47,21 @@ assign_segment <- function(x) { # create new function called assign_segment
 #'
 #' @param fname path to the .txt file that contains the HeFTy outputs
 #' @importFrom data.table fread
-#' 
+#'
 #' @returns list of character vectors, where each vector corresponds to a line in the file.
 #' @noRd
-parse_hefty <- function(fname){
+parse_hefty <- function(fname) {
   # f <- data.table::fread(fname, sep = "\n", header = FALSE, skip = 0, colClasses = 'character', blank.lines.skip	= TRUE, col.names = "", , encoding = "UTF-8") |>
   #   lapply(function(x) {
   #     strsplit(x, "\t")
   #   })
   # f[[1]]
-  lines = fread( fname, sep = "\n", header = FALSE, colClasses = "character", encoding = "UTF-8")[[1]]
-  lines <-   iconv(lines, from = "", to = "UTF-8", sub = "byte")
+  lines <- fread(fname, sep = "\n", header = FALSE, colClasses = "character", encoding = "UTF-8")[[1]]
+  lines <- iconv(lines, from = "", to = "UTF-8", sub = "byte")
   strsplit(lines, "\t", useBytes = TRUE)
-  
 }
+
+`%||%` <- function(x, y) if (!is.null(x)) x else y
 
 list_to_matrix <- function(x, ncol = NULL, byrow = TRUE) {
   matrix(unlist(x, use.names = FALSE), ncol = ncol %||% length(x[[1]]), byrow = byrow)
@@ -85,14 +86,14 @@ list_to_matrix <- function(x, ncol = NULL, byrow = TRUE) {
 #' }
 read_hefty_xlsx <- function(fname) {
   Fit <- time <- NULL
-  
+
   x <- readxl::read_xlsx(fname, sheet = 1, col_names = FALSE) # load t-T data
   GOF <- readxl::read_xlsx(fname, sheet = 2, col_names = TRUE) # load GOF sheet
-  
+
   hs.input <- dplyr::select(x, -1) |> # select and remove the '...1' from the column names
     combine_rows() |> # run combine_rows function
     dplyr::mutate(segment = assign_segment(time)) # run Assign_segment function on the time column of hs.input; then mutate function takes output of assign_segment
-  
+
   merge(hs.input, GOF, by = "segment") |>
     # dplyr::as_tibble() |>
     dplyr::mutate(
@@ -127,12 +128,12 @@ read_hefty_xlsx <- function(fname) {
 read_hefty <- function(fname) {
   Fit <- value <- Comp_GOF <- time <- segment <- temperature <- V1 <- V2 <- V3 <- V4 <- V5 <- constraint <- NULL
   file <- parse_hefty(fname)
-  
+
   # extract individual paths
   individual_paths_loc <- match("Individual paths", sapply(file, `[`, 1))
   individual_data <- file[(individual_paths_loc + 4):length(file)]
   individual_paths_mat <- list_to_matrix(individual_data)
-  
+
   odd_idx <- seq(2, nrow(individual_paths_mat), by = 2)
   Comp_GOF <- as.numeric(individual_paths_mat[odd_idx, 2])
   GOF <- data.frame(
@@ -144,20 +145,20 @@ read_hefty <- function(fname) {
       Comp_GOF >= 0.05 ~ "Acceptable",
       TRUE ~ NA_character_
     )
-  )|>
+  ) |>
     dplyr::mutate(Fit = factor(Fit, levels = c(NA, "Acceptable", "Good", "Best")))
   time_loc <- grep("Time", individual_paths_mat[1, ]) + 1
-  
-  path_data <- individual_paths_mat[, time_loc:ncol(individual_paths_mat)] 
-  paths <- combine_rows(path_data)|>
+
+  path_data <- individual_paths_mat[, time_loc:ncol(individual_paths_mat)]
+  paths <- combine_rows(path_data) |>
     dplyr::mutate(
       segment = assign_segment(time)
-    )|>
-    dplyr::right_join(GOF, by = "segment")|>
-    dplyr::select(segment, time, temperature, Fit, Comp_GOF)|>
-    dplyr::arrange(Fit, Comp_GOF)|>
+    ) |>
+    dplyr::right_join(GOF, by = "segment") |>
+    dplyr::select(segment, time, temperature, Fit, Comp_GOF) |>
+    dplyr::arrange(Fit, Comp_GOF) |>
     dplyr::mutate(segment = forcats::fct_reorder(segment, Comp_GOF))
-  
+
   # extract weighted mean path
   wm_path_loc <- match("Weighted mean path", sapply(file, `[`, 1))
   wm_data <- file[wm_path_loc + c(1, 2)]
@@ -168,7 +169,7 @@ read_hefty <- function(fname) {
     time = as.numeric(wm_numeric[, 1]),
     temperature = as.numeric(wm_numeric[, 2])
   )
-  
+
   # extract constraints
   inversion_terminated_loc <- grep("Inversion", file)
   constraint_data <- file[3:(inversion_terminated_loc - 1)]
@@ -181,11 +182,11 @@ read_hefty <- function(fname) {
     max_temp = as.numeric(constraint_mat[, 4]),
     min_temp = as.numeric(constraint_mat[, 5])
   )
-  
+
   summaries_loc <- grep("Summaries", file)
   summary_data <- file[summaries_loc:(wm_path_loc - 1)]
   summary_mat <- list_to_matrix(summary_data, ncol = 5, byrow = FALSE)[-1, ]
-  
+
   grain_summary <- data.frame(
     grain = summary_mat[, 1],
     mean = as.numeric(summary_mat[, 2]),
@@ -193,7 +194,7 @@ read_hefty <- function(fname) {
     min = as.numeric(summary_mat[, 4]),
     max = as.numeric(summary_mat[, 5])
   )
-  
+
   res <- list(
     paths = paths,
     constraints = constraints,

@@ -32,7 +32,7 @@ Some good values are 0.5, 2.5, 5, and 10. Default is 0 (no simplification).}
 \item{\code{diss}}{the \eqn{n \times n} dissimilarity matrix (\eqn{n} is number of paths)}
 \item{\code{method}}{the dissimilarity algorithm used}
 \item{\code{hopkins}}{the Hopkins statistic and its p-value.}
-\item[\code{mds}]{the MDS coordinates of the dissimilarity matrix}
+\item{\code{mds}}{the MDS coordinates of the dissimilarity matrix}
 }
 }
 \description{
@@ -66,7 +66,7 @@ tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 # calculate the dissimilarities of the paths:
 tT_diss <- path_diss(tT_paths_subset, densify = 1)
 
-# the `diss` object of the output can be used for clustering using any 
+# the `diss` object of the output can be used for clustering using any
 # available cluster algorithm, e.g.:
 stats::kmeans(tT_diss$diss, centers = 3)
 

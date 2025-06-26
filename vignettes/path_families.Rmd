@@ -62,10 +62,10 @@ max_time <- 500
 max_temperature <- 250
 
 paths_filtered <- crop_paths(
-  tT_paths1, 
-  time = c(0, max_time), 
+  tT_paths1,
+  time = c(0, max_time),
   temperature = c(0, max_temperature)
-  )# change filter settings here
+) # change filter settings here
 ```
 
 Visualize the filtered t-T paths:

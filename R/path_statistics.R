@@ -8,7 +8,7 @@
 #' @param breaks either a numeric vector of two or more unique cut points or a
 #' single number (greater than or equal to 2) giving the number of intervals
 #' into which `x` is to be cut.
-#' 
+#'
 #' @importFrom dplyr group_by summarise select
 #' @importFrom purrr map_dbl
 #'
@@ -23,7 +23,7 @@ path_statistics <- function(x, breaks = 50) {
 
   bins <- time <- temperature <- NULL
   x$bins <- cut(x$time, breaks = breaks)
-  
+
   dplyr::group_by(x, bins, .add = TRUE) |>
     dplyr::summarise(
       time_min = min(time, na.rm = TRUE),
@@ -33,12 +33,12 @@ path_statistics <- function(x, breaks = 50) {
       temp_IQR = stats::IQR(temperature, na.rm = TRUE),
       temp_median = stats::median(temperature, na.rm = TRUE),
       temp_q = list(stats::quantile(temperature, probs = c(0.05, 0.95), na.rm = TRUE)),
-      #temp_5 = stats::quantile(temperature, probs = .05),
-      #temp_95 = stats::quantile(temperature, probs = .95),
+      # temp_5 = stats::quantile(temperature, probs = .05),
+      # temp_95 = stats::quantile(temperature, probs = .95),
       temp_max = min(temperature, na.rm = TRUE),
       temp_min = max(temperature, na.rm = TRUE),
       .groups = "drop"
-    ) |> 
+    ) |>
     dplyr::mutate(
       temp_5 = purrr::map_dbl(temp_q, 1),
       temp_95 = purrr::map_dbl(temp_q, 2)

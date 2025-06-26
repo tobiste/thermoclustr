@@ -60,7 +60,7 @@ Groups t-T paths into "path families" based on the \emph{Hausdorff} or
 }
 \details{
 If you want to use a different clustering method that is not built
-in the current version of \code{thermochron}, you can use the dist ance matrix
+in the current version of \code{thermochron}, you can use the distance matrix
 produced by \code{\link[=path_diss]{path_diss()}} and feed your cluster algorithm.
 }
 \note{
@@ -78,5 +78,5 @@ cluster_paths(tT_paths1, cluster = 3)
 }
 \seealso{
 \code{\link[=path_diss]{path_diss()}} for calculating dissimilarities and \code{\link[=path_nbclust]{path_nbclust()}}
-for determing the optimal number of clusters.
+for determining the optimal number of clusters.
 }

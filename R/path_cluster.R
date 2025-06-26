@@ -37,9 +37,9 @@
 #' @note that `dbscan` and `hdbscan` methods require `eps` and `minPts` arguments.
 #' Optimal `eps` values can be visually estimated from the "knee" in a k-nearest
 #' neighbor distance plot using [dbscan::kNNdistplot()]'.
-#' 
-#' @details If you want to use a different clustering method that is not built 
-#' in the current version of `thermochron`, you can use the dist ance matrix 
+#'
+#' @details If you want to use a different clustering method that is not built
+#' in the current version of `thermochron`, you can use the distance matrix
 #' produced by [path_diss()] and feed your cluster algorithm.
 #'
 #' @return a tibble with the path `segment` (integer) and `cluster` (factor)
@@ -53,8 +53,8 @@
 #' @importFrom forcats as_factor
 #' @importFrom dbscan dbscan hdbscan
 #'
-#' @seealso [path_diss()] for calculating dissimilarities and [path_nbclust()] 
-#' for determing the optimal number of clusters.
+#' @seealso [path_diss()] for calculating dissimilarities and [path_nbclust()]
+#' for determining the optimal number of clusters.
 #'
 #' @examples
 #' # example data
@@ -142,10 +142,19 @@ cluster_paths <- function(
 }
 
 
+CPL_geos_dist <- utils::getFromNamespace("CPL_geos_dist", "sf")
 
+#' Helper function to calculate distances between paths
+#'
+#' @param x an `sf` linestring object with geometries of paths.
+#' @param which character. Either `"Hausdorff"` (the default) or `"Frechet"`.
+#' @param par numeric. tolerance parameter for distance calculation
+#'
+#' @returns a `dist` object with the pairwise distances between paths.
+#' @noRd
 path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
   x <- sf::st_geometry(x)
-  sf:::CPL_geos_dist(x, x, which, par) |> as.dist()
+  CPL_geos_dist(x, x, which, par) |> as.dist()
 }
 
 
@@ -175,25 +184,25 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' \item{`diss`}{the \eqn{n \times n} dissimilarity matrix (\eqn{n} is number of paths)}
 #' \item{`method`}{the dissimilarity algorithm used}
 #' \item{`hopkins`}{the Hopkins statistic and its p-value.}
-#' \item[`mds`]{the MDS coordinates of the dissimilarity matrix}
+#' \item{`mds`}{the MDS coordinates of the dissimilarity matrix}
 #' }
 #'
 #' @details The Hausdorff distance is the greatest of all the distances from a
 #' point in one set to the closest point in the other set.
 #' The Fréchet distance additionally takes into account the location and
 #' ordering of the points along the curves (the "flow").
-#' 
-#' @note The algorithm calculates the pairwise dissimilarities between the n 
-#' paths and creates a n x n matrix. 
-#' A large number of paths may end up in very long processing times and can 
-#' cause memory issues. 
-#' Thus, it is recommended to filter the paths beforehand using either 
-#' [crop_paths()] or [subset()] to, for example, 
-#' include only paths with large GOF (see examples), 
+#'
+#' @note The algorithm calculates the pairwise dissimilarities between the n
+#' paths and creates a n x n matrix.
+#' A large number of paths may end up in very long processing times and can
+#' cause memory issues.
+#' Thus, it is recommended to filter the paths beforehand using either
+#' [crop_paths()] or [subset()] to, for example,
+#' include only paths with large GOF (see examples),
 #' or create a random subset using, e.g., [sample()] (see examples).
-#' Additionally, 
-#' the `simplify` parameter can be adjusted to reduce the number of vertices 
-#' along the paths to speed up the processing time.  
+#' Additionally,
+#' the `simplify` parameter can be adjusted to reduce the number of vertices
+#' along the paths to speed up the processing time.
 #'
 #' @importFrom sf st_simplify st_distance st_as_sf st_cast sf_use_s2
 #' @importFrom hopkins hopkins
@@ -208,10 +217,10 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' # calculate the dissimilarities of the paths:
 #' tT_diss <- path_diss(tT_paths_subset, densify = 1)
 #'
-#' # the `diss` object of the output can be used for clustering using any 
+#' # the `diss` object of the output can be used for clustering using any
 #' # available cluster algorithm, e.g.:
 #' stats::kmeans(tT_diss$diss, centers = 3)
-#' 
+#'
 #' # using a random subset of paths (in case of too large data):
 #' set.seed(20250411)
 #' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) # select 100 random path segments
@@ -219,32 +228,32 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' tT_diss_rnd <- path_diss(tT_paths_rnd)
 path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
-  stopifnot(inherits(x, "data.frame") & c('time', 'temperature', 'segment') %in% colnames(x))
-  
+  stopifnot(inherits(x, "data.frame") & c("time", "temperature", "segment") %in% colnames(x))
+
   segment <- NULL
   dist <- match.arg(dist)
-  
+
   suppressMessages({
     sf::sf_use_s2(FALSE)
     paths <- x |>
       sf::st_as_sf(coords = c("time", "temperature")) |>
       dplyr::group_by(segment) |>
       dplyr::summarise(do_union = FALSE) |>
-      sf::st_cast("LINESTRING") |> 
-      sf::st_simplify(dTolerance = simplify) 
-    
+      sf::st_cast("LINESTRING") |>
+      sf::st_simplify(dTolerance = simplify)
+
     dmat <- path_distances(paths, which = dist, par = densify)
     sf::sf_use_s2(TRUE)
   })
-  
+
   h <- cluster_tendency(dmat, ...)
-  
+
   paths_mds <- stats::cmdscale(dmat)
   # paths_mds <- cbind(MDS1 = paths_mds[, 1], MDS2 = paths_mds[, 2])
   rownames(paths_mds) <- paths$segment
-  
-  
-  
+
+
+
   res <- list(paths = paths, diss = dmat, hopkins = h, dist = dist, mds = paths_mds)
   class(res) <- append(class(res), "tTdiss")
   return(res)
@@ -253,28 +262,28 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
 # path_diss_fast <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
 #   if (inherits(x, "HeFTy")) x <- x$paths
 #   stopifnot(inherits(x, "data.frame"))
-# 
+#
 #   segment <- NULL
 #   dist <- match.arg(dist)
-# 
+#
 #   suppressMessages({
 #     sf::sf_use_s2(FALSE)
 #     paths <- x |>
 #       sf::st_as_sf(coords = c("time", "temperature")) |>
 #       dplyr::group_by(segment) |>
 #       dplyr::summarise(do_union = FALSE) |>
-#       sf::st_cast("LINESTRING") |> 
+#       sf::st_cast("LINESTRING") |>
 #       sf::st_simplify(dTolerance = simplify)
 #     sf::sf_use_s2(TRUE)
 #   })
-#   
-#   paths_mat <- split(paths, paths$segment) |> 
+#
+#   paths_mat <- split(paths, paths$segment) |>
 #     lapply(sf::st_coordinates)
-#   
+#
 #   dmat <- hausdorff_dmat(paths_mat)
-# 
+#
 #   h <- cluster_tendency(dmat, ...)
-# 
+#
 #   res <- list(paths = paths, diss = dmat, hopkins = h, dist = dist)
 #   class(res) <- append(class(res), "tTdiss")
 #   return(res)
@@ -329,4 +338,3 @@ cluster_tendency <- function(x, m = NULL, method = c("simple", "torus")) {
   p <- hopkins::hopkins.pval(h, m)
   setNames(c(h, p), c("statistic", "p-value"))
 }
-

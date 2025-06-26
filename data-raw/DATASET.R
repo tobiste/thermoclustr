@@ -18,8 +18,12 @@ tais2 <- read_hefty(fname2)
 saveRDS(tais1, "inst/112-9-30-zr-inv.rds")
 saveRDS(tais2, "inst/74_50_H3_50-inv.rds")
 
+all(validUTF8(tT_paths1$summary$grain))
+all(validUTF8(tT_paths2$summary$grain))
+
+
 tT_paths1 <- tais1
-usethis::use_data(tT_paths1, overwrite = TRUE, compress = "xz")
+usethis::use_data(tT_paths1, overwrite = TRUE, compress = "xz", ascii = TRUE)
 
 tT_paths2 <- tais2
-usethis::use_data(tT_paths2, overwrite = TRUE, compress = "xz")
+usethis::use_data(tT_paths2, overwrite = TRUE, compress = "xz", ascii = TRUE)

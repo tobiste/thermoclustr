@@ -33,8 +33,6 @@ Used only for determining the number of clusters using gap statistic.}
 \item{barfill, barcolor, linecolor}{fill color and outline color for bars}
 
 \item{...}{optionally further arguments for \code{FUNcluster()}}
-
-\item{nstart}{integer. number of random starts for k-means clustering.}
 }
 \value{
 list containing the results of the three methods, the optimal number of clusters (median of the results), and the plots for each method.

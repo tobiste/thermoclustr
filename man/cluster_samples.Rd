@@ -2,16 +2,18 @@
 % Please edit documentation in R/sample_cluster.R
 \name{cluster_samples}
 \alias{cluster_samples}
-\title{Path families of several samples of cooling paths}
+\title{Homogenize path familiy names from several samples}
 \usage{
 cluster_samples(x, method = "hdbscan", minPts = 2, ...)
 }
 \arguments{
-\item{x}{named list containing data.frames with columns \code{segment}, \code{time}, \code{temperature} and \code{cluster}.}
+\item{x}{named list containing data.frames with columns \code{segment}, \code{time},
+\code{temperature} and \code{cluster}.}
 
 \item{method}{the cluster algorithm applied. Default is \code{"hdbscan"}.}
 
-\item{minPts}{minimum number of samples in a cluster (default is \code{2}). Only applied when \code{method = "hdbscan"} or \code{method = "dbscan"} is used.}
+\item{minPts}{minimum number of samples in a cluster (default is \code{2}). Only
+applied when \code{method = "hdbscan"} or \code{method = "dbscan"} is used.}
 
 \item{...}{optional arguments passed to \code{\link[=cluster_paths]{cluster_paths()}}.}
 }
@@ -22,8 +24,10 @@ list.
 \item{'diss}{Dissimilarity matrix of the median paths}
 \item{'hopkins'}{Hopkins statistic of the clustering}
 \item{'dist'}{Used dissimilarity measure}
-\item{'cluster'}{data.frame with the old and new cluster assignments of the median paths (segments).}
-\item{'mds'}{data.frame with the MDS coordinates of the dissimilarity of the median paths}
+\item{'cluster'}{data.frame with the old and new cluster assignments of the
+median paths (segments).}
+\item{'mds'}{data.frame with the MDS coordinates of the dissimilarity of the
+median paths}
 \item{'cluster_method'}{the clustering method used}
 }
 }
@@ -42,24 +46,30 @@ present in other samples.
 \examples{
 # example data
 data(tT_paths1)
-tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4) 
-tT_paths_subset_cl <- path_diss(tT_paths_subset) |> cluster_paths(3) # calculate dissimilarity and find 3 clusters
+tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+# calculate dissimilarity and find 3 clusters:
+tT_paths_subset_cl <- path_diss(tT_paths_subset) |> cluster_paths(3)
 tT_paths_subset_all <- merge(tT_paths_subset, tT_paths_subset_cl, by = "segment")
 
 # create two random subsets of the same sample
 set.seed(20250411)
-random_segments1 <- sample(unique(tT_paths1$paths$segment), size = 100) # select 100 random path segments
+
+## select 100 random path segments
+random_segments1 <- sample(unique(tT_paths1$paths$segment), size = 100)
 tT_paths_rnd1 <- subset(tT_paths1$paths, segment \%in\% random_segments1)
-tT_paths_rnd1_cl <- path_diss(tT_paths_rnd1) |> cluster_paths(3) # calculate dissimilarity and find 3 clusters
+tT_paths_rnd1_cl <- path_diss(tT_paths_rnd1) |>
+  cluster_paths(3) # calculate dissimilarity and find 3 clusters
 tT_paths_rnd1 <- merge(tT_paths_rnd1, tT_paths_rnd1_cl, by = "segment")
 
-random_segments2 <- sample(unique(tT_paths1$paths$segment), size = 100) # select 100 random path segments
+## select 100 random path segments
+random_segments2 <- sample(unique(tT_paths1$paths$segment), size = 100)
 tT_paths_rnd2 <- subset(tT_paths1$paths, segment \%in\% random_segments2)
-tT_paths_rnd2_cl <- path_diss(tT_paths_rnd2) |> cluster_paths(4) # calculate dissimilarity and find 4 clusters
+tT_paths_rnd2_cl <- path_diss(tT_paths_rnd2) |>
+  cluster_paths(4) # calculate dissimilarity and find 4 clusters
 tT_paths_rnd2 <- merge(tT_paths_rnd2, tT_paths_rnd2_cl, by = "segment")
 
 # combine all samples in a named list:
-sample_list <- list('all' = tT_paths_subset_all, 'sample1' = tT_paths_rnd1, 'sample2' = tT_paths_rnd2) 
+sample_list <- list("all" = tT_paths_subset_all, "s1" = tT_paths_rnd1, "s2" = tT_paths_rnd2)
 
 # check how the individial clusters compare to each other:
 cluster_samples(sample_list)
