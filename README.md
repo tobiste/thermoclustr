@@ -33,29 +33,11 @@ paths into 3 path families.
 ``` r
 library(thermochron)
 library(dplyr)
-#> Warning: package 'dplyr' was built under R version 4.3.3
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 4.3.3
 
 # load example dataset of a HeFTy model output
 path2myfile <- system.file("112-9-30-zr-inv.txt", package = "thermochron")
 tT_paths <- read_hefty(path2myfile)
-#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
-#> `.name_repair` is omitted as of tibble 2.0.0.
-#> ℹ Using compatibility `.name_repair`.
-#> ℹ The deprecated feature was likely used in the thermochron package.
-#>   Please report the issue to the authors.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
 ```
 
 The HeFTy model contains the modeled paths, the initial model

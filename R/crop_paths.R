@@ -15,6 +15,7 @@
 #' crop_paths(tT_paths1, time = c(0, 300), temperature = c(0, 200))
 crop_paths <- function(x, time = c(0, Inf), temperature = c(0, Inf)) {
   stopifnot(inherits(x, "HeFTy") || inherits(x, "data.frame"))
+  segment <- geometry <- Fit <- Comp_GOF <- NULL
   # if(inherits(x, "HeFTy")){
   #   paths <- dplyr::distinct(x$paths)
   # } else {

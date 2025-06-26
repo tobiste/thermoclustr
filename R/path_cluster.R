@@ -69,6 +69,9 @@ cluster_paths <- function(
     method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan", "diana", "agnes", "clara", "fanny"),
     naming = c("asis", "GOF", "size"),
     ...) {
+  
+  segment <- Comp_GOF <- mean_GOF <- cluster_sort <- n <- segment <- NULL
+  
   naming <- match.arg(naming)
   method <- match.arg(method)
   stopifnot(inherits(x, "HeFTy") | inherits(x, "tTdiss"))
@@ -336,5 +339,5 @@ cluster_tendency <- function(x, m = NULL, method = c("simple", "torus")) {
 
   h <- hopkins::hopkins(mds, m = m, method = method)
   p <- hopkins::hopkins.pval(h, m)
-  setNames(c(h, p), c("statistic", "p-value"))
+  stats::setNames(c(h, p), c("statistic", "p-value"))
 }

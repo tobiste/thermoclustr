@@ -23,7 +23,7 @@ all(validUTF8(tT_paths2$summary$grain))
 
 
 tT_paths1 <- tais1
-usethis::use_data(tT_paths1, overwrite = TRUE, compress = "xz", ascii = TRUE)
+usethis::use_data(tT_paths1, overwrite = TRUE, ascii = TRUE)
 
 tT_paths2 <- tais2
-usethis::use_data(tT_paths2, overwrite = TRUE, compress = "xz", ascii = TRUE)
+usethis::use_data(tT_paths2, overwrite = TRUE, ascii = TRUE)

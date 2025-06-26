@@ -38,7 +38,7 @@ devtools::install_github("tobiste/thermochron")
 The following minimal example shows how to import data, visualize the paths and the path density as well as how to filter, and cluster the tT paths into 3 path families.
 
 
-```{r import}
+```{r import, message=FALSE, warning=FALSE}
 library(thermochron)
 library(dplyr)
 library(ggplot2)

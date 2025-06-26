@@ -37,7 +37,7 @@ NULL
 plot_path_density_filled <- function(x, bins = 50L, densify = TRUE,
                                      show.legend = NA, geom = "density_2d_filled",
                                      n = 100L, ...) {
-  time <- temperature <- NULL
+  time <- temperature <- ndensity <- NULL
   if (densify) x <- densify_paths(x, ...)
 
   if (geom == "density_2d_filled") {

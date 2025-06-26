@@ -63,6 +63,9 @@ path_nbclust <- function(x, FUNcluster = factoextra::hcut, k.max = 5, nboot = 50
     stopifnot(c("time", "temperature", "segment") %in% colnames(x))
     x <- path_diss(x)
   }
+  
+  median <- temp_q <- time_min <- time_median <- time_max <- temp_sd <- temp_IQR <- temp_median <- temp_5 <- temp_95 <- temp_max <- temp_min <- NULL
+  
   diss <- x$diss
   diss_mat <- as.matrix(diss)
   plot_wss <- factoextra::fviz_nbclust(diss_mat,

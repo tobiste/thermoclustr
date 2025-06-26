@@ -85,7 +85,7 @@ list_to_matrix <- function(x, ncol = NULL, byrow = TRUE) {
 #' read_hefty_xlsx(path2myfile)
 #' }
 read_hefty_xlsx <- function(fname) {
-  Fit <- time <- NULL
+  Fit <- time <- Comp_GOF <- segment <- NULL
 
   x <- readxl::read_xlsx(fname, sheet = 1, col_names = FALSE) # load t-T data
   GOF <- readxl::read_xlsx(fname, sheet = 2, col_names = TRUE) # load GOF sheet

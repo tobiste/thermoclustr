@@ -1,4 +1,5 @@
 median_cluster_paths <- function(x, paths, nb) {
+  cluster <- time_median <- temp_median <- NULL
   clustered <- cluster_paths(x, cluster = nb)
 
   clustered <- dplyr::left_join(paths, clustered, by = "segment")
@@ -91,6 +92,7 @@ median_cluster_paths <- function(x, paths, nb) {
 #' # check how the individial clusters compare to each other:
 #' cluster_samples(sample_list)
 cluster_samples <- function(x, method = "hdbscan", minPts = 2, ...) {
+  temp_median <- time_median <- cluster <- segment <- geometry <- NULL
   stopifnot(
     is.list(x),
     all(sapply(x, inherits, "data.frame")),
