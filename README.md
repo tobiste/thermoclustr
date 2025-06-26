@@ -103,7 +103,7 @@ paths_clustered |>
   geom_path() +
   scale_x_reverse(position = "top") +
   scale_y_reverse() +
-  scale_color_viridis_d('GOF')
+  scale_color_viridis_d('Cluster')
 ```
 
 <img src="man/figures/README-plot2-1.png" width="100%" />
