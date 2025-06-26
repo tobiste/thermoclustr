@@ -6,7 +6,7 @@
 \usage{
 path_nbclust(
   x,
-  FUNcluster = hcut,
+  FUNcluster = factoextra::hcut,
   k.max = 5,
   nboot = 50,
   dim = 4,

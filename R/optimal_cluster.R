@@ -52,7 +52,7 @@ find_elbow <- function(wss_values) {
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #' res <- path_nbclust(tT_paths_subset)
 #' res$optimal
-path_nbclust <- function(x, FUNcluster = hcut, k.max = 5, nboot = 50, 
+path_nbclust <- function(x, FUNcluster = factoextra::hcut, k.max = 5, nboot = 50, 
                          dim = 4, 
                                    barfill = "#1D1147FF",
                                    barcolor = "#1D1147FF",
@@ -79,11 +79,11 @@ path_nbclust <- function(x, FUNcluster = hcut, k.max = 5, nboot = 50,
   nb1 <- find_elbow(plot_wss$data$y)
   
   plot_wss <- plot_wss +
-    ggplot2::geom_vline(xintercept = nb1, lty = 2, color = dist_cols[3])
+    ggplot2::geom_vline(xintercept = nb1, lty = 2, color = linecolor)
   
   
   #### Silhouette method
-  plot_silh <- factoextra::fviz_nbclust(diss_mat, FUNcluster = hcut,
+  plot_silh <- factoextra::fviz_nbclust(diss_mat, FUNcluster = FUNcluster,
                                           method = "silhouette", k.max = k.max, 
                                           verbose = FALSE, print.summary = FALSE,
                                           barfill = barfill,
@@ -98,7 +98,7 @@ path_nbclust <- function(x, FUNcluster = hcut, k.max = 5, nboot = 50,
     as.numeric()
   
   #### Gap statistic method
-  plot_gapst <- factoextra::fviz_nbclust(stats::cmdscale(diss, k=dim), hcut,
+  plot_gapst <- factoextra::fviz_nbclust(stats::cmdscale(diss, k=dim), FUNcluster = FUNcluster,
                                           method = "gap_stat", 
                                          nboot = nboot,
                                          k.max = k.max, 
