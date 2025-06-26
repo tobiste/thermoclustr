@@ -175,6 +175,7 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' \item{`diss`}{the \eqn{n \times n} dissimilarity matrix (\eqn{n} is number of paths)}
 #' \item{`method`}{the dissimilarity algorithm used}
 #' \item{`hopkins`}{the Hopkins statistic and its p-value.}
+#' \item[`mds`]{the MDS coordinates of the dissimilarity matrix}
 #' }
 #'
 #' @details The Hausdorff distance is the greatest of all the distances from a
@@ -238,7 +239,13 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
   
   h <- cluster_tendency(dmat, ...)
   
-  res <- list(paths = paths, diss = dmat, hopkins = h, dist = dist)
+  paths_mds <- stats::cmdscale(dmat)
+  # paths_mds <- cbind(MDS1 = paths_mds[, 1], MDS2 = paths_mds[, 2])
+  rownames(paths_mds) <- paths$segment
+  
+  
+  
+  res <- list(paths = paths, diss = dmat, hopkins = h, dist = dist, mds = paths_mds)
   class(res) <- append(class(res), "tTdiss")
   return(res)
 }
