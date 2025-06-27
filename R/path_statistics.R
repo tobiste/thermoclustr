@@ -21,7 +21,7 @@
 path_statistics <- function(x, breaks = 50) {
   if (inherits(x, "HeFTy")) x <- x$paths
 
-  bins <- time <- temperature <- time_q <- time_min <- time_median <- time_max <- temp_min <- temp_5 <- temp_median <- temp_95 <- temp_max <- temp_sd <- temp_IQR <-  NULL
+  bins <- time <- temperature <- time_min <- time_median <- time_max <- temp_q <- temp_min <- temp_5 <- temp_median <- temp_95 <- temp_max <- temp_sd <- temp_IQR <-  NULL
   x$bins <- cut(x$time, breaks = breaks)
 
   dplyr::group_by(x, bins, .add = TRUE) |>

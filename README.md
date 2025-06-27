@@ -66,7 +66,7 @@ tT_paths$paths |>
 The path density can be visualized using `plot_path_density_filled()`:
 
 ``` r
-plot_path_density_filled(tT_paths, show.legend = FALSE) +
+plot_path_density_filled(tT_paths) +
   scale_x_reverse(position = "top") +
   scale_y_reverse()
 ```
@@ -96,7 +96,6 @@ paths_clustered |>
       x = time,
       y = temperature,
       color = cluster,
-      alpha = Comp_GOF,
       group = segment
     )
   ) +

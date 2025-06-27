@@ -80,7 +80,7 @@ path_nbclust <- function(x,
 
   n_paths <- nrow(diss)
   stopifnot(is.numeric(n.threshold))
-  if (n_paths > n.treshold) {
+  if (n_paths > n.threshold) {
     stopifnot(n.threshold > k.max)
     rnd <- sample(1:n_paths, size = n.threshold)
     diss <- diss_mat <- diss_mat[rnd, rnd]
