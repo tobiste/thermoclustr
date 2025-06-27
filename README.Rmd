@@ -72,7 +72,7 @@ tT_paths$paths |>
 The path density can be visualized using `plot_path_density_filled()`:
 
 ```{r density}
-plot_path_density_filled(tT_paths) +
+plot_path_density_filled(tT_paths, geom = "raster") +
   scale_x_reverse(position = "top") +
   scale_y_reverse()
 ```
