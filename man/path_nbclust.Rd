@@ -7,11 +7,9 @@
 path_nbclust(
   x,
   FUNcluster = factoextra::hcut,
-  k.max = 5,
-  nboot = 50,
+  k.max = 10,
   dim = 4,
-  barfill = "#1D1147FF",
-  barcolor = "#1D1147FF",
+  n.threshold = Inf,
   linecolor = "#1D1147FF",
   ...
 )
@@ -25,21 +23,25 @@ a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{se
 
 \item{k.max}{integer. the maximum number of clusters to consider, must be at least two.}
 
-\item{nboot}{integer. integer, number of Monte Carlo ("bootstrap") samples.
-Used only for determining the number of clusters using gap statistic.}
-
 \item{dim}{integer. Number of dimensions for \code{\link[stats:cmdscale]{stats::cmdscale()}} used for the gap statistic, default is 4.}
 
-\item{barfill, barcolor, linecolor}{fill color and outline color for bars}
+\item{n.threshold}{integer. If the number of paths is greater than this value,
+a random sample of size \code{n.threshold} of paths will be used to determine the optimal number of clusters.
+Must be greater than \code{k.max}. Default is \code{Inf}, i.e., no sampling.
+Consider to specify this parameter if processing takes too much time.}
 
-\item{...}{optionally further arguments for \code{FUNcluster()}}
+\item{linecolor}{line color}
+
+\item{...}{optionally further arguments for \code{\link[factoextra:fviz_nbclust]{factoextra::fviz_nbclust()}}}
 }
 \value{
-list containing the results of the three methods, the optimal number of clusters (median of the results), and the plots for each method.
+list containing the results of the three methods, the optimal number
+of clusters (median of the results), and the plots for each method.
 }
 \description{
-Convenience function to determine the optimal number of clusters in a dissimilarity matrix using three methods
-wss, silhouette, and gap statistic.
+Convenience function to determine the optimal number of clusters in a
+dissimilarity matrix using the three methods
+\emph{within cluster sums of squares}, \emph{average silhouette}, and \emph{gap statistic}.
 }
 \examples{
 # example data

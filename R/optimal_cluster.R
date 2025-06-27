@@ -25,21 +25,27 @@ find_elbow <- function(wss_values) {
 
 #' Optimal number of clusters
 #'
-#' Convenience function to determine the optimal number of clusters in a dissimilarity matrix using three methods
-#' wss, silhouette, and gap statistic.
+#' Convenience function to determine the optimal number of clusters in a
+#' dissimilarity matrix using the three methods
+#' *within cluster sums of squares*, *average silhouette*, and *gap statistic*.
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]),
 #' `"tTdiss` (output of [path_diss()]), or
 #' a `data.frame` containing the `time`, `temperature`, and `segment` columns of the modeled paths.
 #' @param FUNcluster cluster function
 #' @param k.max integer. the maximum number of clusters to consider, must be at least two.
-#' @param nboot integer. integer, number of Monte Carlo ("bootstrap") samples.
-#' Used only for determining the number of clusters using gap statistic.
+# #' @param nboot integer. integer, number of Monte Carlo ("bootstrap") samples.
+# #' Used only for determining the number of clusters using gap statistic.
 #' @param dim integer. Number of dimensions for [stats::cmdscale()] used for the gap statistic, default is 4.
-#' @param barfill,barcolor,linecolor fill color and outline color for bars
-#' @param ... optionally further arguments for `FUNcluster()`
+#' @param n.threshold integer. If the number of paths is greater than this value,
+#' a random sample of size `n.threshold` of paths will be used to determine the optimal number of clusters.
+#' Must be greater than `k.max`. Default is `Inf`, i.e., no sampling.
+#' Consider to specify this parameter if processing takes too much time.
+#' @param linecolor line color
+#' @param ... optionally further arguments for [factoextra::fviz_nbclust()]
 #'
-#' @returns list containing the results of the three methods, the optimal number of clusters (median of the results), and the plots for each method.
+#' @returns list containing the results of the three methods, the optimal number
+#' of clusters (median of the results), and the plots for each method.
 #' @export
 #'
 #' @importFrom factoextra fviz_nbclust
@@ -51,11 +57,14 @@ find_elbow <- function(wss_values) {
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #' res <- path_nbclust(tT_paths_subset)
 #' res$optimal
-path_nbclust <- function(x, FUNcluster = factoextra::hcut, k.max = 5, nboot = 50,
+path_nbclust <- function(x, 
+                         FUNcluster = factoextra::hcut,
+                         k.max = 10,
+                         # nboot = 50,
                          dim = 4,
-                         barfill = "#1D1147FF",
-                         barcolor = "#1D1147FF",
-                         linecolor = "#1D1147FF", ...) {
+                         n.threshold = Inf,
+                         linecolor = "#1D1147FF",
+                         ...) {
   if (inherits(x, "HeFTy")) {
     x <- path_diss(x) # calculate dissimilarities
   } else if (inherits(x, "tTdiss")) {
@@ -63,34 +72,44 @@ path_nbclust <- function(x, FUNcluster = factoextra::hcut, k.max = 5, nboot = 50
     stopifnot(c("time", "temperature", "segment") %in% colnames(x))
     x <- path_diss(x)
   }
-  
+
   median <- temp_q <- time_min <- time_median <- time_max <- temp_sd <- temp_IQR <- temp_median <- temp_5 <- temp_95 <- temp_max <- temp_min <- NULL
-  
+
   diss <- x$diss
   diss_mat <- as.matrix(diss)
+
+  n_paths <- nrow(diss)
+  stopifnot(is.numeric(n.threshold))
+  if (n_paths > n.treshold) {
+    stopifnot(n.threshold > k.max)
+    rnd <- sample(1:n_paths, size = n.threshold)
+    diss <- diss_mat <- diss_mat[rnd, rnd]
+  }
+
+  #### within cluster sums of squares
   plot_wss <- factoextra::fviz_nbclust(diss_mat,
     FUNcluster = FUNcluster,
-    method = "wss", k.max = k.max,
-    verbose = TRUE, print.summary = TRUE,
-    barfill = barfill,
-    barcolor = barcolor,
+    method = "wss",
+    k.max = k.max,
+    verbose = FALSE,
+    # print.summary = TRUE,
     linecolor = linecolor,
     ...
-  ) + ggplot2::labs(title = NULL)
+  ) +
+    ggplot2::labs(title = NULL)
 
   nb1 <- find_elbow(plot_wss$data$y)
 
   plot_wss <- plot_wss +
     ggplot2::geom_vline(xintercept = nb1, lty = 2, color = linecolor)
 
-
   #### Silhouette method
   plot_silh <- factoextra::fviz_nbclust(diss_mat,
     FUNcluster = FUNcluster,
-    method = "silhouette", k.max = k.max,
-    verbose = FALSE, print.summary = FALSE,
-    barfill = barfill,
-    barcolor = barcolor,
+    method = "silhouette",
+    k.max = k.max,
+    verbose = FALSE,
+    # print.summary = FALSE,
     linecolor = linecolor,
     ...
   ) +
@@ -104,22 +123,22 @@ path_nbclust <- function(x, FUNcluster = factoextra::hcut, k.max = 5, nboot = 50
   plot_gapst <- factoextra::fviz_nbclust(stats::cmdscale(diss, k = dim),
     FUNcluster = FUNcluster,
     method = "gap_stat",
-    nboot = nboot,
+    # nboot = nboot,
     k.max = k.max,
-    verbose = FALSE, print.summary = FALSE,
-    barfill = barfill,
-    barcolor = barcolor,
+    verbose = FALSE,
+    # print.summary = FALSE,
     linecolor = linecolor,
     ...
   ) +
     ggplot2::labs(title = NULL)
+
   nb3 <- plot_gapst$layers[[4]]$data |>
     unname() |>
     as.numeric()
 
+
+  ### Combine results
   results <- c("wss" = nb1, "silhouette" = nb2, "gap_stat" = nb3)
-
   opt_nb <- median(results)
-
   list(results = results, optimal = opt_nb, wss = plot_wss, silhouette = plot_silh, gap_stat = plot_gapst)
 }
