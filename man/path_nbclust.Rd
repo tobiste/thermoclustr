@@ -8,6 +8,9 @@ path_nbclust(
   x,
   FUNcluster = factoextra::hcut,
   k.max = 10,
+  wss = FALSE,
+  silhouette = TRUE,
+  gap.statistic = FALSE,
   dim = 4,
   n.threshold = Inf,
   linecolor = "#1D1147FF",
@@ -22,6 +25,8 @@ a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{se
 \item{FUNcluster}{cluster function}
 
 \item{k.max}{integer. the maximum number of clusters to consider, must be at least two.}
+
+\item{wss, silhouette, gap.statistic}{logical. Select if this statistic should be included.}
 
 \item{dim}{integer. Number of dimensions for \code{\link[stats:cmdscale]{stats::cmdscale()}} used for the gap statistic, default is 4.}
 

@@ -33,6 +33,7 @@ find_elbow <- function(wss_values) {
 #' `"tTdiss` (output of [path_diss()]), or
 #' a `data.frame` containing the `time`, `temperature`, and `segment` columns of the modeled paths.
 #' @param FUNcluster cluster function
+#' @param wss,silhouette,gap.statistic logical. Select if this statistic should be included.
 #' @param k.max integer. the maximum number of clusters to consider, must be at least two.
 # #' @param nboot integer. integer, number of Monte Carlo ("bootstrap") samples.
 # #' Used only for determining the number of clusters using gap statistic.
@@ -60,6 +61,7 @@ find_elbow <- function(wss_values) {
 path_nbclust <- function(x, 
                          FUNcluster = factoextra::hcut,
                          k.max = 10,
+                         wss = FALSE, silhouette = TRUE, gap.statistic = FALSE,
                          # nboot = 50,
                          dim = 4,
                          n.threshold = Inf,
@@ -79,6 +81,7 @@ path_nbclust <- function(x,
   diss_mat <- as.matrix(diss)
 
   n_paths <- nrow(diss)
+  stopifnot(n_paths > k.max)
   stopifnot(is.numeric(n.threshold))
   if (n_paths > n.threshold) {
     stopifnot(n.threshold > k.max)
@@ -87,6 +90,7 @@ path_nbclust <- function(x,
   }
 
   #### within cluster sums of squares
+  if(wss){
   plot_wss <- factoextra::fviz_nbclust(diss_mat,
     FUNcluster = FUNcluster,
     method = "wss",
@@ -102,8 +106,13 @@ path_nbclust <- function(x,
 
   plot_wss <- plot_wss +
     ggplot2::geom_vline(xintercept = nb1, lty = 2, color = linecolor)
+  } else {
+    plot_wss <- nb1 <- NULL
+  }
+  
 
   #### Silhouette method
+  if(silhouette){
   plot_silh <- factoextra::fviz_nbclust(diss_mat,
     FUNcluster = FUNcluster,
     method = "silhouette",
@@ -118,8 +127,13 @@ path_nbclust <- function(x,
   nb2 <- plot_silh$layers[[3]]$data |>
     unname() |>
     as.numeric()
+  } else {
+    plot_silh <- nb2 <- NULL
+  }
+  
 
   #### Gap statistic method
+  if(gap.statistic){
   plot_gapst <- factoextra::fviz_nbclust(stats::cmdscale(diss, k = dim),
     FUNcluster = FUNcluster,
     method = "gap_stat",
@@ -135,6 +149,9 @@ path_nbclust <- function(x,
   nb3 <- plot_gapst$layers[[4]]$data |>
     unname() |>
     as.numeric()
+  } else {
+    plot_gapst <- snb3 <- NULL
+  }
 
 
   ### Combine results
