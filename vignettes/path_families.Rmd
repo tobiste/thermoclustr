@@ -23,7 +23,6 @@ library(dplyr)
 library(ggalt)
 library(forcats)
 library(scales)
-library(factoextra)
 library(hopkins)
 library(patchwork)
 ```
@@ -143,42 +142,17 @@ tT_diss$hopkins
 
 
 ## How many clusters?
-There are several ways to estimate the optimal number of clusters using
-the function `fviz_nbclust()` from the `{factoextra}` package:
+The optimal number of clusters can be estimated using `path_nbclust()` based on the average silhouette width:
 
 ```{r nbcl}
-# Elbow method
-plot_nb1 <- fviz_nbclust(as.matrix(tT_diss$diss), kmeans,
-  method = "wss", k.max = 10, nstart = 25,
-  verbose = FALSE, print.summary = FALSE
-) +
-  geom_vline(xintercept = 3, linetype = 2) +
-  labs(subtitle = "Elbow method")
-
-# Silhouette method
-plot_nb2 <- fviz_nbclust(as.matrix(tT_diss$diss), kmeans,
-  method = "silhouette", k.max = 10, nstart = 25,
-  verbose = FALSE, print.summary = FALSE
-) +
-  labs(subtitle = "Silhouette method")
-
-# Gap statistic
-# nboot = 10 to keep the function speedy.
-# recommended value: nboot = 100 for your analysis.
-# set.seed(20250411)
-# plot_nb3 <- fviz_nbclust(tT_diss$diss, kmeans, method = "gap_stat", k.max = 10, nstart = 25,
-#                          nboot = 10,
-#                          verbose = FALSE, print.summary = FALSE) +
-#   labs(subtitle = "Gap statistic method")
-
-plot_nb1 + plot_nb2 #+ plot_nb3
+path_nbclust(tT_diss)
 ```
 
 ## Cluster the data
 
 ```{r cluster}
 path_families <- paths_filtered |>
-  cluster_paths(cluster = 3, method = "hclust") |>
+  cluster_paths(k = 3, method = "hclust") |>
   group_by(cluster) |>
   right_join(paths_filtered$paths, join_by(segment))
 

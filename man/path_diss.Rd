@@ -74,7 +74,7 @@ stats::kmeans(tT_diss$diss, centers = 3)
 set.seed(20250411)
 
 ## select 100 random path segments:
-random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) 
+random_segments <- sample(unique(tT_paths1$paths$segment), size = 100)
 tT_paths_rnd <- subset(tT_paths1$paths, segment \%in\% random_segments)
 
 tT_diss_rnd <- path_diss(tT_paths_rnd)

@@ -7,7 +7,7 @@
 #' object of `"tTdiss"` (output of [path_diss()]),
 #' or a `data.frame` containing the `time`, `temperature`, and `segment` columns of the
 #' modeled paths.
-#' @param cluster an integer scalar or vector with the desired number of groups.
+#' @param k an integer scalar or vector with the desired number of groups.
 #' Ignored when `dist` equal to `dbscan` or `hdbscan` (**see Note**).
 #' @param dist character. Algorithm to calculate a dissimilarity matrix
 #' (distance) for lines; either `Hausdorff` (the default), or
@@ -46,11 +46,10 @@
 #' @export
 #'
 #' @importFrom sf st_as_sf st_distance
-#' @importFrom dplyr summarise group_by tibble left_join right_join join_by count select min_rank row_number mutate
+#' @importFrom dplyr summarise group_by tibble left_join right_join join_by count transmute min_rank row_number mutate
 #' @importFrom stats hclust cutree as.dist kmeans
 #' @importFrom cluster pam agnes diana clara fanny
 #' @importFrom kernlab specc
-#' @importFrom forcats as_factor
 #' @importFrom dbscan dbscan hdbscan
 #'
 #' @seealso [path_diss()] for calculating dissimilarities and [path_nbclust()]
@@ -62,86 +61,121 @@
 #' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'
 #' # cluster the paths
-#' cluster_paths(tT_paths1, cluster = 3)
+#' cluster_paths(tT_paths1, k = 3)
 cluster_paths <- function(
-    x, cluster,
+    x, k,
     dist = c("Hausdorff", "Frechet"),
-    method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan", "diana", "agnes", "clara", "fanny"),
+    method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan", "specc", "diana", "agnes", "clara", "fanny"),
     naming = c("asis", "GOF", "size"),
     ...) {
-  
   segment <- Comp_GOF <- mean_GOF <- cluster_sort <- n <- segment <- NULL
-  
+
   naming <- match.arg(naming)
   method <- match.arg(method)
-  stopifnot(inherits(x, "HeFTy") | inherits(x, "tTdiss"))
 
-  has_GOF <- FALSE
-  if (inherits(x, "HeFTy")) {
-    has_GOF <- TRUE
+  stopifnot(inherits(x, "HeFTy") || inherits(x, "tTdiss"))
+
+  has_GOF <- inherits(x, "HeFTy")
+  if (has_GOF) {
     paths_GOF <- x$paths
-    x <- path_diss(x, dist) # calculate dissimilarities
-  } else if (inherits(x, "tTdiss")) {
-    has_GOF <- FALSE
+    x <- path_diss(x, dist)
   }
 
   dmat <- x$diss
   paths <- x$paths
 
-  if (method == "hclust") {
-    cl <- stats::hclust(dmat, ...) |>
-      stats::cutree(k = cluster)
-  } else if (method == "kmeans") {
-    cl <- stats::kmeans(dmat, centers = cluster, ...)$cluster
-  } else if (method == "pam") {
-    cl <- cluster::pam(dmat, k = cluster, ...)$clustering
-  } else if (method == "dbscan") {
-    cl <- dbscan::dbscan(dmat, ...)$cluster
-  } else if (method == "hdbscan") {
-    cl <- dbscan::hdbscan(dmat, ...)$cluster
-  } else if (method == "specc") {
-    cl <- kernlab::specc(as.matrix(dmat), centers = cluster, ...) |>
-      as.integer()
-  } else if (method == "diana") {
-    cl <- cluster::diana(dmat, ...) |>
-      stats::cutree(k = cluster)
-  } else if (method == "agnes") {
-    cl <- cluster::agnes(dmat, ...) |>
-      stats::cutree(k = cluster)
-  } else if (method == "clara") {
-    cl <- cluster::clara(as.matrix(dmat), k = cluster, ...)$clustering
-  } else if (method == "fanny") {
-    cl <- cluster::fanny(dmat, k = cluster, ...)$clustering
-  }
+  cl <- switch(method,
+    hclust = path_hcut(dmat, k = k, FUN = stats::hclust, ...)$cluster,
+    diana = path_hcut(dmat, k = k, FUN = cluster::diana, ...)$cluster,
+    agnes = path_hcut(dmat, k = k, FUN = cluster::agnes, ...)$cluster,
+    kmeans = stats::kmeans(dmat, centers = k, ...)$cluster,
+    pam = cluster::pam(dmat, k = k, ...)$clustering,
+    dbscan = dbscan::dbscan(dmat, ...)$cluster,
+    hdbscan = dbscan::hdbscan(dmat, ...)$cluster,
+    specc = as.integer(kernlab::specc(as.matrix(dmat), centers = k, ...)),
+    clara = cluster::clara(as.matrix(dmat), k = k, ...)$clustering,
+    fanny = cluster::fanny(dmat, k = k, ...)$clustering
+  )
 
-  res <- dplyr::tibble(segment = paths$segment, cluster = forcats::as_factor(cl))
 
-  if (naming == "GOF" & has_GOF) {
-    outliers <- res |> dplyr::filter(as.numeric(as.character(cluster)) == 0)
+  res <- dplyr::tibble(segment = paths$segment, cluster = as.factor(cl))
+
+  if (naming == "GOF" && has_GOF) {
+    outliers <- res |> dplyr::filter(as.integer(cluster) == 0)
     res <- res |>
-      dplyr::filter(as.numeric(as.character(cluster)) > 0) |>
+      dplyr::filter(as.integer(cluster) > 0) |>
       dplyr::left_join(paths_GOF, dplyr::join_by(segment)) |>
       dplyr::group_by(cluster) |>
       dplyr::summarise(
-        mean_GOF = mean(Comp_GOF)
+        mean_GOF = mean(Comp_GOF), .groups = "drop"
       ) |>
-      dplyr::mutate(cluster_sort = forcats::as_factor(dplyr::min_rank(mean_GOF))) |>
+      dplyr::mutate(cluster_sort = as.factor(dplyr::min_rank(mean_GOF))) |>
       # dplyr::select(-mean_GOF) |>
       dplyr::right_join(res, dplyr::join_by(cluster)) |>
-      dplyr::select(segment, cluster = cluster_sort) |>
+      dplyr::transmute(segment, cluster = cluster_sort) |>
       dplyr::bind_rows(outliers)
   } else if (naming == "size") {
-    outliers <- res |> dplyr::filter(as.numeric(as.character(cluster)) == 0)
+    outliers <- res |> dplyr::filter(as.integer(cluster) == 0)
     res <- res |>
-      dplyr::filter(as.numeric(as.character(cluster)) > 0) |>
+      dplyr::filter(as.integer(cluster) > 0) |>
       dplyr::count(cluster) |>
-      dplyr::mutate(cluster_sort = forcats::as_factor(dplyr::min_rank(n))) |>
+      dplyr::mutate(cluster_sort = as.factor(dplyr::min_rank(n))) |>
       dplyr::right_join(res, dplyr::join_by(cluster)) |>
-      dplyr::select(segment, cluster = cluster_sort) |>
+      dplyr::transmute(segment, cluster = cluster_sort) |>
       dplyr::bind_rows(outliers)
   }
 
   res
+}
+
+
+#' Hierarchical Clustering of Cooling Paths
+#'
+#' Convenience function to compute hierarchical clustering and cut the tree into k clusters
+#'
+#' @param x an object of class `"HeFTy"`, `"tTdiss`" or `"dist"` (dissimilarity matrix).
+#' @param k integer. number of clusters to be generated
+#' @param FUN hierarchical clustering function to be used, i.e. one of
+#' [stats::hclust()] (the default), [cluster::agnes()], [cluster::diana()]).
+#' @param ... optional arguments past to `hc_func`
+#'
+#' @returns an object of class `"hcut"` containing the result of the standard
+#' function used (read the documentation of [stats::hclust()], [cluster::agnes()], [cluster::diana()]).
+#'
+#' It includes also
+#' \describe{
+#' \item{cluster}{the cluster assignment of observations after cutting the tree}
+#' \item{nbclust}{the number of clusters}
+#' \item{size}{the size of clusters}
+#' }
+#'
+#' @importFrom stats hclust cutree
+#' @importFrom cluster agnes diana
+#'
+#' @export
+#'
+#' @examples
+#' # example data
+#' data(tT_paths1)
+#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#'
+#' # calculate the dissimilarities of the paths:
+#' tT_diss <- path_diss(tT_paths_subset)
+#' path_hcut(tT_diss$diss, 3)
+path_hcut <- function(x, k, FUN = stats::hclust, ...) {
+  if (inherits(x, "HeFTy")) x <- path_diss(x)
+  if (inherits(x, "tTdiss")) x <- x$diss
+  stopifnot(inherits(x, "dist") && is.numeric(k))
+
+  hc <- FUN(x, ...)
+
+  hc.cut <- stats::cutree(hc, k = k)
+  hc$cluster <- hc.cut
+  hc$nbclust <- k
+
+  hc$size <- tabulate(hc.cut, nbins = k)
+  class(hc) <- c(class(hc), "hcut")
+  hc
 }
 
 
@@ -226,11 +260,11 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #'
 #' # using a random subset of paths (in case of too large data)
 #' set.seed(20250411)
-#' 
+#'
 #' ## select 100 random path segments:
-#' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100) 
+#' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100)
 #' tT_paths_rnd <- subset(tT_paths1$paths, segment %in% random_segments)
-#' 
+#'
 #' tT_diss_rnd <- path_diss(tT_paths_rnd)
 path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths

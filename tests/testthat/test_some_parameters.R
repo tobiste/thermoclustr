@@ -29,13 +29,21 @@ tt_subset <- tT_paths1$paths |>
 a <- path_diss(tt_subset, "Hausdorff")
 b <- path_diss(tt_subset, "Frechet")
 
-cluster_paths(a, 3, method = "hclust")
-cluster_paths(a, 3, method = "kmeans")
-cluster_paths(a, 3, method = "pam")
-cluster_paths(a, 3, method = "specc")
-cluster_paths(a, 3, method = "diana")
-cluster_paths(a, 3, method = "agnes")
-cluster_paths(a, 3, method = "clara", samples = 100)
-cluster_paths(a, 3, method = "fanny")
+nbc <- path_nbclust(a)$optimal
+
+cluster_paths(a, nbc, method = "hclust")
+cluster_paths(a, nbc, method = "kmeans")
+cluster_paths(a, nbc, method = "pam")
+cluster_paths(a, nbc, method = "specc")
+cluster_paths(a, nbc, method = "diana")
+cluster_paths(a, nbc, method = "agnes")
+cluster_paths(a, nbc, method = "clara", samples = 100)
+cluster_paths(a, nbc, method = "fanny")
 cluster_paths(a, method = "dbscan", minPts = 10, eps = 750)
 cluster_paths(a, method = "hdbscan", minPts = 5)
+
+
+path_hcut(a$diss, nbc, FUN = stats::hclust)
+path_hcut(a$diss, nbc, FUN = cluster::agnes)
+path_hcut(a$diss, nbc, FUN = cluster::diana)
+

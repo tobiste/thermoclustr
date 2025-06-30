@@ -24,8 +24,10 @@ crop_paths <- function(x, time = c(0, Inf), temperature = c(0, Inf)) {
   # Extract paths
   paths <- if (inherits(x, "HeFTy")) x$paths else x
 
-  stopifnot(is.numeric(time), is.numeric(temperature),
-            length(time) == 2, length(temperature) == 2)
+  stopifnot(
+    is.numeric(time), is.numeric(temperature),
+    length(time) == 2, length(temperature) == 2
+  )
   time_range <- sort(time)
   temperature_range <- sort(temperature)
 

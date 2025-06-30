@@ -50,13 +50,13 @@ the imported model `tT_paths`:
 
 ``` r
 # (Optional) Create a subset of interest of the data:
-tT_paths <- crop_paths(tT_paths, time = c(0, 400), temperature = c(0, 250)) 
+tT_paths <- crop_paths(tT_paths, time = c(0, 400), temperature = c(0, 250))
 
 
 tT_paths$paths |>
   ggplot(aes(time, temperature, color = Comp_GOF, group = segment)) +
   geom_path() +
-  scale_color_viridis_c('GOF') +
+  scale_color_viridis_c("GOF") +
   scale_x_reverse(position = "top") +
   scale_y_reverse()
 ```
@@ -77,13 +77,13 @@ To cluster the data, the following steps are required:
 
 ``` r
 # Cluster the paths
-paths_cluster <- cluster_paths(tT_paths, cluster = 2)
+paths_cluster <- cluster_paths(tT_paths, k = 2)
 
 # Join with path dataset
 paths_clustered <- merge(
   tT_paths$paths,
   paths_cluster,
-  by = 'segment'
+  by = "segment"
 )
 ```
 
@@ -102,7 +102,7 @@ paths_clustered |>
   geom_path() +
   scale_x_reverse(position = "top") +
   scale_y_reverse() +
-  scale_color_viridis_d('Cluster')
+  scale_color_viridis_d("Cluster")
 ```
 
 <img src="man/figures/README-plot2-1.png" width="100%" />

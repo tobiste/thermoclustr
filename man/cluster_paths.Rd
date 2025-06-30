@@ -6,9 +6,9 @@
 \usage{
 cluster_paths(
   x,
-  cluster,
+  k,
   dist = c("Hausdorff", "Frechet"),
-  method = c("hclust", "kmeans", "pam", "specc", "dbscan", "hdbscan", "diana", "agnes",
+  method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan", "specc", "diana", "agnes",
     "clara", "fanny"),
   naming = c("asis", "GOF", "size"),
   ...
@@ -20,7 +20,7 @@ object of \code{"tTdiss"} (output of \code{\link[=path_diss]{path_diss()}}),
 or a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{segment} columns of the
 modeled paths.}
 
-\item{cluster}{an integer scalar or vector with the desired number of groups.
+\item{k}{an integer scalar or vector with the desired number of groups.
 Ignored when \code{dist} equal to \code{dbscan} or \code{hdbscan} (\strong{see Note}).}
 
 \item{dist}{character. Algorithm to calculate a dissimilarity matrix
@@ -74,7 +74,7 @@ data(tT_paths1)
 tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 
 # cluster the paths
-cluster_paths(tT_paths1, cluster = 3)
+cluster_paths(tT_paths1, k = 3)
 }
 \seealso{
 \code{\link[=path_diss]{path_diss()}} for calculating dissimilarities and \code{\link[=path_nbclust]{path_nbclust()}}

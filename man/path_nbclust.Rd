@@ -6,14 +6,10 @@
 \usage{
 path_nbclust(
   x,
-  FUNcluster = factoextra::hcut,
+  FUNcluster = path_hcut,
   k.max = 10,
-  wss = FALSE,
-  silhouette = TRUE,
-  gap.statistic = FALSE,
-  dim = 4,
   n.threshold = Inf,
-  linecolor = "#1D1147FF",
+  linecolor = "#B63679FF",
   ...
 )
 }
@@ -22,13 +18,9 @@ path_nbclust(
 \verb{"tTdiss} (output of \code{\link[=path_diss]{path_diss()}}), or
 a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{segment} columns of the modeled paths.}
 
-\item{FUNcluster}{cluster function}
+\item{FUNcluster}{cluster function. Default is \code{\link[=path_hcut]{path_hcut()}}.}
 
 \item{k.max}{integer. the maximum number of clusters to consider, must be at least two.}
-
-\item{wss, silhouette, gap.statistic}{logical. Select if this statistic should be included.}
-
-\item{dim}{integer. Number of dimensions for \code{\link[stats:cmdscale]{stats::cmdscale()}} used for the gap statistic, default is 4.}
 
 \item{n.threshold}{integer. If the number of paths is greater than this value,
 a random sample of size \code{n.threshold} of paths will be used to determine the optimal number of clusters.
@@ -37,16 +29,15 @@ Consider to specify this parameter if processing takes too much time.}
 
 \item{linecolor}{line color}
 
-\item{...}{optionally further arguments for \code{\link[factoextra:fviz_nbclust]{factoextra::fviz_nbclust()}}}
+\item{...}{optionally further arguments for \code{FUNcluster}}
 }
 \value{
-list containing the results of the three methods, the optimal number
-of clusters (median of the results), and the plots for each method.
+list containing the optimal number
+of clusters (\code{optimal}), and a plot showing the average silhouette width for each number of clusters (\code{plot}).
 }
 \description{
-Convenience function to determine the optimal number of clusters in a
-dissimilarity matrix using the three methods
-\emph{within cluster sums of squares}, \emph{average silhouette}, and \emph{gap statistic}.
+Determines the optimal number of clusters in a
+dissimilarity matrix using \emph{average silhouette width}.
 }
 \examples{
 # example data

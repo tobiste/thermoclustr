@@ -16,7 +16,6 @@ Imports:
     data.table,
     dbscan,
     dplyr,
-    factoextra,
     forcats,
     ggplot2,
     hopkins,
