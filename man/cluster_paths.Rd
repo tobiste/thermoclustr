@@ -52,7 +52,7 @@ Outliers detected by \code{dbscan} of \code{hdbscan} will always named as \code{
 \item{...}{additional arguments passed to cluster method.}
 }
 \value{
-a tibble with the path \code{segment} (integer) and \code{cluster} (factor)
+a data.frame with the path \code{segment} (integer) and \code{cluster} (factor)
 }
 \description{
 Groups t-T paths into "path families" based on the \emph{Hausdorff} or

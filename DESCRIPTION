@@ -23,7 +23,8 @@ Imports:
     purrr,
     readxl,
     sf,
-    smoothr
+    smoothr,
+    viridisLite
 Suggests: 
     ggalt,
     knitr,

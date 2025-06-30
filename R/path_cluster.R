@@ -42,11 +42,11 @@
 #' in the current version of `thermochron`, you can use the distance matrix
 #' produced by [path_diss()] and feed your cluster algorithm.
 #'
-#' @return a tibble with the path `segment` (integer) and `cluster` (factor)
+#' @return a data.frame with the path `segment` (integer) and `cluster` (factor)
 #' @export
 #'
 #' @importFrom sf st_as_sf st_distance
-#' @importFrom dplyr summarise group_by tibble left_join right_join join_by count transmute min_rank row_number mutate
+#' @importFrom dplyr summarise group_by left_join right_join join_by count transmute min_rank row_number mutate
 #' @importFrom stats hclust cutree as.dist kmeans
 #' @importFrom cluster pam agnes diana clara fanny
 #' @importFrom kernlab specc
@@ -77,6 +77,7 @@ cluster_paths <- function(
 
   has_GOF <- inherits(x, "HeFTy")
   if (has_GOF) {
+    # dat <- x
     paths_GOF <- x$paths
     x <- path_diss(x, dist)
   }
@@ -98,7 +99,7 @@ cluster_paths <- function(
   )
 
 
-  res <- dplyr::tibble(segment = paths$segment, cluster = as.factor(cl))
+  res <- data.frame(segment = paths$segment, cluster = as.factor(cl))
 
   if (naming == "GOF" && has_GOF) {
     outliers <- res |> dplyr::filter(as.integer(cluster) == 0)
@@ -113,7 +114,7 @@ cluster_paths <- function(
       # dplyr::select(-mean_GOF) |>
       dplyr::right_join(res, dplyr::join_by(cluster)) |>
       dplyr::transmute(segment, cluster = cluster_sort) |>
-      dplyr::bind_rows(outliers)
+      dplyr::bind_rows(outliers) 
   } else if (naming == "size") {
     outliers <- res |> dplyr::filter(as.integer(cluster) == 0)
     res <- res |>
@@ -125,6 +126,11 @@ cluster_paths <- function(
       dplyr::bind_rows(outliers)
   }
 
+  # if(has_GOF){
+  #   dat$cluster <- dplyr::left_join(res, dat$paths, by = 'segment')
+  #   res <- dat
+  # }
+  # 
   res
 }
 
