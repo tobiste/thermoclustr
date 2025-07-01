@@ -4,15 +4,31 @@
 \alias{plot_paths}
 \title{Plot the thermochronology paths}
 \usage{
-plot_paths(x, cluster = NULL, pal = viridisLite::viridis, breaks = 5, ...)
+plot_paths(
+  x,
+  cluster = NULL,
+  do.cluster = FALSE,
+  cluster.params = list(),
+  pal = viridisLite::viridis,
+  breaks = 5,
+  ...
+)
 }
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}) or
 a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{segment} columns
 of the modeled paths.}
 
-\item{cluster}{(optional) data.frame containing the \code{segment} and \code{cluster}
-columns to be merged with \code{x}.}
+\item{cluster}{(optional) Either a data.frame containing the \code{segment} and \code{cluster}
+columns to be merged with data in \code{x}}
+
+\item{do.cluster}{logical. Whether clustering with arguments specified in
+\code{cluster.params} should be applied. This will add information about the used
+dissimilarity measure and Hopkin's statistic to the plot. Is ignored if
+\code{cluster} is specified.}
+
+\item{cluster.params}{list. Arguments passed to \code{\link[=cluster_paths]{cluster_paths()}} function.
+Only effective when \code{do.cluster = TRUE} and \code{cluster = NULL}.}
 
 \item{pal}{color function}
 
@@ -32,11 +48,14 @@ the paths are color coded by the clusters.
 \examples{
 # example data
 data(tT_paths1)
-tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 
-# Plot the paths
+# Plot the paths:
 plot_paths(tT_paths1)
 
-# Show path clusters
-plot_paths(tT_paths1, cluster = cluster_paths(tT_paths1, k = 3))
+# Show predefined path clusters:
+cl <- cluster_paths(tT_paths1, 2)
+plot_paths(tT_paths1, cluster = cl)
+
+# Calculate cluster while plotting: 
+plot_paths(tT_paths1, do.cluster = TRUE, cluster.params = list(k = 3, method = "pam"))
 }

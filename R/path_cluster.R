@@ -73,9 +73,9 @@ cluster_paths <- function(
   naming <- match.arg(naming)
   method <- match.arg(method)
 
-  stopifnot(inherits(x, "HeFTy") || inherits(x, "tTdiss"))
+  stopifnot(inherits(x, "HeFTy") || inherits(x, "tTdiss") || inherits(x, "data.frame"))
 
-  has_GOF <- inherits(x, "HeFTy")
+  has_GOF <- inherits(x, "HeFTy") || inherits(x, "data.frame")
   if (has_GOF) {
     # dat <- x
     paths_GOF <- x$paths
@@ -369,7 +369,7 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
 #' tT_diss <- path_diss(tT_paths_subset, densify = 1)
 #'
 #' set.seed(20250411)
-#' cluster_tendency(tT_diss$diss) # H=0.867, p=0.003
+#' cluster_tendency(tT_diss$diss) # H=0.68, p=8.6e-7
 cluster_tendency <- function(x, m = NULL, method = c("simple", "torus")) {
   if (inherits(x, "tTdiss")) x <- x$diss
 
