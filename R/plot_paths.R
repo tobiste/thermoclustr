@@ -41,7 +41,8 @@
 plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = list(), pal = viridisLite::viridis, breaks = 5, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
   stopifnot(c("segment", "time", "temperature") %in% colnames(x))
-
+  has_info <- FALSE
+  
   if (is.null(cluster)) {
     if (do.cluster) {
       has_info <- TRUE
