@@ -42,6 +42,7 @@ plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = l
   if (inherits(x, "HeFTy")) x <- x$paths
   stopifnot(c("segment", "time", "temperature") %in% colnames(x))
   has_info <- FALSE
+  k <- method <- Comp_GOF <- time <- temperature <- NULL
   
   if (is.null(cluster)) {
     if (do.cluster) {
