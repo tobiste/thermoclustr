@@ -68,7 +68,7 @@ cluster_paths <- function(
     method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan", "specc", "diana", "agnes", "clara", "fanny"),
     naming = c("asis", "GOF", "size"),
     ...) {
-  segment <- Comp_GOF <- mean_GOF <- cluster_sort <- n <- segment <- NULL
+  segment <- Comp_GOF <- mean_GOF <- cluster_sort <- n <- segment <- cluster <- NULL
 
   naming <- match.arg(naming)
   method <- match.arg(method)

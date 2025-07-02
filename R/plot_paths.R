@@ -51,7 +51,7 @@ plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = l
       if (!is.null(cluster.params1$k)) cluster.params1$k <- NULL
       if (!is.null(cluster.params1$method)) cluster.params1$method <- NULL
       diss <- do.call(path_diss, args = cluster.params1)
-      cluster <- do.call(cluster_paths, args = append(cluster.params, list(x = x_diss), 0))
+      cluster <- do.call(cluster_paths, args = append(cluster.params, list(x = diss), 0))
 
       info_dist <- diss$dist
       info_hopkins <- round(diss$hopkins, 2)
@@ -63,7 +63,7 @@ plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = l
         n2 <- length(breaks) - 1
         col_labels <- cut(x$Comp_GOF, breaks = breaks, include.lowest = TRUE)
         cols <- pal(n2, ...)
-        col_map <- setNames(cols, levels(col_labels))
+        col_map <- stats::setNames(cols, levels(col_labels))
         x$col <- col_map[as.character(col_labels)]
         #
       } else {
@@ -76,7 +76,7 @@ plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = l
     x <- merge(x, cluster, by = "segment")
     n_cluster <- by(x, x$cluster, nrow) |> rbind()
     cl_lab <- sort(unique(x$cluster))
-    cols <- setNames(pal(length(cl_lab), ...), cl_lab)
+    cols <-stats:: setNames(pal(length(cl_lab), ...), cl_lab)
 
     x$col <- cols[as.character(x$cluster)]
     cl_lab2 <- paste0(cl_lab, " (", n_cluster[cl_lab], ")")
@@ -105,10 +105,10 @@ plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = l
       pch = 19,
       bty = "o", bg = "white"
     )
-    title(main = "Path families")
+    graphics::title(main = "Path families")
     if (has_info) {
-      title(sub = paste0("Hopkins statistic: ", info_hopkins[1], " (p=", info_hopkins[2], ")"))
-      mtext(paste0(info_dist, " distance"))
+      graphics::title(sub = paste0("Hopkins statistic: ", info_hopkins[1], " (p=", info_hopkins[2], ")"))
+      graphics::mtext(paste0(info_dist, " distance"))
     }
 
     #
