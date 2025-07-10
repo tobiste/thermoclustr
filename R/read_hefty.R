@@ -173,15 +173,31 @@ read_hefty <- function(fname) {
   # extract constraints
   inversion_terminated_loc <- grep("Inversion", file)
   constraint_data <- file[3:(inversion_terminated_loc - 1)]
-  constraint_mat <- matrix(unlist(constraint_data, use.names = FALSE), nrow = 5, byrow = TRUE)[, 1:5]
+  constraint_mat <- matrix(unlist(constraint_data, use.names = FALSE), ncol = 21, byrow = TRUE)[, 1:21]
 
   constraints <- data.frame(
     constraint = as.factor(constraint_mat[, 1]),
     max_time = as.numeric(constraint_mat[, 2]),
     min_time = as.numeric(constraint_mat[, 3]),
     max_temp = as.numeric(constraint_mat[, 4]),
-    min_temp = as.numeric(constraint_mat[, 5])
-  )
+    min_temp = as.numeric(constraint_mat[, 5]),
+    max_good_time = as.numeric(constraint_mat[, 6]),
+    min_good_time = as.numeric(constraint_mat[, 7]),
+    mean_good_time = as.numeric(constraint_mat[, 8]),
+    sd_good_time = as.numeric(constraint_mat[, 9]),
+    max_good_temp = as.numeric(constraint_mat[, 10]),
+    min_good_temp = as.numeric(constraint_mat[, 11]),
+    mean_good_temp = as.numeric(constraint_mat[, 12]),
+    sd_good_temp = as.numeric(constraint_mat[, 13]),
+    max_acc_time = as.numeric(constraint_mat[, 14]),
+    min_acc_time = as.numeric(constraint_mat[, 15]),
+    mean_acc_time = as.numeric(constraint_mat[, 16]),
+    sd_acc_time = as.numeric(constraint_mat[, 17]),
+    max_acc_temp = as.numeric(constraint_mat[, 18]),
+    min_acc_temp = as.numeric(constraint_mat[, 19]),
+    mean_acc_temp = as.numeric(constraint_mat[, 20]),
+    sd_acc_temp = as.numeric(constraint_mat[, 21])
+  ) 
 
   summaries_loc <- grep("Summaries", file)
   summary_data <- file[summaries_loc:(wm_path_loc - 1)]
