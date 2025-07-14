@@ -197,7 +197,7 @@ read_hefty <- function(fname) {
     min_acc_temp = as.numeric(constraint_mat[, 19]),
     mean_acc_temp = as.numeric(constraint_mat[, 20]),
     sd_acc_temp = as.numeric(constraint_mat[, 21])
-  ) 
+  )
 
   summaries_loc <- grep("Summaries", file)
   summary_data <- file[summaries_loc:(wm_path_loc - 1)]

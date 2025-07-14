@@ -46,4 +46,3 @@ cluster_paths(a, method = "hdbscan", minPts = 5)
 path_hcut(a$diss, nbc, FUN = stats::hclust)
 path_hcut(a$diss, nbc, FUN = cluster::agnes)
 path_hcut(a$diss, nbc, FUN = cluster::diana)
-

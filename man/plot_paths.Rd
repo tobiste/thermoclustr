@@ -56,6 +56,6 @@ plot_paths(tT_paths1)
 cl <- cluster_paths(tT_paths1, 2)
 plot_paths(tT_paths1, cluster = cl)
 
-# Calculate cluster while plotting: 
+# Calculate cluster while plotting:
 plot_paths(tT_paths1, do.cluster = TRUE, cluster.params = list(k = 3, method = "pam"))
 }

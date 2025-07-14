@@ -11,8 +11,8 @@
 #' @param cluster (optional) Either a data.frame containing the `segment` and `cluster`
 #' columns to be merged with data in `x`
 #' @param do.cluster logical. Whether clustering with arguments specified in
-#' `cluster.params` should be applied. This will add information about the used 
-#' dissimilarity measure and Hopkin's statistic to the plot. Is ignored if 
+#' `cluster.params` should be applied. This will add information about the used
+#' dissimilarity measure and Hopkin's statistic to the plot. Is ignored if
 #' `cluster` is specified.
 #' @param ... options passed to `pal`
 #' @param pal color function
@@ -36,14 +36,14 @@
 #' cl <- cluster_paths(tT_paths1, 2)
 #' plot_paths(tT_paths1, cluster = cl)
 #'
-#' # Calculate cluster while plotting: 
+#' # Calculate cluster while plotting:
 #' plot_paths(tT_paths1, do.cluster = TRUE, cluster.params = list(k = 3, method = "pam"))
 plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = list(), pal = viridisLite::viridis, breaks = 5, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
   stopifnot(c("segment", "time", "temperature") %in% colnames(x))
   has_info <- FALSE
   k <- method <- Comp_GOF <- time <- temperature <- NULL
-  
+
   if (is.null(cluster)) {
     if (do.cluster) {
       has_info <- TRUE
@@ -76,7 +76,7 @@ plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = l
     x <- merge(x, cluster, by = "segment")
     n_cluster <- by(x, x$cluster, nrow) |> rbind()
     cl_lab <- sort(unique(x$cluster))
-    cols <-stats:: setNames(pal(length(cl_lab), ...), cl_lab)
+    cols <- stats::setNames(pal(length(cl_lab), ...), cl_lab)
 
     x$col <- cols[as.character(x$cluster)]
     cl_lab2 <- paste0(cl_lab, " (", n_cluster[cl_lab], ")")

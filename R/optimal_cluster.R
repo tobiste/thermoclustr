@@ -41,7 +41,7 @@
 #' .get_ave_sil_width(tT_paths_subset$diss, cluster = kmeans(dmat, 3)$cluster)
 #' .get_ave_sil_width(tT_paths_subset$diss, cluster = path_hcut(dmat, 3)$cluster)
 .get_ave_sil_width <- function(d, cluster) {
-  ss <- cluster::silhouette(x = cluster, dist =  d)
+  ss <- cluster::silhouette(x = cluster, dist = d)
   mean(ss[, 3])
 }
 
@@ -55,11 +55,7 @@
 #' `"tTdiss` (output of [path_diss()]), or
 #' a `data.frame` containing the `time`, `temperature`, and `segment` columns of the modeled paths.
 #' @param FUNcluster cluster function. Default is [path_hcut()].
-# #' @param wss,silhouette,gap.statistic logical. Select if this statistic should be included.
 #' @param k.max integer. the maximum number of clusters to consider, must be at least two.
-# #' @param nboot integer. integer, number of Monte Carlo ("bootstrap") samples.
-# #' Used only for determining the number of clusters using gap statistic.
-# #' @param dim integer. Number of dimensions for [stats::cmdscale()] used for the gap statistic, default is 4.
 #' @param n.threshold integer. If the number of paths is greater than this value,
 #' a random sample of size `n.threshold` of paths will be used to determine the optimal number of clusters.
 #' Must be greater than `k.max`. Default is `Inf`, i.e., no sampling.
@@ -71,24 +67,22 @@
 #' of clusters (`optimal`), and a plot showing the average silhouette width for each number of clusters (`plot`).
 #' @export
 #'
-# #' @importFrom factoextra fviz_nbclust
 #' @importFrom ggplot2 ggplot geom_line geom_point aes labs geom_vline
 #'
 #' @examples
 #' # example data
 #' data(tT_paths1)
-#' res <- path_nbclust(tT_paths1, n.threshold = 500)
-#' res$optimal
-#' 
+#' set.seed(20250411)
+#' tT_paths1_d <- tT_paths1 |> path_diss()
+#' res1 <- path_nbclust(tT_paths1_d, n.threshold = 492)
+#' res1$optimal
+#'
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
-#' res <- path_nbclust(tT_paths_subset)
-#' res$optimal
+#' res2 <- path_nbclust(tT_paths_subset)
+#' res2$optimal
 path_nbclust <- function(x,
                          FUNcluster = path_hcut,
                          k.max = 10,
-                         # wss = FALSE, silhouette = TRUE, gap.statistic = FALSE,
-                         # nboot = 50,
-                         # dim = 4,
                          n.threshold = Inf,
                          linecolor = "#B63679FF",
                          ...) {
@@ -114,14 +108,13 @@ path_nbclust <- function(x,
   if (n_paths > n.threshold) {
     stopifnot(n.threshold > k.max)
     diss_mat <- as.matrix(diss)
-    
     rnd <- sample(1:n_paths, size = n.threshold)
     diss_mat <- diss_mat[rnd, rnd]
     diss <- as.dist(diss_mat)
   }
 
   v <- sapply(2:k.max, function(i) {
-    clust <- FUNcluster(x, i, ...)
+    clust <- FUNcluster(diss, i, ...)
     .get_ave_sil_width(diss, clust$cluster)
   })
   v <- c(0, v)

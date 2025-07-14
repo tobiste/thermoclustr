@@ -114,7 +114,7 @@ cluster_paths <- function(
       # dplyr::select(-mean_GOF) |>
       dplyr::right_join(res, dplyr::join_by(cluster)) |>
       dplyr::transmute(segment, cluster = cluster_sort) |>
-      dplyr::bind_rows(outliers) 
+      dplyr::bind_rows(outliers)
   } else if (naming == "size") {
     outliers <- res |> dplyr::filter(as.integer(cluster) == 0)
     res <- res |>
@@ -130,7 +130,7 @@ cluster_paths <- function(
   #   dat$cluster <- dplyr::left_join(res, dat$paths, by = 'segment')
   #   res <- dat
   # }
-  # 
+  #
   res
 }
 
