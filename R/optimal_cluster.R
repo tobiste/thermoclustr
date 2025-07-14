@@ -41,7 +41,7 @@
 #' .get_ave_sil_width(tT_paths_subset$diss, cluster = kmeans(dmat, 3)$cluster)
 #' .get_ave_sil_width(tT_paths_subset$diss, cluster = path_hcut(dmat, 3)$cluster)
 .get_ave_sil_width <- function(d, cluster) {
-  ss <- cluster::silhouette(cluster, d)
+  ss <- cluster::silhouette(x = cluster, dist =  d)
   mean(ss[, 3])
 }
 
@@ -77,6 +77,9 @@
 #' @examples
 #' # example data
 #' data(tT_paths1)
+#' res <- path_nbclust(tT_paths1, n.threshold = 500)
+#' res$optimal
+#' 
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #' res <- path_nbclust(tT_paths_subset)
 #' res$optimal
@@ -101,7 +104,6 @@ path_nbclust <- function(x,
   y <- clusters <- cluster <- NULL
 
   diss <- x$diss
-  diss_mat <- as.matrix(diss)
 
   n_paths <- nrow(diss)
   stopifnot(n_paths > k.max)
@@ -111,53 +113,13 @@ path_nbclust <- function(x,
   # cluster only a subset:
   if (n_paths > n.threshold) {
     stopifnot(n.threshold > k.max)
+    diss_mat <- as.matrix(diss)
+    
     rnd <- sample(1:n_paths, size = n.threshold)
-    diss <- diss_mat <- diss_mat[rnd, rnd]
+    diss_mat <- diss_mat[rnd, rnd]
+    diss <- as.dist(diss_mat)
   }
 
-  # #### within cluster sums of squares
-  # if(wss){
-  # plot_wss <- factoextra::fviz_nbclust(diss_mat,
-  #   FUNcluster = FUNcluster,
-  #   method = "wss",
-  #   k.max = k.max,
-  #   verbose = FALSE,
-  #   # print.summary = TRUE,
-  #   linecolor = linecolor,
-  #   ...
-  # ) +
-  #   ggplot2::labs(title = NULL)
-  #
-  # nb1 <- .find_elbow(plot_wss$data$y)
-  #
-  # plot_wss <- plot_wss +
-  #   ggplot2::geom_vline(xintercept = nb1, lty = 2, color = linecolor)
-  # } else {
-  #   plot_wss <- nb1 <- NULL
-  # }
-
-
-  #### Silhouette method
-  # if(silhouette){
-  # plot_silh <- factoextra::fviz_nbclust(diss_mat,
-  #   FUNcluster = FUNcluster,
-  #   method = "silhouette",
-  #   k.max = k.max,
-  #   verbose = FALSE,
-  #   # print.summary = FALSE,
-  #   linecolor = linecolor,
-  #   ...
-  # ) +
-  #   ggplot2::labs(title = NULL)
-  #
-  # nb2 <- plot_silh$layers[[3]]$data |>
-  #   unname() |>
-  #   as.numeric()
-  # } else {
-  #   plot_silh <- nb2 <- NULL
-  # }
-
-  diss <- as.dist(diss)
   v <- sapply(2:k.max, function(i) {
     clust <- FUNcluster(x, i, ...)
     .get_ave_sil_width(diss, clust$cluster)
@@ -182,38 +144,8 @@ path_nbclust <- function(x,
     geom_vline(xintercept = which.max(v), linetype = 2, color = linecolor)
 
 
-  #### Gap statistic method
-  # if(gap.statistic){
-  # plot_gapst <- factoextra::fviz_nbclust(stats::cmdscale(diss, k = dim),
-  #   FUNcluster = FUNcluster,
-  #   method = "gap_stat",
-  #   # nboot = nboot,
-  #   k.max = k.max,
-  #   verbose = FALSE,
-  #   # print.summary = FALSE,
-  #   linecolor = linecolor,
-  #   ...
-  # ) +
-  #   ggplot2::labs(title = NULL)
-  #
-  # nb3 <- plot_gapst$layers[[4]]$data |>
-  #   unname() |>
-  #   as.numeric()
-  # } else {
-  #   plot_gapst <- snb3 <- NULL
-  # }
-  #
-  #
-  # ### Combine results
-  # results <- c("wss" = nb1, "silhouette" = nb2, "gap_stat" = nb3)
-  # opt_nb <- median(results)
-
-
   list(
-    # results = results,
     optimal = optimal_nbc,
-    # wss = plot_wss,
     plot = plot_silh
-    # gap_stat = plot_gapst
   )
 }
