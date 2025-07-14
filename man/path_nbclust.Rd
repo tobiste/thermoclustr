@@ -16,14 +16,17 @@ path_nbclust(
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}),
 \verb{"tTdiss} (output of \code{\link[=path_diss]{path_diss()}}), or
-a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{segment} columns of the modeled paths.}
+a \code{data.frame} containing the \code{time}, \code{temperature}, and \code{segment} columns
+of the modeled paths. If \code{x} is not a \code{"tTdiss"} object, it will be
+calculated first by \code{\link[=path_diss]{path_diss()}} using its default settings.}
 
 \item{FUNcluster}{cluster function. Default is \code{\link[=path_hcut]{path_hcut()}}.}
 
 \item{k.max}{integer. the maximum number of clusters to consider, must be at least two.}
 
 \item{n.threshold}{integer. If the number of paths is greater than this value,
-a random sample of size \code{n.threshold} of paths will be used to determine the optimal number of clusters.
+a random sample of size \code{n.threshold} of paths will be selected from the
+dissimilarity matrix to determine the optimal number of clusters.
 Must be greater than \code{k.max}. Default is \code{Inf}, i.e., no sampling.
 Consider to specify this parameter if processing takes too much time.}
 
@@ -43,8 +46,7 @@ dissimilarity matrix using \emph{average silhouette width}.
 # example data
 data(tT_paths1)
 set.seed(20250411)
-tT_paths1_d <- tT_paths1 |> path_diss()
-res1 <- path_nbclust(tT_paths1_d, n.threshold = 492)
+res1 <- path_nbclust(tT_paths1, n.threshold = 100)
 res1$optimal
 
 tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)

@@ -53,13 +53,16 @@
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]),
 #' `"tTdiss` (output of [path_diss()]), or
-#' a `data.frame` containing the `time`, `temperature`, and `segment` columns of the modeled paths.
+#' a `data.frame` containing the `time`, `temperature`, and `segment` columns 
+#' of the modeled paths. If `x` is not a `"tTdiss"` object, it will be 
+#' calculated first by [path_diss()] using its default settings. 
 #' @param FUNcluster cluster function. Default is [path_hcut()].
 #' @param k.max integer. the maximum number of clusters to consider, must be at least two.
 #' @param n.threshold integer. If the number of paths is greater than this value,
-#' a random sample of size `n.threshold` of paths will be used to determine the optimal number of clusters.
+#' a random sample of size `n.threshold` of paths will be selected from the 
+#' dissimilarity matrix to determine the optimal number of clusters.
 #' Must be greater than `k.max`. Default is `Inf`, i.e., no sampling.
-#' Consider to specify this parameter if processing takes too much time.
+#' Consider to specify this parameter if processing takes too much time. 
 #' @param linecolor line color
 #' @param ... optionally further arguments for `FUNcluster`
 #'
@@ -73,8 +76,7 @@
 #' # example data
 #' data(tT_paths1)
 #' set.seed(20250411)
-#' tT_paths1_d <- tT_paths1 |> path_diss()
-#' res1 <- path_nbclust(tT_paths1_d, n.threshold = 492)
+#' res1 <- path_nbclust(tT_paths1, n.threshold = 100)
 #' res1$optimal
 #'
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
