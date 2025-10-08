@@ -3,6 +3,8 @@ title: "Path density plots"
 author: "Tobias Stephan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+#output: pdf_document
+#latex_engine: xelatex 
 vignette: >
   %\VignetteIndexEntry{Path density plots}
   %\VignetteEncoding{UTF-8}
@@ -22,26 +24,7 @@ library(thermochron)
 
 This document provides step-by-step instructions for producing density
 plots derived from HeFTy inverse thermal history models as seen in
-Padgett et al. (accepted) and Johns-Buss et al. (submitted). Part I
-explains how to export data from HeFTy and import it into R. Part II
-explains how to run the R code to produce the density plots. This
-tutorial assumes you have R and RStudio downloaded and installed.
-
-## Part I
-
-### Export your HeFTy model paths
-
-1.  Open a thermal history model file (.hft or .hfm) in HeFTy. Once
-    open, click on the “Inverse Modeling” button in the top left. Make
-    sure your inverse modeling results are visible in your
-    time-temperature window. Right-click inside the time-temperature
-    window (for example, the location of the “X” in Figure 1). ![Figure
-    1](Fig1.jpg)
-
-2.  Scroll down to “Export”. Click “Save as Text”. Save the .txt file.
-    The text file should look similar to Figure 2.
-
-![Figure 2](Fig2.jpg)
+Padgett et al. (2025) and Johns-Buss et al. (2025). 
 
 ### Load Input Data
 
@@ -61,7 +44,7 @@ library(ggplot2)
 library(thermochron)
 ```
 
-Define the path to your .txt file. For example:
+Define the path to your Hefty output (.txt file). For example:
 
 ```{r fname}
 path2myfile <- "inst/112-9-30-zr-inv.txt"
@@ -73,9 +56,10 @@ path2myfile <- "inst/112-9-30-zr-inv.txt"
 Next, you import the .txt file into R by using the function
 `read_hefty()`:
 
-```{r data, eval=FALSE, include=TRUE}
+```{r data, eval=FALSE, echo=FALSE, include=TRUE}
 tT_paths <- read_hefty(path2myfile)$paths
 ```
+
 ```{r data1, eval=TRUE, include=FALSE}
 data("tT_paths1")
 tT_paths <- tT_paths1

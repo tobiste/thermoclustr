@@ -3,6 +3,8 @@ title: "Path families"
 author: "Tobias Stephan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+#output: pdf_document
+#latex_engine: xelatex 
 vignette: >
   %\VignetteIndexEntry{Path families}
   %\VignetteEncoding{UTF-8}
@@ -23,8 +25,6 @@ library(dplyr)
 library(ggalt)
 library(forcats)
 library(scales)
-library(hopkins)
-library(patchwork)
 ```
 
 This document provides a brief working example to demonstrate how to
@@ -35,15 +35,23 @@ Load some example data:
 ```{r data}
 data(tT_paths1)
 
+# Extract the paths and reorder the paths by the GOF values:
 paths <- tT_paths1$paths |>
   arrange(Fit, Comp_GOF) |>
   mutate(segment = fct_reorder(segment, Comp_GOF))
 ```
 
+
+Extract the weighted mean path from the loaded objects, and build a constrain box from the min/max values given for the constraints (later used for plotting):
+
 ```{r data2}
+# Extract mean path:
 mean_path <- tT_paths1$weighted_mean_path
 
+# Extract the constraints:
 constraints <- tT_paths1$constraints
+
+# build a constraint box polygon:
 constraint_box <- do.call(rbind, lapply(seq_along(constraints), function(i) {
   data.frame(
     x = c(constraints$max_time[i], constraints$max_time[i], constraints$min_time[i], constraints$min_time[i]),
@@ -53,8 +61,7 @@ constraint_box <- do.call(rbind, lapply(seq_along(constraints), function(i) {
 }))
 ```
 
-Analyze a subset of the data by filtering the time and temperature
-range:
+To analyze a *subset* of the data, you can filter the data using a time and temperature range. For example:
 
 ```{r filter_setting}
 max_time <- 500
@@ -67,9 +74,9 @@ paths_filtered <- crop_paths(
 ) # change filter settings here
 ```
 
-Visualize the filtered t-T paths:
+Now we *visualize* the filtered t-T paths:
 
-```{r paths, message=TRUE, warning=TRUE}
+```{r paths, message=TRUE, warning=TRUE, fig.dim = c(7, 5)}
 ggplot(paths_filtered$paths, aes(time, temperature, group = segment, color = Comp_GOF)) +
   geom_path() +
   labs(
@@ -95,16 +102,21 @@ ggplot(paths_filtered$paths, aes(time, temperature, group = segment, color = Com
   scale_y_reverse() +
   coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
 ```
+> The above plot uses some minor modifications of a default `ggplot2::ggplot()`, e.g. reverse the axes and colors etc. Feel free to edit these plots following your personal preferences. Check the ggplot user manual for more details: https://ggplot2.tidyverse.org/
+
 
 # Clustering
 
-Calculate the dissimilarities between the paths using the Hausdorff distance 
+First, we calculate the dissimilarities between the paths using the **Hausdorff distance**:
 
 ```{r dissimilarity}
+# set a seed for reproducibility as some algorithms generate random data
+set.seed(20250411)
+
 tT_diss <- path_diss(paths_filtered, dist = "Hausdorff")
 ```
 
-> Alternative measure is the Fréchet distance using `method = 'Frechet'`.
+> An alternative measure for the dissimilarities is the Fréchet distance using `dist = 'Frechet'`.
 
 
 ## Is the data clustered?
@@ -139,30 +151,52 @@ Put in other words, If the value of Hopkins statistic is close to 1, then we can
 tT_diss$hopkins
 ```
 
+The result shows that our data is likely clusterable.
 
 
 ## How many clusters?
-The optimal number of clusters can be estimated using `path_nbclust()` based on the average silhouette width:
+The **optimal number of clusters** can be estimated using `path_nbclust()` and is based on the *average silhouette width*:
 
 ```{r nbcl}
 path_nbclust(tT_diss)
 ```
 
+The method recommends to cluster for 2 path families.
+
 ## Cluster the data
 
-```{r cluster}
-path_families <- paths_filtered |>
-  cluster_paths(k = 3, method = "hclust") |>
-  group_by(cluster) |>
-  right_join(paths_filtered$paths, join_by(segment))
+Finally we cluster the data using our estimate for the optimal number of clusters. 
+The clustering is done using `cluster_paths()`, which returns a data.frame containing the path number and its assigned cluster:
+```{r cluster1}
+cluster_res <- paths_filtered |>
+  cluster_paths(k = 2, method = "hclust")
 
-path_families_binned <- densify_cluster(path_families) |>
-  path_statistics()
+# print the first rows of the cluster result:
+head(cluster_res)
 ```
 
-Plot the cluster modeled t-T paths:
+We can now merge the cluster result with the original path data.frame: 
 
-```{r cluster_plot}
+```{r cluster2}
+path_families <- right_join(cluster_res, paths_filtered$paths, 
+                            join_by(segment))
+```
+
+We can calculate also some path statistics (e.g. median paths, 5% and 95% quantiles) for each cluster:
+
+```{r cluster3}
+path_families_binned <- path_families |> 
+  group_by(cluster) |> 
+  densify_cluster() |>
+  path_statistics()
+
+head(path_families_binned)
+```
+
+
+Plot the cluster of the modeled t-T paths:
+
+```{r cluster_plot, fig.dim = c(7, 5)}
 ggplot(data = path_families_binned) +
   geom_ribbon(
     aes(x = time_median, ymin = temp_5, ymax = temp_95, group = cluster, fill = cluster),
@@ -187,6 +221,6 @@ ggplot(data = path_families_binned) +
     x = "Time (Ma)",
     y = bquote("Temperature (" * degree * "C)")
   ) +
-  # facet_wrap(vars(cluster)) +
+  # facet_wrap(vars(cluster)) + # uncomment if you want each cluster in a separate plot
   coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
 ```
