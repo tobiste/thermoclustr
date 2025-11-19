@@ -71,7 +71,7 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
-\item{direction}{\code{hv} for horizontal-veritcal steps, \code{vh} for
+\item{direction}{\code{hv} for horizontal-vertical steps, \code{vh} for
 vertical-horizontal steps}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}'s \code{params} argument. These
@@ -110,18 +110,17 @@ if(require("ggplot2")){
 x <- 1:10
 df <- data.frame(x=x, y=x+10, ymin=x+7, ymax=x+12)
 
-gg <- ggplot(df, aes(x, y))
-gg <- gg + geom_ribbon(aes(ymin=ymin, ymax=ymax),
-                       stat="stepribbon", fill="#b2b2b2")
-gg <- gg + geom_step(color="#2b2b2b")
-gg
+ggplot(df, aes(x, y)) +
+  geom_ribbon(aes(ymin=ymin, ymax=ymax),
+                       stat="stepribbon", fill="grey",
+                       direction = 'hv') +
+  geom_step(color="red")
 
-gg <- ggplot(df, aes(x, y))
-gg <- gg + geom_ribbon(aes(ymin=ymin, ymax=ymax),
-                       stat="stepribbon", fill="#b2b2b2",
-                       direction="hv")
-gg <- gg + geom_step(color="#2b2b2b")
-gg
+ggplot(df, aes(x, y)) +
+  geom_ribbon(aes(ymin=ymin, ymax=ymax),
+                       stat="stepribbon", fill="grey",
+                       direction="vh") +
+  geom_step(color="blue")
 }
 }
 \references{

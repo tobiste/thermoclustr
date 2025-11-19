@@ -4,7 +4,7 @@
 #'
 #' @inheritParams ggplot2::geom_ribbon
 #' @param geom which geom to use; defaults to "`ribbon`"
-#' @param direction `hv` for horizontal-veritcal steps, `vh` for
+#' @param direction `hv` for horizontal-vertical steps, `vh` for
 #'   vertical-horizontal steps
 #' @references [https://groups.google.com/forum/?fromgroups=#!topic/ggplot2/9cFWHaH1CPs]()
 #' 
@@ -17,18 +17,17 @@
 #' x <- 1:10
 #' df <- data.frame(x=x, y=x+10, ymin=x+7, ymax=x+12)
 #'
-#' gg <- ggplot(df, aes(x, y))
-#' gg <- gg + geom_ribbon(aes(ymin=ymin, ymax=ymax),
-#'                        stat="stepribbon", fill="#b2b2b2")
-#' gg <- gg + geom_step(color="#2b2b2b")
-#' gg
+#' ggplot(df, aes(x, y)) +
+#'   geom_ribbon(aes(ymin=ymin, ymax=ymax),
+#'                        stat="stepribbon", fill="grey",
+#'                        direction = 'hv') +
+#'   geom_step(color="red")
 #'
-#' gg <- ggplot(df, aes(x, y))
-#' gg <- gg + geom_ribbon(aes(ymin=ymin, ymax=ymax),
-#'                        stat="stepribbon", fill="#b2b2b2",
-#'                        direction="hv")
-#' gg <- gg + geom_step(color="#2b2b2b")
-#' gg
+#' ggplot(df, aes(x, y)) +
+#'   geom_ribbon(aes(ymin=ymin, ymax=ymax),
+#'                        stat="stepribbon", fill="grey",
+#'                        direction="vh") +
+#'   geom_step(color="blue")
 #' }
 stat_stepribbon <- function(mapping=NULL, data=NULL, geom="ribbon",
                             position="identity",
@@ -54,7 +53,7 @@ stat_stepribbon <- function(mapping=NULL, data=NULL, geom="ribbon",
 #' @references \url{https://groups.google.com/forum/?fromgroups=#!topic/ggplot2/9cFWHaH1CPs}
 #' @noRd
 StatStepribbon <-
-  ggproto(
+  ggplot2::ggproto(
     "StatStepRibbon", Stat,
     
     required_aes = c("x", "ymin", "ymax"),
