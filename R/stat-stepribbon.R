@@ -13,6 +13,7 @@
 #' 
 #' @export
 #' @examples
+#' if(require("ggplot2")){
 #' x <- 1:10
 #' df <- data.frame(x=x, y=x+10, ymin=x+7, ymax=x+12)
 #'
@@ -28,6 +29,7 @@
 #'                        direction="hv")
 #' gg <- gg + geom_step(color="#2b2b2b")
 #' gg
+#' }
 stat_stepribbon <- function(mapping=NULL, data=NULL, geom="ribbon",
                             position="identity",
                             na.rm=FALSE, show.legend=NA, inherit.aes=TRUE,

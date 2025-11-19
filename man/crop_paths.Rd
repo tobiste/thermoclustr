@@ -4,7 +4,7 @@
 \alias{crop_paths}
 \title{Crop cooling paths by time and temperature}
 \usage{
-crop_paths(x, time = c(0, Inf), temperature = c(0, Inf))
+crop_paths(x, time = c(-Inf, Inf), temperature = c(-Inf, Inf))
 }
 \arguments{
 \item{x}{an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}})}
@@ -25,5 +25,5 @@ Only the \code{path} slot of \code{x} will be modified.
 \examples{
 # example data
 data(tT_paths1)
-crop_paths(tT_paths1, time = c(0, 300), temperature = c(0, 200))
+crop_paths(tT_paths1, time = c(-Inf, 300), temperature = c(-Inf, 200))
 }

@@ -106,6 +106,7 @@ lists which parameters it can accept.
 Provides stairstep values for ribbon plots
 }
 \examples{
+if(require("ggplot2")){
 x <- 1:10
 df <- data.frame(x=x, y=x+10, ymin=x+7, ymax=x+12)
 
@@ -121,6 +122,7 @@ gg <- gg + geom_ribbon(aes(ymin=ymin, ymax=ymax),
                        direction="hv")
 gg <- gg + geom_step(color="#2b2b2b")
 gg
+}
 }
 \references{
 \url{https://groups.google.com/forum/?fromgroups=#!topic/ggplot2/9cFWHaH1CPs}

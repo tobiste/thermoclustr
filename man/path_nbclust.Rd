@@ -35,8 +35,8 @@ Consider to specify this parameter if processing takes too much time.}
 \item{...}{optionally further arguments for \code{FUNcluster}}
 }
 \value{
-list containing the optimal number
-of clusters (\code{optimal}), and a plot showing the average silhouette width for each number of clusters (\code{plot}).
+integer. the optimal number
+of clusters (\code{optimal}), or a plot showing the average silhouette width for each number of clusters (\code{plot}).
 }
 \description{
 Determines the optimal number of clusters in a
@@ -47,9 +47,9 @@ dissimilarity matrix using \emph{average silhouette width}.
 data(tT_paths1)
 set.seed(20250411)
 res1 <- path_nbclust(tT_paths1, n.threshold = 100)
-res1$optimal
+res1
 
 tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 res2 <- path_nbclust(tT_paths_subset)
-res2$optimal
+res2
 }

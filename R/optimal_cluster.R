@@ -66,8 +66,8 @@
 #' @param linecolor line color
 #' @param ... optionally further arguments for `FUNcluster`
 #'
-#' @returns list containing the optimal number
-#' of clusters (`optimal`), and a plot showing the average silhouette width for each number of clusters (`plot`).
+#' @returns integer. the optimal number
+#' of clusters (`optimal`), or a plot showing the average silhouette width for each number of clusters (`plot`).
 #' @export
 #'
 #' @importFrom ggplot2 ggplot geom_line geom_point aes labs geom_vline
@@ -77,11 +77,11 @@
 #' data(tT_paths1)
 #' set.seed(20250411)
 #' res1 <- path_nbclust(tT_paths1, n.threshold = 100)
-#' res1$optimal
+#' res1
 #'
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #' res2 <- path_nbclust(tT_paths_subset)
-#' res2$optimal
+#' res2
 path_nbclust <- function(x,
                          FUNcluster = path_hcut,
                          k.max = 10,
@@ -123,7 +123,7 @@ path_nbclust <- function(x,
 
   optimal_nbc <- which.max(v)
 
-  plot_silh <- data.frame(
+  silh_plot <- data.frame(
     clusters = as.factor(1:k.max),
     y = v,
     stringsAsFactors = TRUE
@@ -138,9 +138,6 @@ path_nbclust <- function(x,
     ) +
     geom_vline(xintercept = which.max(v), linetype = 2, color = linecolor)
 
-
-  list(
-    optimal = optimal_nbc,
-    plot = plot_silh
-  )
+  return(silh_plot)
+  invisible(optimal_nbc)
 }

@@ -12,8 +12,8 @@
 #' @examples
 #' # example data
 #' data(tT_paths1)
-#' crop_paths(tT_paths1, time = c(0, 300), temperature = c(0, 200))
-crop_paths <- function(x, time = c(0, Inf), temperature = c(0, Inf)) {
+#' crop_paths(tT_paths1, time = c(-Inf, 300), temperature = c(-Inf, 200))
+crop_paths <- function(x, time = c(-Inf, Inf), temperature = c(-Inf, Inf)) {
   stopifnot(inherits(x, "HeFTy") || inherits(x, "data.frame"))
   segment <- geometry <- Fit <- Comp_GOF <- NULL
   # if(inherits(x, "HeFTy")){

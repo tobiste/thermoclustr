@@ -32,12 +32,12 @@
 #' `"GOF"` (ranks of the mean GOF values within clusters), and
 #' `"size"` (ranks of the size of clusters).
 #' Outliers detected by `dbscan` of `hdbscan` will always named as `0`.
-#' @param warning logical. Should there be a warning message if at least one cluster 
+#' @param warn logical. Should there be a warning message if at least one cluster
 #' contains less than (`threshold` * 100)% of the total paths?
-#' @param threshold numeric. The significance threshold as a fraction of the 
-#' total amount of paths (`0.01` by default). If one cluster contains less 
-#' paths per total paths than this value, a warning message is created. Ignored 
-#' if `warning` is `FALSE`.
+#' @param threshold numeric. The significance threshold as a fraction of the
+#' total amount of paths (`0.01` by default). If one cluster contains less
+#' paths per total paths than this value, a warning message is created. Ignored
+#' if `warn` is `FALSE`.
 #' @param ... additional arguments passed to cluster method.
 #'
 #' @note that `dbscan` and `hdbscan` methods require `eps` and `minPts` arguments.
@@ -73,7 +73,7 @@ cluster_paths <- function(
     dist = c("Hausdorff", "Frechet"),
     method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan", "specc", "diana", "agnes", "clara", "fanny"),
     naming = c("asis", "GOF", "size"),
-    warning = TRUE,
+    warn = TRUE,
     threshold = 0.01,
     ...) {
   segment <- Comp_GOF <- mean_GOF <- cluster_sort <- n <- segment <- cluster <- NULL
@@ -134,7 +134,17 @@ cluster_paths <- function(
       dplyr::bind_rows(outliers)
   }
 
-  if (isTRUE(warning)) count_cluster(res, threshold)
+  if (isTRUE(warn)) {
+    n.x <- nrow(res)
+    count.cluster <- count_cluster(res)
+
+    n.cluster <- length(count.cluster)
+    percentage.cluster <- count.cluster / n.x
+
+    if (any(percentage.cluster < threshold)) {
+      warning(paste0("Cluster with less than ", threshold * 100, "% of total paths detected \U1F622"))
+    }
+  }
 
   # if(has_GOF){
   #   dat$cluster <- dplyr::left_join(res, dat$paths, by = 'segment')
@@ -145,30 +155,24 @@ cluster_paths <- function(
 }
 
 #' Count the number of paths in each cluster
-#' 
-#' Helper function to calculate the paths in each cluster and give a warning 
+#'
+#' Helper function to calculate the paths in each cluster and give a warning
 #' message if one cluster contains not enough paths to be considered significant
-#' 
+#'
 #' @param x data.frame with a `$cluster` column
-#' @param threshold numeric. The significance threshold as a fraction of the 
-#' total amount of paths. If one cluster contains less 
-#' paths per total paths than this value, a warning message is created.
-#' 
-#' @noRd
-#' @keywords internal
-count_cluster <- function(x, threshold) {
-  n.x <- nrow(x)
-  count.cluster <- split(x, x$cluster) |> sapply(nrow)
+#'
+#' @export
+#' @return named array of integers, the number of paths in each cluster
+#' @examples
+#' # example data
+#' data(tT_paths1)
+#' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#'
+#' # cluster the paths
+#' res <- cluster_paths(tT_paths1, k = 3)
+#' count_cluster(res)
+count_cluster <- function(x) split(x, x$cluster) |> sapply(nrow)
 
-  n.cluster <- length(count.cluster)
-  percentage.cluster <- count.cluster / n.x
-
-  if (any(percentage.cluster < threshold)){
-    warning(paste0("Cluster with less than ", threshold * 100, "% of total paths detected \U1F622"))
-  }
-
-  invisible(n.cluster)
-}
 
 #' Hierarchical Clustering of Cooling Paths
 #'
@@ -374,7 +378,7 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
 #'
 #' Calculate the Hopkins statistic of Hausdorff or Fr&#233;chet distance matrices
 #' to check clusterability of thermochronologic cooling paths.
-#' Calculated values 0-0.3 indicate regularly-spaced data. Values around 0.5 
+#' Calculated values 0-0.3 indicate regularly-spaced data. Values around 0.5
 #' indicate random data. Values 0.7-1 indicate clustered data.
 #'
 #' @param x either an object of class `"tTdiss"` (output of [path_diss()]) or a
