@@ -53,16 +53,16 @@
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]),
 #' `"tTdiss` (output of [path_diss()]), or
-#' a `data.frame` containing the `time`, `temperature`, and `segment` columns 
-#' of the modeled paths. If `x` is not a `"tTdiss"` object, it will be 
-#' calculated first by [path_diss()] using its default settings. 
+#' a `data.frame` containing the `time`, `temperature`, and `segment` columns
+#' of the modeled paths. If `x` is not a `"tTdiss"` object, it will be
+#' calculated first by [path_diss()] using its default settings.
 #' @param FUNcluster cluster function. Default is [path_hcut()].
 #' @param k.max integer. the maximum number of clusters to consider, must be at least two.
 #' @param n.threshold integer. If the number of paths is greater than this value,
-#' a random sample of size `n.threshold` of paths will be selected from the 
+#' a random sample of size `n.threshold` of paths will be selected from the
 #' dissimilarity matrix to determine the optimal number of clusters.
 #' Must be greater than `k.max`. Default is `Inf`, i.e., no sampling.
-#' Consider to specify this parameter if processing takes too much time. 
+#' Consider to specify this parameter if processing takes too much time.
 #' @param linecolor line color
 #' @param ... optionally further arguments for `FUNcluster`
 #'

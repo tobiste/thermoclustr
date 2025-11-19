@@ -80,15 +80,16 @@ paths_filtered <- crop_paths(
   tT_paths1,
   time = c(-Inf, max_time),
   temperature = c(-Inf, max_temperature)
-) 
+)
 ```
 
 You may also filter the data by a GOF threshold or range. Maybe first you may check how the GOF values are distributed:
 
 ```{r gof_hist}
-hist(paths_filtered$paths$Comp_GOF, 
-     xlim = c(0, 1), 
-     main = "Histogram of paths' goodness-of-fit statistics")
+hist(paths_filtered$paths$Comp_GOF,
+  xlim = c(0, 1),
+  main = "Histogram of paths' goodness-of-fit statistics"
+)
 ```
 
 In our example, we will **not** filter the GOF values, because we hope the clustering may identify "hidden" path families that might go undetected if we filter the data too much. If you still want to filter the paths, you could do it likes this:
@@ -209,15 +210,17 @@ In our example, the paths are almost equally distributed in two clusters.
 We can now merge the cluster result with the original path data.frame: 
 
 ```{r cluster2}
-path_families <- right_join(cluster_res, paths_filtered$paths, 
-                            join_by(segment))
+path_families <- right_join(
+  cluster_res, paths_filtered$paths,
+  join_by(segment)
+)
 ```
 
 We can calculate also some path statistics (e.g. median paths, 5% and 95% quantiles) for each cluster:
 
 ```{r cluster3}
-path_families_binned <- path_families |> 
-  group_by(cluster) |> 
+path_families_binned <- path_families |>
+  group_by(cluster) |>
   densify_cluster() |>
   path_statistics()
 

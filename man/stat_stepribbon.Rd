@@ -40,7 +40,7 @@ the plot data. The return value must be a \code{data.frame}, and
 will be used as the layer data. A \code{function} can be created
 from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
-\item{geom}{which geom to use; defaults to "\code{ribbon}"}
+\item{geom}{character. which geom to use; defaults to "\code{ribbon}"}
 
 \item{position}{A position adjustment to use on the data for this layer. This
 can be used in various ways, including to prevent overplotting and
@@ -71,7 +71,7 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
-\item{direction}{\code{hv} for horizontal-vertical steps, \code{vh} for
+\item{direction}{character. \code{hv} for horizontal-vertical steps, \code{vh} for
 vertical-horizontal steps}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}'s \code{params} argument. These
@@ -106,21 +106,23 @@ lists which parameters it can accept.
 Provides stairstep values for ribbon plots
 }
 \examples{
-if(require("ggplot2")){
-x <- 1:10
-df <- data.frame(x=x, y=x+10, ymin=x+7, ymax=x+12)
+if (require("ggplot2")) {
+  x <- 1:10
+  df <- data.frame(x = x, y = x + 10, ymin = x + 7, ymax = x + 12)
 
-ggplot(df, aes(x, y)) +
-  geom_ribbon(aes(ymin=ymin, ymax=ymax),
-                       stat="stepribbon", fill="grey",
-                       direction = 'hv') +
-  geom_step(color="red")
+  ggplot(df, aes(x, y)) +
+    geom_ribbon(aes(ymin = ymin, ymax = ymax),
+      stat = "stepribbon", fill = "grey",
+      direction = "hv"
+    ) +
+    geom_step(color = "red")
 
-ggplot(df, aes(x, y)) +
-  geom_ribbon(aes(ymin=ymin, ymax=ymax),
-                       stat="stepribbon", fill="grey",
-                       direction="vh") +
-  geom_step(color="blue")
+  ggplot(df, aes(x, y)) +
+    geom_ribbon(aes(ymin = ymin, ymax = ymax),
+      stat = "stepribbon", fill = "grey",
+      direction = "vh"
+    ) +
+    geom_step(color = "blue")
 }
 }
 \references{
