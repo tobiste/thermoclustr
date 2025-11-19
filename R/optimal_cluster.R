@@ -66,8 +66,8 @@
 #' @param linecolor line color
 #' @param ... optionally further arguments for `FUNcluster`
 #'
-#' @returns integer. the optimal number
-#' of clusters (`optimal`), or a plot showing the average silhouette width for each number of clusters (`plot`).
+#' @returns list. `$optimal` (integer) is the optimal number
+#' of clusters, `$plot` is a ggplot showing the average silhouette width for each number of clusters.
 #' @export
 #'
 #' @importFrom ggplot2 ggplot geom_line geom_point aes labs geom_vline
@@ -138,6 +138,6 @@ path_nbclust <- function(x,
     ) +
     geom_vline(xintercept = which.max(v), linetype = 2, color = linecolor)
 
-  return(optimal_nbc)
+  return(list(optimal = optimal_nbc, plot = silh_plot))
   invisible(silh_plot)
 }

@@ -35,8 +35,8 @@ Consider to specify this parameter if processing takes too much time.}
 \item{...}{optionally further arguments for \code{FUNcluster}}
 }
 \value{
-integer. the optimal number
-of clusters (\code{optimal}), or a plot showing the average silhouette width for each number of clusters (\code{plot}).
+list. \verb{$optimal} (integer) is the optimal number
+of clusters, \verb{$plot} is a ggplot showing the average silhouette width for each number of clusters.
 }
 \description{
 Determines the optimal number of clusters in a
