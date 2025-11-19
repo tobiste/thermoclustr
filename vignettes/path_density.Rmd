@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(thermochron)
+set.seed(20250411)
 ```
 
 This document provides step-by-step instructions for producing density
@@ -75,11 +76,10 @@ rm(tT_paths1)
 To plot the density of the paths, you simply use the function
 `plot_path_density()`:
 
-```{r seed1, include=FALSE}
-set.seed(20250411)
-```
-
 ```{r plot1, out.width="100%"}
+# set `theme_classic()` as the default ggplot theme
+theme_set(theme_classic())
+
 plot1 <- plot_path_density_filled(tT_paths, show.legend = FALSE)
 print(plot1)
 ```
@@ -101,10 +101,6 @@ parameters - `bins` - the number of filled contours.
 -   `samples` - Size of a random subsample of all the paths to reduce
     the computation time.
 
-```{r seed2, include=FALSE}
-set.seed(20250411)
-```
-
 ```{r plot2, out.width="100%"}
 plot2 <- plot_path_density_filled(tT_paths, bins = 25, GOF_rank = 5, densify = TRUE, n = 100, max_distance = 1, samples = 100, show.legend = FALSE)
 print(plot2)
@@ -121,7 +117,6 @@ plot2 +
     x = "Time (Ma)",
     y = bquote("Temperature (" * degree * "C)")
   ) +
-  theme_classic() +
   coord_cartesian(expand = FALSE) +
   scale_x_continuous(transform = "reverse", position = "top") +
   scale_y_continuous(transform = "reverse") +

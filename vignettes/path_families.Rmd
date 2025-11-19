@@ -85,11 +85,22 @@ paths_filtered <- crop_paths(
 
 You may also filter the data by a GOF threshold or range. Maybe first you may check how the GOF values are distributed:
 
-```{r gof_hist}
-hist(paths_filtered$paths$Comp_GOF,
-  xlim = c(0, 1),
-  main = "Histogram of paths' goodness-of-fit statistics"
-)
+```{r gof_hist1}
+# set `theme_classic()` as the default ggplot theme
+theme_set(theme_classic())
+
+paths_filtered$paths |>
+  select(segment, Comp_GOF) |>
+  distinct() |> 
+  ggplot(aes(Comp_GOF)) +
+  geom_histogram(
+    color = "white", , fill = "grey40",
+    binwidth = .025
+  ) +
+  coord_cartesian(xlim = c(0, 1), expand = FALSE, clip = "off") +
+  labs(
+    x = "goodness-of-fit statistic", title = "Histogram of path's goodness-of-fit values"
+  )
 ```
 
 In our example, we will **not** filter the GOF values, because we hope the clustering may identify "hidden" path families that might go undetected if we filter the data too much. If you still want to filter the paths, you could do it likes this:
@@ -256,5 +267,21 @@ ggplot(data = path_families_binned) +
     y = bquote("Temperature (" * degree * "C)")
   ) +
   # facet_wrap(vars(cluster)) + # uncomment if you want each cluster in a separate plot
-  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0))
+  coord_cartesian(expand = FALSE, ylim = c(max_temperature, 0), xlim = c(max_time, 0)) 
 ```
+
+Have a final look on the distribution of the paths:
+
+```{r gof_hist2}
+path_families |>
+  select(segment, cluster, Comp_GOF) |>
+  distinct() |> 
+  ggplot(aes(Comp_GOF, fill = cluster)) +
+  geom_histogram(color = "white", binwidth = .025) +
+  scale_color_viridis_d(aesthetics = c("fill", "color")) +
+  coord_cartesian(xlim = c(0, 1), expand = FALSE, clip = "off") +
+  labs(
+    x = "goodness-of-fit statistic", title = "Histogram of path's goodness-of-fit values"
+  )
+```
+
