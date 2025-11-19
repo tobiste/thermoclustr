@@ -59,7 +59,6 @@ the \code{simplify} parameter can be adjusted to reduce the number of vertices
 along the paths to speed up the processing time.
 }
 \examples{
-# example data
 data(tT_paths1)
 tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 

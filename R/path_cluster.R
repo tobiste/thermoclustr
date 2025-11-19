@@ -62,7 +62,6 @@
 #' for determining the optimal number of clusters.
 #'
 #' @examples
-#' # example data
 #' data(tT_paths1)
 #' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'
@@ -135,11 +134,10 @@ cluster_paths <- function(
   }
 
   if (isTRUE(warn)) {
-    n.x <- nrow(res)
     count.cluster <- count_cluster(res)
 
     n.cluster <- length(count.cluster)
-    percentage.cluster <- count.cluster / n.x
+    percentage.cluster <- count.cluster / sum(count.cluster)
 
     if (any(percentage.cluster < threshold)) {
       warning(paste0("Cluster with less than ", threshold * 100, "% of total paths detected \U1F622"))
@@ -164,14 +162,13 @@ cluster_paths <- function(
 #' @export
 #' @return named array of integers, the number of paths in each cluster
 #' @examples
-#' # example data
 #' data(tT_paths1)
 #' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'
 #' # cluster the paths
 #' res <- cluster_paths(tT_paths1, k = 3)
 #' count_cluster(res)
-count_cluster <- function(x) split(x, x$cluster) |> sapply(nrow)
+count_cluster <- function(x) split(x, x$cluster) |> sapply(function(i){nrow(unique(i))})
 
 
 #' Hierarchical Clustering of Cooling Paths
@@ -200,7 +197,6 @@ count_cluster <- function(x) split(x, x$cluster) |> sapply(nrow)
 #' @export
 #'
 #' @examples
-#' # example data
 #' data(tT_paths1)
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'
@@ -292,7 +288,6 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' @export
 #'
 #' @examples
-#' # example data
 #' data(tT_paths1)
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'
@@ -400,7 +395,6 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
 #' @export
 #'
 #' @examples
-#' # example data
 #' data(tT_paths1)
 #' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 #'

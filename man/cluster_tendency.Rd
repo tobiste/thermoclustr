@@ -30,7 +30,6 @@ Calculates the Hopkins statistic on the transformed
 Hausdorff or Fréchet distance matrix using metric multidimensional scaling.
 }
 \examples{
-# example data
 data(tT_paths1)
 tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 

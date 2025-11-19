@@ -31,7 +31,6 @@ It includes also
 Convenience function to compute hierarchical clustering and cut the tree into k clusters
 }
 \examples{
-# example data
 data(tT_paths1)
 tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 

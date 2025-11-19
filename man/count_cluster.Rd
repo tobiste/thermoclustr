@@ -17,7 +17,6 @@ Helper function to calculate the paths in each cluster and give a warning
 message if one cluster contains not enough paths to be considered significant
 }
 \examples{
-# example data
 data(tT_paths1)
 tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
 
