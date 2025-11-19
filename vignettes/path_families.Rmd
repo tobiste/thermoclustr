@@ -105,7 +105,7 @@ paths_filtered$paths |>
 
 In our example, we will **not** filter the GOF values, because we hope the clustering may identify "hidden" path families that might go undetected if we filter the data too much. If you still want to filter the paths, you could do it likes this:
 
-```{r filter_gof, eval=FALSE, include=TRUE}
+```{r filter_gof, eval=FALSE, include=TRUE, echo=FALSE}
 paths_filtered$paths <- subset(paths_filtered$paths, Comp_GOF > 0.2)
 ```
 
@@ -129,7 +129,7 @@ ggplot(paths_filtered$paths, aes(time, temperature, group = segment, color = Com
   ) +
   scale_color_viridis_b(
     "Goodnes-of-fit (GOF)",
-    limits = c(0, .51),
+    limits = c(0, 1),
     breaks = seq(0, 1, .1),
     oob = squish
   ) +
@@ -253,7 +253,8 @@ ggplot(data = path_families_binned) +
     aes(x = time_median, y = temp_median, color = cluster),
     lwd = 1.5
   ) +
-  scale_color_viridis_d(aesthetics = c("fill", "color")) +
+  scale_color_viridis_d(aesthetics = c("fill", "color"),
+                        begin = .1, end = .9) +
 
   # Axes settings:
   scale_y_reverse() +
@@ -278,7 +279,7 @@ path_families |>
   distinct() |> 
   ggplot(aes(Comp_GOF, fill = cluster)) +
   geom_histogram(color = "white", binwidth = .025) +
-  scale_color_viridis_d(aesthetics = c("fill", "color")) +
+  scale_color_viridis_d(aesthetics = c("fill", "color"), begin = .1, end = .9) +
   coord_cartesian(xlim = c(0, 1), expand = FALSE, clip = "off") +
   labs(
     x = "goodness-of-fit statistic", title = "Histogram of path's goodness-of-fit values"

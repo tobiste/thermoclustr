@@ -13,13 +13,13 @@ coverage](https://codecov.io/gh/tobiste/thermochron/graph/badge.svg)](https://ap
 [![pkgdown](https://github.com/tobiste/thermochron/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
-The goal of thermochron is to provide tools to further analyze thermal
+The goal of {thermochron} is to provide tools to further analyze thermal
 history models in thermochronology, including estimating cooling path
 densities, and path families.
 
 ## Installation
 
-You can install the development version of thermochron from
+You can install the development version of {thermochron} from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -41,6 +41,9 @@ library(ggplot2)
 # load example dataset of a HeFTy model output
 path2myfile <- system.file("112-72_30_H1_50-inv.txt", package = "thermochron")
 tT_paths <- read_hefty(path2myfile)
+
+# set `theme_classic()` as the default ggplot theme
+theme_set(theme_classic())
 ```
 
 The HeFTy model contains the modeled paths, the initial model
@@ -53,10 +56,9 @@ the imported model `tT_paths`:
 
 ``` r
 # (Optional) Create a subset of interest of the data:
-tT_paths <- crop_paths(tT_paths, time = c(0, 400), temperature = c(0, 250))
+tT_paths_cropped <- crop_paths(tT_paths, time = c(0, 400), temperature = c(0, 250))
 
-
-tT_paths$paths |>
+tT_paths_cropped$paths |>
   ggplot(aes(time, temperature, color = Comp_GOF, group = segment)) +
   geom_path() +
   scale_color_viridis_c("GOF") +
@@ -69,9 +71,10 @@ tT_paths$paths |>
 The path density can be visualized using `plot_path_density_filled()`:
 
 ``` r
-plot_path_density_filled(tT_paths, geom = "raster") +
+plot_path_density_filled(tT_paths_cropped, geom = "raster") +
   scale_x_reverse(position = "top") +
-  scale_y_reverse()
+  scale_y_reverse() +
+  scale_fill_viridis_c()
 ```
 
 <img src="man/figures/README-density-1.png" width="100%" />
@@ -80,11 +83,11 @@ To cluster the data, the following steps are required:
 
 ``` r
 # Cluster the paths
-paths_cluster <- cluster_paths(tT_paths, k = 2)
+paths_cluster <- cluster_paths(tT_paths_cropped, k = 2)
 
 # Join with path dataset
 paths_clustered <- merge(
-  tT_paths$paths,
+  tT_paths_cropped$paths,
   paths_cluster,
   by = "segment"
 )
@@ -105,7 +108,7 @@ paths_clustered |>
   geom_path() +
   scale_x_reverse(position = "top") +
   scale_y_reverse() +
-  scale_color_viridis_d("Cluster")
+  scale_color_viridis_d("Cluster", begin = .1, end = .9)
 ```
 
 <img src="man/figures/README-plot2-1.png" width="100%" />
