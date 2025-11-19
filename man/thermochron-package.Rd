@@ -13,7 +13,7 @@ Density estimates and cluster methods for HeFTy-modeled time-temperature cooling
 
 Authors:
 \itemize{
-  \item Tais Fontes Pinto \email{tais.fontespinto@ucalgary.ca} [copyright holder]
+  \item Taís Fontes Pinto \email{tais.fontespinto@ucalgary.ca} [copyright holder]
 }
 
 }
