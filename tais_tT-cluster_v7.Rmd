@@ -23,7 +23,6 @@ library(ggtext)
 library(glue)
 library(viridis)
 library(systemfonts)
-library(ggalt)
 
 theme_set(theme_classic(base_family = "Roboto Condensed", base_size = 12))
 theme_update(
