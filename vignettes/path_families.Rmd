@@ -116,7 +116,7 @@ set.seed(20250411)
 tT_diss <- path_diss(paths_filtered, dist = "Hausdorff")
 ```
 
-> An alternative measure for the dissimilarities is the Fréchet distance using `dist = 'Frechet'`.
+> An alternative measure for the dissimilarities is the Fr&#233;chet distance using `dist = 'Frechet'`.
 
 
 ## Is the data clustered?

@@ -22,11 +22,11 @@ its p-value (under the null hypothesis of spatial randomness).
 \description{
 Calculate the Hopkins statistic of Hausdorff or Fréchet distance matrices
 to check clusterability of thermochronologic cooling paths.
-If the value is close to 1 (far above 0.5), then the
-dataset is significantly clusterable.
+Calculated values 0-0.3 indicate regularly-spaced data. Values around 0.5
+indicate random data. Values 0.7-1 indicate clustered data.
 }
 \details{
-The algorithm calculates the Hopkins statistic on a transformed
+Calculates the Hopkins statistic on the transformed
 Hausdorff or Fréchet distance matrix using metric multidimensional scaling.
 }
 \examples{

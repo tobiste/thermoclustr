@@ -1,7 +1,7 @@
 #' Clustering thermal histories models
 #'
 #' Groups t-T paths into "path families" based on the *Hausdorff* or
-#' *Fréchet distance* between paths.
+#' *Fr&#233;chet distance* between paths.
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]), an
 #' object of `"tTdiss"` (output of [path_diss()]),
@@ -240,7 +240,7 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #' Dissimilarity of thermochronology cooling paths
 #'
 #' Calculates the dissimilarity matrix and Hopkins statistic for
-#' thermochronology cooling paths using the *Hausdorff* or the *Fréchet distance*.
+#' thermochronology cooling paths using the *Hausdorff* or the *Fr&#233;chet distance*.
 #'
 #' @param x either an object of class `"HeFTy"` (output of [read_hefty()]) or
 #' a `data.frame` containing the `time`, `temperature`, and `segment` columns of the modeled paths.
@@ -267,7 +267,7 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
 #'
 #' @details The Hausdorff distance is the greatest of all the distances from a
 #' point in one set to the closest point in the other set.
-#' The Fréchet distance additionally takes into account the location and
+#' The Fr&#233;chet distance additionally takes into account the location and
 #' ordering of the points along the curves (the "flow").
 #'
 #' @note The algorithm calculates the pairwise dissimilarities between the n
@@ -372,10 +372,10 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
 
 #' Cluster tendency of thermochronology cooling paths
 #'
-#' Calculate the Hopkins statistic of Hausdorff or Fréchet distance matrices
+#' Calculate the Hopkins statistic of Hausdorff or Fr&#233;chet distance matrices
 #' to check clusterability of thermochronologic cooling paths.
-#' If the value is close to 1 (far above 0.5), then the
-#' dataset is significantly clusterable.
+#' Calculated values 0-0.3 indicate regularly-spaced data. Values around 0.5 
+#' indicate random data. Values 0.7-1 indicate clustered data.
 #'
 #' @param x either an object of class `"tTdiss"` (output of [path_diss()]) or a
 #' distance matrix.
@@ -389,8 +389,8 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
 #' @importFrom hopkins hopkins hopkins.pval
 #' @importFrom stats cmdscale
 #'
-#' @details The algorithm calculates the Hopkins statistic on a transformed
-#' Hausdorff or Fréchet distance matrix using metric multidimensional scaling.
+#' @details Calculates the Hopkins statistic on the transformed
+#' Hausdorff or Fr&#233;chet distance matrix using metric multidimensional scaling.
 #'
 #'
 #' @export
