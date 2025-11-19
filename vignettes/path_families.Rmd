@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 #output: pdf_document
 #latex_engine: xelatex 
+description: >
+  Introduction into clustering cooling paths
 vignette: >
   %\VignetteIndexEntry{Path families}
   %\VignetteEncoding{UTF-8}
@@ -91,7 +93,7 @@ hist(paths_filtered$paths$Comp_GOF,
 
 In our example, we will **not** filter the GOF values, because we hope the clustering may identify "hidden" path families that might go undetected if we filter the data too much. If you still want to filter the paths, you could do it likes this:
 
-```{r filter_god, eval=FALSE, include=TRUE}
+```{r filter_gof, eval=FALSE, include=TRUE}
 paths_filtered$paths <- subset(paths_filtered$paths, Comp_GOF > 0.2)
 ```
 

@@ -22,7 +22,7 @@
 #'
 #' @returns plot
 #' @importFrom viridisLite viridis
-#' @importFrom graphics plot lines legend
+#' @importFrom graphics plot lines legend title mtext
 #' @export
 #'
 #' @examples
@@ -122,7 +122,7 @@ plot_paths <- function(x, cluster = NULL, do.cluster = FALSE, cluster.params = l
         fill = cols,
         bty = "o", bg = "white"
       )
-      title(main = "Inverse model thermal history paths")
+      graphics::title(main = "Inverse model thermal history paths")
     }
   }
 }

@@ -23,13 +23,13 @@ plot_path_density_filled(tT_paths1, bins = 10, GOF_rank = 100, samples = 100, sh
 
 
 tt_subset <- tT_paths1$paths |>
-  crop_paths(time = c(0, 500), temperature = c(0, 250)) |>
+  crop_paths(time = c(0, 400), temperature = c(0, 250)) |>
   dplyr::filter(Comp_GOF >= .1)
 
 a <- path_diss(tt_subset, "Hausdorff")
 b <- path_diss(tt_subset, "Frechet")
 
-nbc <- path_nbclust(a)$optimal
+nbc <- path_nbclust(a)
 
 cluster_paths(a, nbc, method = "hclust")
 cluster_paths(a, nbc, method = "kmeans")

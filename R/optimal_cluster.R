@@ -138,6 +138,6 @@ path_nbclust <- function(x,
     ) +
     geom_vline(xintercept = which.max(v), linetype = 2, color = linecolor)
 
-  return(silh_plot)
-  invisible(optimal_nbc)
+  return(optimal_nbc)
+  invisible(silh_plot)
 }

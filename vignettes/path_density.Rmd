@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 #output: pdf_document
 #latex_engine: xelatex 
+description: >
+  Introduction into creating density plots of cooling paths
 vignette: >
   %\VignetteIndexEntry{Path density plots}
   %\VignetteEncoding{UTF-8}
