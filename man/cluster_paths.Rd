@@ -11,6 +11,8 @@ cluster_paths(
   method = c("hclust", "kmeans", "pam", "dbscan", "hdbscan", "specc", "diana", "agnes",
     "clara", "fanny"),
   naming = c("asis", "GOF", "size"),
+  warning = TRUE,
+  threshold = 0.01,
   ...
 )
 }
@@ -48,6 +50,14 @@ Noise (DBSCAN) using \code{\link[dbscan:dbscan]{dbscan::dbscan()}} (\strong{see 
 \code{"GOF"} (ranks of the mean GOF values within clusters), and
 \code{"size"} (ranks of the size of clusters).
 Outliers detected by \code{dbscan} of \code{hdbscan} will always named as \code{0}.}
+
+\item{warning}{logical. Should there be a warning message if at least one cluster
+contains less than (\code{threshold} * 100)\% of the total paths?}
+
+\item{threshold}{numeric. The significance threshold as a fraction of the
+total amount of paths (\code{0.01} by default). If one cluster contains less
+paths per total paths than this value, a warning message is created. Ignored
+if \code{warning} is \code{FALSE}.}
 
 \item{...}{additional arguments passed to cluster method.}
 }
