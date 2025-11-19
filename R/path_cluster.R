@@ -168,7 +168,7 @@ cluster_paths <- function(
 #' # cluster the paths
 #' res <- cluster_paths(tT_paths1, k = 3)
 #' count_cluster(res)
-count_cluster <- function(x) split(x, x$cluster) |> sapply(function(i){nrow(unique(i))})
+count_cluster <- function(x) split(x, x$cluster) |> sapply(nrow)
 
 
 #' Hierarchical Clustering of Cooling Paths
