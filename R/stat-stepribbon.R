@@ -3,13 +3,13 @@
 #' Provides stairstep values for ribbon plots
 #'
 #' @inheritParams ggplot2::geom_ribbon
-#' @param geom character. which geom to use; defaults to "`ribbon`"
-#' @param direction character. `hv` for horizontal-vertical steps, `vh` for
+#' @param geom character. which geom to use; defaults to `"ribbon"`
+#' @param direction character. `"hv"` for horizontal-vertical steps, `"vh"` for
 #'   vertical-horizontal steps
 #' @references [https://groups.google.com/forum/?fromgroups=#!topic/ggplot2/9cFWHaH1CPs]()
 #'
 #' @source This is a copy of the `stat_stepribbon` function of the `ggalt` legacy package.
-#' @importFrom ggplot2 layer ggproto
+#' @importFrom ggplot2 layer ggproto geom_ribbon
 #'
 #' @export
 #' @examples

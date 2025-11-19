@@ -40,7 +40,7 @@ the plot data. The return value must be a \code{data.frame}, and
 will be used as the layer data. A \code{function} can be created
 from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
-\item{geom}{character. which geom to use; defaults to "\code{ribbon}"}
+\item{geom}{character. which geom to use; defaults to \code{"ribbon"}}
 
 \item{position}{A position adjustment to use on the data for this layer. This
 can be used in various ways, including to prevent overplotting and
@@ -71,7 +71,7 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
-\item{direction}{character. \code{hv} for horizontal-vertical steps, \code{vh} for
+\item{direction}{character. \code{"hv"} for horizontal-vertical steps, \code{"vh"} for
 vertical-horizontal steps}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}'s \code{params} argument. These
