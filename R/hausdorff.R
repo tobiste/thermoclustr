@@ -108,6 +108,9 @@ hausdorff_list_R <- function(x) {
 #' @rdname hausdorff_dmat
 #' @export
 hausdorff_list_C <- function(x) {
+  # This code is faster than the R version. However, the code is still overall 
+  # way slower than the sf version. The reason is that it still loops through 
+  # 1000's of matrices with each 1000's of rows...
   keep <- vapply(x, function(m) !is.null(m) && length(m) > 0L, logical(1))
   mats <- x[keep]
   
@@ -139,6 +142,9 @@ NULL
 #' @rdname frechet_dmat
 #' @export
 cont_frechet_list_C <- function(x) {
+  # The code is still overall 
+  # way slower than the sf version. The reason is that it still loops through 
+  # 1000's of matrices with each 1000's of rows...
   keep <- vapply(x, function(m) !is.null(m) && length(m) > 0L, logical(1))
   mats <- x[keep]
   
@@ -150,6 +156,9 @@ cont_frechet_list_C <- function(x) {
 #' @rdname frechet_dmat
 #' @export
 disc_frechet_list_C <- function(x) {
+  # The code is still overall 
+  # way slower than the sf version. The reason is that it still loops through 
+  # 1000's of matrices with each 1000's of rows...
   keep <- vapply(x, function(m) !is.null(m) && length(m) > 0L, logical(1))
   mats <- x[keep]
   
