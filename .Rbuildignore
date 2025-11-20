@@ -11,5 +11,5 @@
 ^LICENSE\.md$
 ^doc$
 ^Meta$
-^R/hausdorff\.R$
 ^data-raw$
+^R/hausdorff\.R$

@@ -10,33 +10,83 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// hausdorff_rcpp
-double hausdorff_rcpp(NumericMatrix P, NumericMatrix Q);
-RcppExport SEXP _thermochron_hausdorff_rcpp(SEXP PSEXP, SEXP QSEXP) {
+// cont_frechet_cpp
+double cont_frechet_cpp(const NumericMatrix& P, const NumericMatrix& Q);
+RcppExport SEXP _thermochron_cont_frechet_cpp(SEXP PSEXP, SEXP QSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type P(PSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Q(QSEXP);
-    rcpp_result_gen = Rcpp::wrap(hausdorff_rcpp(P, Q));
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type P(PSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Q(QSEXP);
+    rcpp_result_gen = Rcpp::wrap(cont_frechet_cpp(P, Q));
     return rcpp_result_gen;
 END_RCPP
 }
-// hausdorff_matrix_rcpp
-NumericMatrix hausdorff_matrix_rcpp(List x_list);
-RcppExport SEXP _thermochron_hausdorff_matrix_rcpp(SEXP x_listSEXP) {
+// discrete_frechet_cpp
+double discrete_frechet_cpp(NumericMatrix A, NumericMatrix B);
+RcppExport SEXP _thermochron_discrete_frechet_cpp(SEXP ASEXP, SEXP BSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type x_list(x_listSEXP);
-    rcpp_result_gen = Rcpp::wrap(hausdorff_matrix_rcpp(x_list));
+    Rcpp::traits::input_parameter< NumericMatrix >::type A(ASEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(discrete_frechet_cpp(A, B));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pairwise_cont_frechet_cpp
+NumericMatrix pairwise_cont_frechet_cpp(List mats);
+RcppExport SEXP _thermochron_pairwise_cont_frechet_cpp(SEXP matsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type mats(matsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pairwise_cont_frechet_cpp(mats));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pairwise_discr_frechet_cpp
+NumericMatrix pairwise_discr_frechet_cpp(List mats);
+RcppExport SEXP _thermochron_pairwise_discr_frechet_cpp(SEXP matsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type mats(matsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pairwise_discr_frechet_cpp(mats));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hausdorff_cpp
+double hausdorff_cpp(const NumericMatrix& P, const NumericMatrix& Q);
+RcppExport SEXP _thermochron_hausdorff_cpp(SEXP PSEXP, SEXP QSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type P(PSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Q(QSEXP);
+    rcpp_result_gen = Rcpp::wrap(hausdorff_cpp(P, Q));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pairwise_hausdorff_cpp
+NumericMatrix pairwise_hausdorff_cpp(List mats);
+RcppExport SEXP _thermochron_pairwise_hausdorff_cpp(SEXP matsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type mats(matsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pairwise_hausdorff_cpp(mats));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_thermochron_hausdorff_rcpp", (DL_FUNC) &_thermochron_hausdorff_rcpp, 2},
-    {"_thermochron_hausdorff_matrix_rcpp", (DL_FUNC) &_thermochron_hausdorff_matrix_rcpp, 1},
+    {"_thermochron_cont_frechet_cpp", (DL_FUNC) &_thermochron_cont_frechet_cpp, 2},
+    {"_thermochron_discrete_frechet_cpp", (DL_FUNC) &_thermochron_discrete_frechet_cpp, 2},
+    {"_thermochron_pairwise_cont_frechet_cpp", (DL_FUNC) &_thermochron_pairwise_cont_frechet_cpp, 1},
+    {"_thermochron_pairwise_discr_frechet_cpp", (DL_FUNC) &_thermochron_pairwise_discr_frechet_cpp, 1},
+    {"_thermochron_hausdorff_cpp", (DL_FUNC) &_thermochron_hausdorff_cpp, 2},
+    {"_thermochron_pairwise_hausdorff_cpp", (DL_FUNC) &_thermochron_pairwise_hausdorff_cpp, 1},
     {NULL, NULL, 0}
 };
 

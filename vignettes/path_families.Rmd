@@ -218,6 +218,9 @@ count_cluster(cluster_res)
 
 In our example, the paths are almost equally distributed in two clusters.
 
+
+
+
 We can now merge the cluster result with the original path data.frame: 
 
 ```{r cluster2}
@@ -247,7 +250,7 @@ ggplot(data = path_families_binned) +
     aes(x = time_median, ymin = temp_5, ymax = temp_95, group = cluster, fill = cluster),
     stat = "stepribbon",
     inherit.aes = FALSE,
-    alpha = .5
+    alpha = .66
   ) +
   geom_step(
     aes(x = time_median, y = temp_median, color = cluster),
@@ -284,5 +287,23 @@ path_families |>
   labs(
     x = "goodness-of-fit statistic", title = "Histogram of path's goodness-of-fit values"
   )
+```
+
+## Multidimensional Scaling
+
+Another way to look at the path-dissimilarities is by transforming the Hausdorff distance matrix by multidimensional scaling (MDS).
+MDS reduces the dimensions of the original dataset, so that the paths will be plotted as points. Thereby, the
+plot "maps" the dissimilarities in a way so that similar paths plot as close points, and different paths will be far apart. 
+
+The `path_diss()` function already calculated the MDS coordinates, which can now be plotted and colored by the cluster results.
+
+```{r mds}
+tT_diss_mds <- as.data.frame(tT_diss$mds) |> 
+  bind_cols(cluster_res)
+
+ggplot(tT_diss_mds, aes(V1, V2, color = cluster)) +
+  geom_point() +
+  scale_color_viridis_d(aesthetics = c("fill", "color"), begin = .1, end = .9) +
+  labs(title = "Multidimensional scaling of paths", x = "Dim 1", y = "Dim 2") 
 ```
 
