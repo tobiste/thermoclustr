@@ -1,29 +1,3 @@
-#' Locate elbow in elbow curve of wss (within-cluster sum of squares)
-#'
-#' @param wss_values numeric vector of wss values.
-#'
-#' @returns integer index of the elbow point in the wss curve.
-#' @noRd
-.find_elbow <- function(wss_values) {
-  n_points <- length(wss_values)
-  all_coords <- cbind(1:n_points, wss_values)
-
-  # Line from first to last point
-  line_vec <- all_coords[n_points, ] - all_coords[1, ]
-  line_vec_norm <- line_vec / sqrt(sum(line_vec^2))
-
-  # Compute the distance from each point to the line
-  vec_from_first <- sweep(all_coords, 2, all_coords[1, ])
-  scalar_product <- rowSums(vec_from_first * matrix(rep(line_vec_norm, n_points), ncol = 2, byrow = TRUE))
-  proj <- outer(scalar_product, line_vec_norm)
-  vec_to_line <- vec_from_first - proj
-  dist_to_line <- sqrt(rowSums(vec_to_line^2))
-
-  which.max(dist_to_line)
-}
-
-
-
 #' Convenience function to find average silhouette width in cluster
 #'
 #' @param d distance matrix

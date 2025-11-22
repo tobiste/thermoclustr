@@ -306,4 +306,26 @@ ggplot(tT_diss_mds, aes(V1, V2, color = cluster)) +
   scale_color_viridis_d(aesthetics = c("fill", "color"), begin = .1, end = .9) +
   labs(title = "Multidimensional scaling of paths", x = "Dim 1", y = "Dim 2") 
 ```
+> Note that MDS is a dimension-reducing transformation Thus, the 2D representation if 
+only a modified projection of the true relationship of the data and thus can 
+depict distortions and overlaps.
 
+This visualization offers to explore correlations between the path similarities (or clusters) and other properties of the paths, such as the goodness-of-fit values of the Hefty model:
+
+```{r mds_gof}
+# join the mds coordinates with the path properties
+left_join(
+  tT_diss_mds, 
+  distinct(select(paths, segment, Comp_GOF)), 
+  join_by(segment)
+  ) |> 
+ggplot(aes(V1, V2, color = Comp_GOF, shape = cluster)) +
+  geom_point() +
+  scale_color_viridis_b(
+    "Goodnes-of-fit (GOF)",
+    limits = c(0, 1),
+    breaks = seq(0, 1, .1),
+    oob = squish
+  ) +
+  labs(title = "Multidimensional scaling of paths", x = "Dim 1", y = "Dim 2") 
+```
