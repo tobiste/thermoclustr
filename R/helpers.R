@@ -20,8 +20,8 @@
 #' x <- stats::rbeta(1e5, 3.43, 5.55)
 #' fitbeta(x)
 fitbeta <- function(x, range = c(0, 1), na.rm = FALSE){
-  xm <- (mean(x, na.rm = FALSE) - range[1]) / (range[2] - range[1])
-  xv <- var(x, na.rm = FALSE) / (range[2] - range[1])^2
+  xm <- (mean(x, na.rm = na.rm) - range[1]) / (range[2] - range[1])
+  xv <- var(x, na.rm = na.rm) / (range[2] - range[1])^2
   
   temp1 <- xm * (1 - xm)
   
