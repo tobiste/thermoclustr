@@ -17,6 +17,7 @@
 #' [ggplot2::geom_density_2d()] and [ggplot2::stat_density_2d()].
 #' For more information at overriding these connections, see how the stat and geom arguments work.
 #' @param n integer. Number of grid points in each direction.
+#' @param weights numeric vector. Weights for each path segment. 
 #' @param ... Arguments passed on to [densify_paths()] (only if `densify=TRUE`).
 #'
 #' @return ggplot
@@ -29,6 +30,7 @@
 #' plot_path_density(tT_paths1)
 #' plot_path_density_filled(tT_paths1)
 #' plot_path_density_filled(tT_paths1, geom = "raster")
+#' plot_path_density_filled_weighted(tT_paths1, weights = tT_paths1$paths$Comp_GOF)
 NULL
 
 #' @rdname plt_density
@@ -69,4 +71,61 @@ plot_path_density <- function(x, bins = 50L, densify = TRUE, show.legend = NA, n
 
   ggplot(data = x, aes(x = time, y = temperature)) +
     geom_density2d(contour_var = "ndensity", bins = bins, show.legend = show.legend, n = n)
+}
+
+
+kde2d.weighted <- function(x, y, w, h, n = 25, lims = c(range(x), range(y))) {
+  nx <- length(x)
+  if (length(y) != nx) stop("data vectors must be the same length")
+  if (length(w) != nx & length(w) != 1) stop("weight vectors must be 1 or length of data")
+  gx <- seq(lims[1], lims[2], length = n) # gridpoints x
+  gy <- seq(lims[3], lims[4], length = n) # gridpoints y
+  if (missing(h)) h <- c(MASS::bandwidth.nrd(x), MASS::bandwidth.nrd(y))
+  if (missing(w)) w <- numeric(nx) + 1
+  h <- h / 4
+  ax <- outer(gx, x, "-") / h[1] # distance of each point to each grid point in x-direction
+  ay <- outer(gy, y, "-") / h[2] # distance of each point to each grid point in y-direction
+  z <- (matrix(rep(w, n), nrow = n, ncol = nx, byrow = TRUE) * matrix(dnorm(ax), n, nx)) %*% t(matrix(dnorm(ay), n, nx)) / (sum(w) * h[1] * h[2]) # z is the density
+  return(list(x = gx, y = gy, z = z))
+}
+
+
+#' @rdname plt_density
+#' @export
+#' @importFrom ggplot2 aes geom_tile ggplot
+#' @importFrom dplyr left_join bind_cols
+plot_path_density_filled_weighted <- function(x, bins = 50L, densify = TRUE,
+                                              show.legend = NA, #geom = "density_2d_filled",
+                                              n = 100L, weights = NULL, ...) {
+  time <- temperature <- ndensity <- NULL
+
+  segments <- x$paths$segment
+  if (is.null(weights)) {
+    w <- rep(1, length(segments))
+  } else {
+    w <- x$paths$Comp_GOF
+  }
+
+  weights <- data.frame(segment = segments, w = w) |>
+    unique()
+
+  if (isTRUE(densify)) {
+    x <- densify_paths(x, ...) |>
+      left_join(weights, by = "segment")
+  }
+
+  kde_results <- kde2d.weighted(x$time, x$temperature, w = x$w, n = n, h = rep(bins, 2))
+
+  kde_data <- expand.grid(x = kde_results$x, y = kde_results$y)
+  kde_data$z <- as.vector(kde_results$z)
+
+  #if (geom == "density_2d_filled") {
+  ggplot(kde_data, aes(x = x, y = y, fill = z)) +
+    geom_tile(show.legend = show.legend)
+  # } else {
+  #   interpdf <- interp::interp2xyz(interp::interp(x=kde_data$x, y=kde_data$y, z=kde_data$z, duplicate="mean"), data.frame=TRUE)
+  #   ggplot(interpdf, aes(x = x, y = y, z = z, fill = z)) +
+  #    # geom_tile() +
+  #    geom_contour() 
+  # }
 }

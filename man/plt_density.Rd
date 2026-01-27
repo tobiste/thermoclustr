@@ -4,6 +4,7 @@
 \alias{plt_density}
 \alias{plot_path_density_filled}
 \alias{plot_path_density}
+\alias{plot_path_density_filled_weighted}
 \title{Path Density Plot}
 \usage{
 plot_path_density_filled(
@@ -22,6 +23,16 @@ plot_path_density(
   densify = TRUE,
   show.legend = NA,
   n = 100L,
+  ...
+)
+
+plot_path_density_filled_weighted(
+  x,
+  bins = 50L,
+  densify = TRUE,
+  show.legend = NA,
+  n = 100L,
+  weights = NULL,
   ...
 )
 }
@@ -47,6 +58,8 @@ For more information at overriding these connections, see how the stat and geom 
 \item{n}{integer. Number of grid points in each direction.}
 
 \item{...}{Arguments passed on to \code{\link[=densify_paths]{densify_paths()}} (only if \code{densify=TRUE}).}
+
+\item{weights}{numeric vector. Weights for each path segment.}
 }
 \value{
 ggplot
@@ -60,4 +73,5 @@ data(tT_paths1)
 plot_path_density(tT_paths1)
 plot_path_density_filled(tT_paths1)
 plot_path_density_filled(tT_paths1, geom = "raster")
+plot_path_density_filled_weighted(tT_paths1, weights = tT_paths1$paths$Comp_GOF)
 }

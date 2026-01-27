@@ -126,7 +126,6 @@ path_distances <- function(x, which = c("Hausdorff", "Frechet"), par = 0) {
   CPL_geos_dist(x, x, which, par) |> as.dist()
 }
 
-
 path_distances_R <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0){
   segment <- NULL
   dist <- match.arg(dist)
