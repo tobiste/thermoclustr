@@ -24,7 +24,7 @@ columns to be merged with data in \code{x}}
 
 \item{do.cluster}{logical. Whether clustering with arguments specified in
 \code{cluster.params} should be applied. This will add information about the used
-dissimilarity measure and Hopkin's statistic to the plot. Is ignored if
+dissimilarity measure and Hopkins statistic to the plot. Is ignored if
 \code{cluster} is specified.}
 
 \item{cluster.params}{list. Arguments passed to \code{\link[=cluster_paths]{cluster_paths()}} function.
@@ -47,15 +47,15 @@ the paths are color coded by the clusters.
 }
 \examples{
 # example data
-data(tT_paths1)
+data(tT_paths)
 
 # Plot the paths:
-plot_paths(tT_paths1)
+plot_paths(tT_paths)
 
 # Show predefined path clusters:
-cl <- cluster_paths(tT_paths1, 2)
-plot_paths(tT_paths1, cluster = cl)
+cl <- cluster_paths(tT_paths, 2)
+plot_paths(tT_paths, cluster = cl)
 
 # Calculate cluster while plotting:
-plot_paths(tT_paths1, do.cluster = TRUE, cluster.params = list(k = 3, method = "pam"))
+plot_paths(tT_paths, do.cluster = TRUE, cluster.params = list(k = 3, method = "pam"))
 }

@@ -79,11 +79,11 @@ Optimal \code{eps} values can be visually estimated from the "knee" in a k-neare
 neighbor distance plot using \code{\link[dbscan:kNNdist]{dbscan::kNNdistplot()}}'.
 }
 \examples{
-data(tT_paths1)
-tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+data(tT_paths)
+tT_paths$paths <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 
 # cluster the paths
-cluster_paths(tT_paths1, k = 3)
+cluster_paths(tT_paths, k = 3)
 }
 \seealso{
 \code{\link[=path_diss]{path_diss()}} for calculating dissimilarities and \code{\link[=path_nbclust]{path_nbclust()}}

@@ -62,11 +62,11 @@
 #' for determining the optimal number of clusters.
 #'
 #' @examples
-#' data(tT_paths1)
-#' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#' data(tT_paths)
+#' tT_paths$paths <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 #'
 #' # cluster the paths
-#' cluster_paths(tT_paths1, k = 3)
+#' cluster_paths(tT_paths, k = 3)
 cluster_paths <- function(
     x, k,
     dist = c("Hausdorff", "Frechet"),
@@ -162,11 +162,11 @@ cluster_paths <- function(
 #' @export
 #' @return named array of integers, the number of paths in each cluster
 #' @examples
-#' data(tT_paths1)
-#' tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#' data(tT_paths)
+#' tT_paths$paths <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 #'
 #' # cluster the paths
-#' res <- cluster_paths(tT_paths1, k = 3)
+#' res <- cluster_paths(tT_paths, k = 3)
 #' count_cluster(res)
 count_cluster <- function(x) split(x, x$cluster) |> sapply(nrow)
 
@@ -197,8 +197,8 @@ count_cluster <- function(x) split(x, x$cluster) |> sapply(nrow)
 #' @export
 #'
 #' @examples
-#' data(tT_paths1)
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#' data(tT_paths)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 #'
 #' # calculate the dissimilarities of the paths:
 #' tT_diss <- path_diss(tT_paths_subset)
@@ -246,8 +246,8 @@ path_hcut <- function(x, k, FUN = stats::hclust, ...) {
 #' @export
 #'
 #' @examples
-#' data(tT_paths1)
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#' data(tT_paths)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 #'
 #' # calculate the dissimilarities of the paths:
 #' tT_diss <- path_diss(tT_paths_subset, densify = 1)

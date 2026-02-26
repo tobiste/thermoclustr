@@ -73,7 +73,7 @@ distmat <- function(X, Y) {
 #' @name hausdorff_dmat
 #'
 #' @examples
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.2)
 #' tT_paths_list <- split(tT_paths_subset, tT_paths_subset$segment) |> lapply(function(x) {
 #'   as.matrix(select(x, time, temperature))
 #' })
@@ -274,7 +274,7 @@ frechet_discrete_fast <- function(P, Q) {
 #' @name frechet_dmat
 #'
 #' @examples
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.2)
 #' tT_paths_list <- split(tT_paths_subset, tT_paths_subset$segment) |> lapply(function(x) {
 #'   as.matrix(select(x, time, temperature))
 #' })

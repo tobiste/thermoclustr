@@ -10,8 +10,8 @@
 #'
 #' @examples
 #' # example data
-#' data(tT_paths1)
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4) |> path_diss()
+#' data(tT_paths)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4) |> path_diss()
 #' .get_ave_sil_width(tT_paths_subset$diss, cluster = kmeans(dmat, 3)$cluster)
 #' .get_ave_sil_width(tT_paths_subset$diss, cluster = path_hcut(dmat, 3)$cluster)
 .get_ave_sil_width <- function(d, cluster) {
@@ -48,12 +48,12 @@
 #'
 #' @examples
 #' # example data
-#' data(tT_paths1)
+#' data(tT_paths)
 #' set.seed(20250411)
-#' res1 <- path_nbclust(tT_paths1, n.threshold = 100)
+#' res1 <- path_nbclust(tT_paths, n.threshold = 100)
 #' res1
 #'
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 #' res2 <- path_nbclust(tT_paths_subset)
 #' res2
 path_nbclust <- function(x,

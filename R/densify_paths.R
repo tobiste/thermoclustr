@@ -37,8 +37,8 @@
 #' @export
 #'
 #' @examples
-#' data(tT_paths1)
-#' densify_paths(tT_paths1)
+#' data(tT_paths)
+#' densify_paths(tT_paths)
 densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples = 100L, replace = FALSE) {
   if (inherits(x, "HeFTy")) x <- x$paths
   L1 <- L2 <- X <- Y <- numeric()
@@ -111,8 +111,8 @@ densify_paths <- function(x, GOF_rank = 10L, n = 10L, max_distance = 1, samples 
 #'
 #' @examples
 #' \dontrun{
-#' data(tT_paths1)
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.5)
+#' data(tT_paths)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.5)
 #' cluster_paths(tT_paths_subset, cluster = 3) |>
 #'   merge(tT_paths_subset, by = "segment") |>
 #'   dplyr::group_by(cluster) |>

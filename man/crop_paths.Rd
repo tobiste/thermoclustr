@@ -24,6 +24,6 @@ Only the \code{path} slot of \code{x} will be modified.
 }
 \examples{
 # example data
-data(tT_paths1)
-crop_paths(tT_paths1, time = c(-Inf, 300), temperature = c(-Inf, 200))
+data(tT_paths)
+crop_paths(tT_paths, time = c(-Inf, 300), temperature = c(-Inf, 200))
 }

@@ -125,7 +125,7 @@ read_hefty_xlsx <- function(fname) {
 #'
 #' @export
 #' @examples
-#' path2myfile <- system.file("112-9-30-zr-inv.txt", package = "thermochron")
+#' path2myfile <- system.file("112-73_30_H1_50-inv.txt", package = "thermochron")
 #' read_hefty(path2myfile)
 read_hefty <- function(fname, remove_orphans = TRUE) {
   Fit <- value <- Comp_GOF <- time <- segment <- temperature <- V1 <- V2 <- V3 <- V4 <- V5 <- constraint <- NULL

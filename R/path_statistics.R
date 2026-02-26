@@ -20,8 +20,8 @@
 #' @export
 #'
 #' @examples
-#' data(tT_paths1)
-#' path_statistics(tT_paths1, w = gof_weighting(tT_paths1$paths$Comp_GOF))
+#' data(tT_paths)
+#' path_statistics(tT_paths, w = gof_weighting(tT_paths$paths$Comp_GOF))
 path_statistics <- function(x, w = NULL, breaks = 50) {
   if (inherits(x, "HeFTy")) x <- x$paths
 

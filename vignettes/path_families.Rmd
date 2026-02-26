@@ -37,10 +37,10 @@ cluster paths from HeFTy inverse thermal history models.
 Load some example data:
 
 ```{r data}
-data(tT_paths1)
+data(tT_paths)
 
 # Extract the paths and reorder the paths by the GOF values:
-paths <- tT_paths1$paths |>
+paths <- tT_paths$paths |>
   arrange(Fit, Comp_GOF) |>
   mutate(segment = fct_reorder(segment, Comp_GOF))
 ```
@@ -50,10 +50,10 @@ Extract the weighted mean path from the loaded objects, and build a constrain bo
 
 ```{r data2}
 # Extract mean path:
-mean_path <- tT_paths1$weighted_mean_path
+mean_path <- tT_paths$weighted_mean_path
 
 # Extract the constraints:
-constraints <- tT_paths1$constraints
+constraints <- tT_paths$constraints
 
 # build a constraint box polygon:
 constraint_box <- do.call(rbind, lapply(seq_along(constraints), function(i) {
@@ -67,7 +67,7 @@ constraint_box <- do.call(rbind, lapply(seq_along(constraints), function(i) {
 
 You can quickly inspect your Hefty output by calling individual list elements:
 ```{r path_summary}
-print(tT_paths1$summary)
+print(tT_paths$summary)
 ```
 
 To analyze a *subset* of the data, you can filter the data using a time and temperature range. For example:
@@ -77,7 +77,7 @@ max_time <- 400
 max_temperature <- 250
 
 paths_filtered <- crop_paths(
-  tT_paths1,
+  tT_paths,
   time = c(-Inf, max_time),
   temperature = c(-Inf, max_temperature)
 )

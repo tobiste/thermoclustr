@@ -24,8 +24,8 @@ tibble.
 Provides binned statistics (mean, median, IQR, quantiles, etc.) of modeled t-T paths.
 }
 \examples{
-data(tT_paths1)
-path_statistics(tT_paths1, w = gof_weighting(tT_paths1$paths$Comp_GOF))
+data(tT_paths)
+path_statistics(tT_paths, w = gof_weighting(tT_paths$paths$Comp_GOF))
 }
 \seealso{
 \code{\link[=gof_weighting]{gof_weighting()}} for rescaling goodness-of-fit values to weights.

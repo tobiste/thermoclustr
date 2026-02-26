@@ -31,8 +31,8 @@ It includes also
 Convenience function to compute hierarchical clustering and cut the tree into k clusters
 }
 \examples{
-data(tT_paths1)
-tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+data(tT_paths)
+tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 
 # calculate the dissimilarities of the paths:
 tT_diss <- path_diss(tT_paths_subset)

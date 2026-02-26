@@ -146,24 +146,27 @@ find_elbow <- function(x) {
 
 #' Helper function to set up parallel workflows depending on the OS
 #'
+#' @param use logical. Enable (`TRUE`) or disable (`FALSE`) parallel computation.
 #' @param workers The number of parallel processes to use.
-#' @export
-#' @importFrom future plan
-#' @importFrom parallel detectCores
+#' 
+#' @importFrom future plan multicore multisession sequential availableCores
 #'
 #' @returns NULL
-setup_parallel <- function(workers = NULL) {
+#' @rdname parallel-setup
+#' @export
+use_parallel <- function(use = TRUE, workers = NULL) {
+  if(isTRUE(use)){
   if (is.null(workers))
-    workers <- max(1, parallel::detectCores() - 1)
+    workers <- max(1, future::availableCores() - 2)
   
   if (.Platform$OS.type == "windows") {
-    
     future::plan(future::multisession, workers = workers)
-    
-  } else {
+  } else {s
     
     # macOS + Linux
     future::plan(future::multicore, workers = workers)
   }
+  } else {
+    future::plan(future::sequential)
+  }
 }
-

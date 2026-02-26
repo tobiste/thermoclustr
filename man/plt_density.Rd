@@ -69,11 +69,11 @@ Creates a 2d kernel density estimate of the t-T paths and plots it using
 ggplot
 }
 \examples{
-data(tT_paths1)
-plot_path_density(tT_paths1)
-plot_path_density_filled(tT_paths1)
-plot_path_density_filled(tT_paths1, geom = "raster")
-plot_path_density_filled_weighted(tT_paths1, weights = gof_weighting(tT_paths1$paths$Comp_GOF))
+data(tT_paths)
+plot_path_density(tT_paths)
+plot_path_density_filled(tT_paths)
+plot_path_density_filled(tT_paths, geom = "raster")
+plot_path_density_filled_weighted(tT_paths, weights = gof_weighting(tT_paths$paths$Comp_GOF))
 }
 \seealso{
 \code{\link[=gof_weighting]{gof_weighting()}} for rescaling goodness-of-fit values to weights.

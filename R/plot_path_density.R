@@ -28,11 +28,11 @@
 #' @name plt_density
 #'
 #' @examples
-#' data(tT_paths1)
-#' plot_path_density(tT_paths1)
-#' plot_path_density_filled(tT_paths1)
-#' plot_path_density_filled(tT_paths1, geom = "raster")
-#' plot_path_density_filled_weighted(tT_paths1, weights = gof_weighting(tT_paths1$paths$Comp_GOF))
+#' data(tT_paths)
+#' plot_path_density(tT_paths)
+#' plot_path_density_filled(tT_paths)
+#' plot_path_density_filled(tT_paths, geom = "raster")
+#' plot_path_density_filled_weighted(tT_paths, weights = gof_weighting(tT_paths$paths$Comp_GOF))
 NULL
 
 #' @rdname plt_density
@@ -76,6 +76,7 @@ plot_path_density <- function(x, bins = 50L, densify = TRUE, show.legend = NA, n
 }
 
 
+#' @importFrom MASS bandwidth.nrd
 kde2d.weighted <- function(x, y, w, h, n = 25, lims = c(range(x), range(y))) {
   nx <- length(x)
   if (length(y) != nx) stop("data vectors must be the same length")

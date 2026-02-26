@@ -44,12 +44,12 @@ dissimilarity matrix using \emph{average silhouette width}.
 }
 \examples{
 # example data
-data(tT_paths1)
+data(tT_paths)
 set.seed(20250411)
-res1 <- path_nbclust(tT_paths1, n.threshold = 100)
+res1 <- path_nbclust(tT_paths, n.threshold = 100)
 res1
 
-tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 res2 <- path_nbclust(tT_paths_subset)
 res2
 }

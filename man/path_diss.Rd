@@ -62,8 +62,8 @@ the \code{simplify} parameter can be adjusted to reduce the number of vertices
 along the paths to speed up the processing time.
 }
 \examples{
-data(tT_paths1)
-tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+data(tT_paths)
+tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 
 # calculate the dissimilarities of the paths:
 tT_diss <- path_diss(tT_paths_subset, densify = 1)
@@ -76,14 +76,14 @@ stats::kmeans(tT_diss$diss, centers = 3)
 set.seed(20250411)
 
 ## select 100 random path segments:
-random_segments <- sample(unique(tT_paths1$paths$segment), size = 100)
-tT_paths_rnd <- subset(tT_paths1$paths, segment \%in\% random_segments)
+random_segments <- sample(unique(tT_paths$paths$segment), size = 100)
+tT_paths_rnd <- subset(tT_paths$paths, segment \%in\% random_segments)
 
 path_diss(tT_paths_rnd)
 
-random_segments2 <- sample(unique(tT_paths1$paths$segment), size = 1000, replace = TRUE)
-tT_paths_rnd2 <- subset(tT_paths1$paths, segment \%in\% random_segments2)
-setup_parallel()
-path_diss_parallel(tT_paths_rnd2)
-future::plan(sequential)
+\dontrun{
+use_parallel(TRUE)
+path_diss_parallel(tT_paths_rnd)
+use_parallel(FALSE)
+}
 }

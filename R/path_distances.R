@@ -50,8 +50,8 @@
 #' @export
 #'
 #' @examples
-#' data(tT_paths1)
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#' data(tT_paths)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 #'
 #' # calculate the dissimilarities of the paths:
 #' tT_diss <- path_diss(tT_paths_subset, densify = 1)
@@ -64,16 +64,16 @@
 #' set.seed(20250411)
 #'
 #' ## select 100 random path segments:
-#' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100)
-#' tT_paths_rnd <- subset(tT_paths1$paths, segment %in% random_segments)
+#' random_segments <- sample(unique(tT_paths$paths$segment), size = 100)
+#' tT_paths_rnd <- subset(tT_paths$paths, segment %in% random_segments)
 #'
 #' path_diss(tT_paths_rnd)
 #' 
-#' random_segments2 <- sample(unique(tT_paths1$paths$segment), size = 1000, replace = TRUE)
-#' tT_paths_rnd2 <- subset(tT_paths1$paths, segment %in% random_segments2)
-#' setup_parallel()
-#' path_diss_parallel(tT_paths_rnd2)
-#' future::plan(sequential)
+#' \dontrun{
+#' use_parallel(TRUE)
+#' path_diss_parallel(tT_paths_rnd)
+#' use_parallel(FALSE)
+#' }
 NULL
 
 #' @rdname path_diss
@@ -87,7 +87,7 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
   paths <- x_dist$paths
   dmat <- x_dist$dmat
   
-  # Hopkin's statistics
+  # Hopkins statistics
   h <- cluster_tendency(dmat, ...)
   
   # MDS
@@ -110,7 +110,7 @@ path_diss_parallel <- function(x, simplify = 0, ...) {
   paths <- x_dist$paths
   dmat <- x_dist$dmat
   
-  # Hopkin's statistics
+  # Hopkins statistics
   h <- cluster_tendency(dmat, ...)
   
   # MDS
@@ -132,7 +132,7 @@ path_diss_parallel <- function(x, simplify = 0, ...) {
 #   paths <- x_dist$paths
 #   dmat <- x_dist$dmat
 #   
-#   # Hopkin's statistics
+#   # Hopkins statistics
 #   h <- cluster_tendency(dmat, ...)
 #   
 #   # MDS
@@ -185,11 +185,12 @@ path_distances_R_parallel <- function(x, simplify = 0, ...){
   })
   
   path_list <- 
-    split(x, x$segment) |> lapply(function(x) {
+    split(x, x$segment) |> 
+    future.apply::future_lapply(function(x) {
        as.matrix(select(x, time, temperature))
     })
   
-  dmat <- hausdorff_list_fast(path_list)
+  dmat <- hausdorff_list_parallel(path_list)
   
   return(list(paths = paths, dmat = dmat))
 }
@@ -234,24 +235,28 @@ paths2lines <- function(x, simplify = 0){
 #' Hausdorff distance (aka Hausdorff dimension)
 #'
 #' @param P,Q numerical matrices, representing points in an m-dim. space.
-#' @param check logical. Checks if input arguments are valid. 
 #'
 #' @returns A single scalar, the Hausdorff distance (dimension).
 #'
-#' @name hausdorff-fast
-#' @noRd
+#' @name hausdorff
 #'
 #' @examples
 #' P <- matrix(c(1, 1, 2, 2, 5, 4, 5, 4), 4, 2)
 #' Q <- matrix(c(4, 4, 5, 5, 2, 1, 2, 1), 4, 2)
-#' hausdorff_fast(P, Q)
-hausdorff_fast <- function(P, Q) {
+#' hausdorff(P, Q)
+NULL
+
+#' @rdname hausdorff
+#' @export
+hausdorff <- function(P, Q) {
   max(
     directed_hausdorff(P, Q),
     directed_hausdorff(Q, P)
   )
 }
 
+#' @rdname hausdorff
+#' @export
 #' @importFrom RANN nn2
 directed_hausdorff <- function(P, Q) {
   nn <- RANN::nn2(Q, query = P, k = 1)
@@ -269,7 +274,7 @@ directed_hausdorff <- function(P, Q) {
 #' @importFrom future.apply future_sapply
 #'
 #' @examples
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.2)
 #' tT_paths_list <- split(tT_paths_subset, tT_paths_subset$segment) |> lapply(function(x) {
 #'   as.matrix(select(x, time, temperature))
 #' })
@@ -289,7 +294,7 @@ hausdorff_list_parallel <- function(x) {
     function(k) {
       i <- combs[k,1]
       j <- combs[k,2]
-      hausdorff_fast(mats[[i]], mats[[j]])
+      hausdorff(mats[[i]], mats[[j]])
     }
   )
   

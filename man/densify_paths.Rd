@@ -53,6 +53,6 @@ If only paths within a specified GOF range should be densified, create a
 subset of the data beforehand using either \code{\link[=subset]{subset()}} or \code{\link[dplyr:filter]{dplyr::filter()}}.
 }
 \examples{
-data(tT_paths1)
-densify_paths(tT_paths1)
+data(tT_paths)
+densify_paths(tT_paths)
 }

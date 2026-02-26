@@ -63,8 +63,8 @@ median_cluster_paths <- function(x, paths, nb) {
 #'
 #' @examples
 #' # example data
-#' data(tT_paths1)
-#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+#' data(tT_paths)
+#' tT_paths_subset <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 #' # calculate dissimilarity and find 3 clusters:
 #' tT_paths_subset_cl <- path_diss(tT_paths_subset) |> cluster_paths(3)
 #' tT_paths_subset_all <- merge(tT_paths_subset, tT_paths_subset_cl, by = "segment")
@@ -73,15 +73,15 @@ median_cluster_paths <- function(x, paths, nb) {
 #' set.seed(20250411)
 #'
 #' ## select 100 random path segments
-#' random_segments1 <- sample(unique(tT_paths1$paths$segment), size = 100)
-#' tT_paths_rnd1 <- subset(tT_paths1$paths, segment %in% random_segments1)
+#' random_segments1 <- sample(unique(tT_paths$paths$segment), size = 100)
+#' tT_paths_rnd1 <- subset(tT_paths$paths, segment %in% random_segments1)
 #' tT_paths_rnd1_cl <- path_diss(tT_paths_rnd1) |>
 #'   cluster_paths(3) # calculate dissimilarity and find 3 clusters
 #' tT_paths_rnd1 <- merge(tT_paths_rnd1, tT_paths_rnd1_cl, by = "segment")
 #'
 #' ## select 100 random path segments
-#' random_segments2 <- sample(unique(tT_paths1$paths$segment), size = 100)
-#' tT_paths_rnd2 <- subset(tT_paths1$paths, segment %in% random_segments2)
+#' random_segments2 <- sample(unique(tT_paths$paths$segment), size = 100)
+#' tT_paths_rnd2 <- subset(tT_paths$paths, segment %in% random_segments2)
 #' tT_paths_rnd2_cl <- path_diss(tT_paths_rnd2) |>
 #'   cluster_paths(4) # calculate dissimilarity and find 4 clusters
 #' tT_paths_rnd2 <- merge(tT_paths_rnd2, tT_paths_rnd2_cl, by = "segment")

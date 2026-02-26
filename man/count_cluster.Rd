@@ -17,10 +17,10 @@ Helper function to calculate the paths in each cluster and give a warning
 message if one cluster contains not enough paths to be considered significant
 }
 \examples{
-data(tT_paths1)
-tT_paths1$paths <- subset(tT_paths1$paths, Comp_GOF >= 0.4)
+data(tT_paths)
+tT_paths$paths <- subset(tT_paths$paths, Comp_GOF >= 0.4)
 
 # cluster the paths
-res <- cluster_paths(tT_paths1, k = 3)
+res <- cluster_paths(tT_paths, k = 3)
 count_cluster(res)
 }

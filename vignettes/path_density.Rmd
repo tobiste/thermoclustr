@@ -64,9 +64,7 @@ tT_paths <- read_hefty(path2myfile)$paths
 ```
 
 ```{r data1, eval=TRUE, include=FALSE}
-data("tT_paths1")
-tT_paths <- tT_paths1
-rm(tT_paths1)
+data("tT_paths")
 ```
 
 ## Part II
