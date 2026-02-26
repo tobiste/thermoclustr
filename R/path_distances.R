@@ -175,6 +175,7 @@ path_distances_R <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, s
   return(list(paths = paths, dmat = dmat))
 }
 
+#' @importFrom future.apply future_lapply
 path_distances_R_parallel <- function(x, simplify = 0, ...){
   segment <- NULL
   # dist <- match.arg(dist)

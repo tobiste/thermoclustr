@@ -34,7 +34,7 @@ paths and the path density as well as how to filter, and cluster the t-T
 paths into 3 path families.
 
 ``` r
-library(thermochron)
+library(thermoclustr)
 library(dplyr)
 library(ggplot2)
 
@@ -84,8 +84,6 @@ To cluster the data, the following steps are required:
 ``` r
 # Cluster the paths
 paths_cluster <- cluster_paths(tT_paths_cropped, k = 3)
-#> Warning in cluster_paths(tT_paths_cropped, k = 3): Cluster with less than 1% of
-#> total paths detected 😢
 
 # Join with path dataset
 paths_clustered <- merge(
