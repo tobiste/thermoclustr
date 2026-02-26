@@ -17,7 +17,7 @@
 
 #' @rdname hausdorff
 #' @importFrom matrixStats rowMins colMins
-hausdorff <- function(P, Q, check = TRUE) {
+hausdorff_old <- function(P, Q, check = TRUE) {
   if(isTRUE(check)){
   if (is.vector(P)) P <- matrix(P, ncol = 1)
   if (is.vector(Q)) Q <- matrix(Q, ncol = 1)
@@ -100,7 +100,7 @@ hausdorff_list_R <- function(x) {
   for (i in seq.int(n)) {
     Pi <- mats[[i]]
     for (j in seq_len(i - 1)) {
-      out[i, j] <- hausdorff(Pi, mats[[j]], check = FALSE)
+      out[i, j] <- hausdorff(Pi, mats[[j]])
     }
   }
 
