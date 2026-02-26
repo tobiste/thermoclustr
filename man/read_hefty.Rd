@@ -21,6 +21,6 @@ Read time, temperature and GOF data of modeled thermal history paths out of
 HeFTy output .txt file
 }
 \examples{
-path2myfile <- system.file("112-73_30_H1_50-inv.txt", package = "thermochron")
+path2myfile <- system.file("112-73_30_H1_50-inv.txt", package = "thermoclustr")
 read_hefty(path2myfile)
 }

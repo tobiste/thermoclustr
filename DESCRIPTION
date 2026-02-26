@@ -1,4 +1,4 @@
-Package: thermochron
+Package: thermoclustr
 Title: Analyzing Inverse Thermal History Models
 Version: 0.0.0.9011
 Authors@R: c(

@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(thermochron)
+library(thermoclustr)
 set.seed(20250411)
 ```
 
@@ -36,21 +36,21 @@ packages by running the following code:
 
 ```{r packages1, eval=FALSE, include=TRUE}
 install.packages("ggplot2")
-remotes::install_github("tobiste/thermochron")
+remotes::install_github("tobiste/thermoclustr")
 ```
 
 
-Next, install the {thermochron} package by running the following code:
+Next, install the {thermoclustr} package by running the following code:
 
 ```{r packages2, include=TRUE,eval=TRUE}
 library(ggplot2)
-library(thermochron)
+library(thermoclustr)
 ```
 
 Define the path to your Hefty output (.txt file). For example:
 
 ```{r fname}
-path2myfile <- "inst/112-9-30-zr-inv.txt"
+path2myfile <- "inst/112-73_30_H1_50-inv.txt"
 ```
 
 > Be aware that R uses forward-slashes (/) to separate folders.

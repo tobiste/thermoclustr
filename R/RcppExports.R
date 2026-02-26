@@ -2,26 +2,26 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cont_frechet_cpp <- function(P, Q) {
-    .Call(`_thermochron_cont_frechet_cpp`, P, Q)
+    .Call(`_thermoclustr_cont_frechet_cpp`, P, Q)
 }
 
 discrete_frechet_cpp <- function(A, B) {
-    .Call(`_thermochron_discrete_frechet_cpp`, A, B)
+    .Call(`_thermoclustr_discrete_frechet_cpp`, A, B)
 }
 
 pairwise_cont_frechet_cpp <- function(mats) {
-    .Call(`_thermochron_pairwise_cont_frechet_cpp`, mats)
+    .Call(`_thermoclustr_pairwise_cont_frechet_cpp`, mats)
 }
 
 pairwise_discr_frechet_cpp <- function(mats) {
-    .Call(`_thermochron_pairwise_discr_frechet_cpp`, mats)
+    .Call(`_thermoclustr_pairwise_discr_frechet_cpp`, mats)
 }
 
 hausdorff_cpp <- function(P, Q) {
-    .Call(`_thermochron_hausdorff_cpp`, P, Q)
+    .Call(`_thermoclustr_hausdorff_cpp`, P, Q)
 }
 
 pairwise_hausdorff_cpp <- function(mats) {
-    .Call(`_thermochron_pairwise_hausdorff_cpp`, mats)
+    .Call(`_thermoclustr_pairwise_hausdorff_cpp`, mats)
 }
 

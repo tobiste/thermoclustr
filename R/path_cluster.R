@@ -45,7 +45,7 @@
 #' neighbor distance plot using [dbscan::kNNdistplot()]'.
 #'
 #' @details If you want to use a different clustering method that is not built
-#' in the current version of `thermochron`, you can use the distance matrix
+#' in the current version of `thermoclustr`, you can use the distance matrix
 #' produced by [path_diss()] and feed your cluster algorithm.
 #'
 #' @return a data.frame with the path `segment` (integer) and `cluster` (factor)

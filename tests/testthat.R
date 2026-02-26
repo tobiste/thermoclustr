@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(thermochron)
+library(thermoclustr)
 
-test_check("thermochron")
+test_check("thermoclustr")

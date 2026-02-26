@@ -5,26 +5,26 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/tobiste/thermochron/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/tobiste/thermochron/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermochron?branch=main)
+coverage](https://codecov.io/gh/tobiste/thermoclustr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr?branch=main)
 [![Codecov test
-coverage](https://codecov.io/gh/tobiste/thermochron/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermochron)
-[![pkgdown](https://github.com/tobiste/thermochron/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/pkgdown.yaml)
+coverage](https://codecov.io/gh/tobiste/thermoclustr/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr)
+[![pkgdown](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
-The goal of {thermochron} is to provide tools to further analyze thermal
-history models in thermochronology, including estimating cooling path
-densities, and path families.
+The goal of {thermoclustr} is to provide tools to further analyze
+thermal history models in thermochronology, including estimating cooling
+path densities, and path families.
 
 ## Installation
 
-You can install the development version of {thermochron} from
+You can install the development version of {thermoclustr} from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("tobiste/thermochron")
+devtools::install_github("tobiste/thermoclustr")
 ```
 
 ## Example
@@ -39,7 +39,7 @@ library(dplyr)
 library(ggplot2)
 
 # load example dataset of a HeFTy model output
-path2myfile <- system.file("112-72_30_H1_50-inv.txt", package = "thermochron")
+path2myfile <- system.file("112-73_30_H1_50-inv.txt", package = "thermoclustr")
 tT_paths <- read_hefty(path2myfile)
 
 # set `theme_classic()` as the default ggplot theme
@@ -84,6 +84,8 @@ To cluster the data, the following steps are required:
 ``` r
 # Cluster the paths
 paths_cluster <- cluster_paths(tT_paths_cropped, k = 2)
+#> Warning in cluster_paths(tT_paths_cropped, k = 2): Cluster with less than 1% of
+#> total paths detected 😢
 
 # Join with path dataset
 paths_clustered <- merge(

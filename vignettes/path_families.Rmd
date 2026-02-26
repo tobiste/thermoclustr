@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(thermochron)
+library(thermoclustr)
 library(ggplot2)
 library(dplyr)
 library(forcats)
