@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // cont_frechet_cpp
 double cont_frechet_cpp(const NumericMatrix& P, const NumericMatrix& Q);
-RcppExport SEXP _thermochron_cont_frechet_cpp(SEXP PSEXP, SEXP QSEXP) {
+RcppExport SEXP _thermoclustr_cont_frechet_cpp(SEXP PSEXP, SEXP QSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -24,7 +24,7 @@ END_RCPP
 }
 // discrete_frechet_cpp
 double discrete_frechet_cpp(NumericMatrix A, NumericMatrix B);
-RcppExport SEXP _thermochron_discrete_frechet_cpp(SEXP ASEXP, SEXP BSEXP) {
+RcppExport SEXP _thermoclustr_discrete_frechet_cpp(SEXP ASEXP, SEXP BSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,7 +36,7 @@ END_RCPP
 }
 // pairwise_cont_frechet_cpp
 NumericMatrix pairwise_cont_frechet_cpp(List mats);
-RcppExport SEXP _thermochron_pairwise_cont_frechet_cpp(SEXP matsSEXP) {
+RcppExport SEXP _thermoclustr_pairwise_cont_frechet_cpp(SEXP matsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -47,7 +47,7 @@ END_RCPP
 }
 // pairwise_discr_frechet_cpp
 NumericMatrix pairwise_discr_frechet_cpp(List mats);
-RcppExport SEXP _thermochron_pairwise_discr_frechet_cpp(SEXP matsSEXP) {
+RcppExport SEXP _thermoclustr_pairwise_discr_frechet_cpp(SEXP matsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -58,7 +58,7 @@ END_RCPP
 }
 // hausdorff_cpp
 double hausdorff_cpp(const NumericMatrix& P, const NumericMatrix& Q);
-RcppExport SEXP _thermochron_hausdorff_cpp(SEXP PSEXP, SEXP QSEXP) {
+RcppExport SEXP _thermoclustr_hausdorff_cpp(SEXP PSEXP, SEXP QSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -70,7 +70,7 @@ END_RCPP
 }
 // pairwise_hausdorff_cpp
 NumericMatrix pairwise_hausdorff_cpp(List mats);
-RcppExport SEXP _thermochron_pairwise_hausdorff_cpp(SEXP matsSEXP) {
+RcppExport SEXP _thermoclustr_pairwise_hausdorff_cpp(SEXP matsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -81,16 +81,16 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_thermochron_cont_frechet_cpp", (DL_FUNC) &_thermochron_cont_frechet_cpp, 2},
-    {"_thermochron_discrete_frechet_cpp", (DL_FUNC) &_thermochron_discrete_frechet_cpp, 2},
-    {"_thermochron_pairwise_cont_frechet_cpp", (DL_FUNC) &_thermochron_pairwise_cont_frechet_cpp, 1},
-    {"_thermochron_pairwise_discr_frechet_cpp", (DL_FUNC) &_thermochron_pairwise_discr_frechet_cpp, 1},
-    {"_thermochron_hausdorff_cpp", (DL_FUNC) &_thermochron_hausdorff_cpp, 2},
-    {"_thermochron_pairwise_hausdorff_cpp", (DL_FUNC) &_thermochron_pairwise_hausdorff_cpp, 1},
+    {"_thermoclustr_cont_frechet_cpp", (DL_FUNC) &_thermoclustr_cont_frechet_cpp, 2},
+    {"_thermoclustr_discrete_frechet_cpp", (DL_FUNC) &_thermoclustr_discrete_frechet_cpp, 2},
+    {"_thermoclustr_pairwise_cont_frechet_cpp", (DL_FUNC) &_thermoclustr_pairwise_cont_frechet_cpp, 1},
+    {"_thermoclustr_pairwise_discr_frechet_cpp", (DL_FUNC) &_thermoclustr_pairwise_discr_frechet_cpp, 1},
+    {"_thermoclustr_hausdorff_cpp", (DL_FUNC) &_thermoclustr_hausdorff_cpp, 2},
+    {"_thermoclustr_pairwise_hausdorff_cpp", (DL_FUNC) &_thermoclustr_pairwise_hausdorff_cpp, 1},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_thermochron(DllInfo *dll) {
+RcppExport void R_init_thermoclustr(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
