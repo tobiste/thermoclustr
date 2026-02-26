@@ -116,7 +116,7 @@ read_hefty_xlsx <- function(fname) {
 #'
 #' @param fname path to the .txt file that contains the HeFTy outputs
 #' @param remove_orphans logical. Whether to remove "orphan" paths, i.e. paths 
-#' that do not start at time = 0. `TRUE` sby default.
+#' that do not start at time = 0. `TRUE` by default.
 #'
 #' @return object of class `"HeFTy"`, i.e. `list` of the individual paths,
 #' the constraints, the weighted mean path and the grain summary statistics.

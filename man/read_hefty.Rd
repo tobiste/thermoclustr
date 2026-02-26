@@ -10,7 +10,7 @@ read_hefty(fname, remove_orphans = TRUE)
 \item{fname}{path to the .txt file that contains the HeFTy outputs}
 
 \item{remove_orphans}{logical. Whether to remove "orphan" paths, i.e. paths
-that do not start at time = 0. \code{TRUE} sby default.}
+that do not start at time = 0. \code{TRUE} by default.}
 }
 \value{
 object of class \code{"HeFTy"}, i.e. \code{list} of the individual paths,
