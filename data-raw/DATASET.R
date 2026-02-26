@@ -18,14 +18,14 @@ tais1 <- read_hefty(fname1)
 saveRDS(tais1, "inst/112-73.rds")
 # saveRDS(tais2, "inst/112-72_30_H1_50-inv.rds")
 
-all(validUTF8(tT_paths1$summary$grain))
+all(validUTF8(tT_paths$summary$grain))
 # all(validUTF8(tT_paths2$summary$grain))
-tT_paths1$summary$grain <- iconv(tT_paths1$summary$grain, from = "", to = "ASCII//TRANSLIT", sub = "")
+tT_paths$summary$grain <- iconv(tT_paths$summary$grain, from = "", to = "ASCII//TRANSLIT", sub = "")
 # tT_paths2$summary$grain <- iconv(tT_paths2$summary$grain, from = "", to = "ASCII//TRANSLIT", sub = "")
-all(validUTF8(tT_paths1$summary$grain))
+all(validUTF8(tT_paths$summary$grain))
 # all(validUTF8(tT_paths2$summary$grain))
 
-tT_paths <- tais1 |> crop_paths(time = c(0, 400), temperature = c(0, 250))
+tT_paths <- tais1 |> crop_paths(time = c(0, 40), temperature = c(0, 251))
 usethis::use_data(tT_paths, overwrite = TRUE)
 
 # tT_paths2 <- tais2 |> crop_paths(time = c(0, 400), temperature = c(0, 250))

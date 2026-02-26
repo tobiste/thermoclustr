@@ -1,16 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# thermochron
+# thermoclustr
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/tobiste/thermoclustr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr?branch=main)
 [![Codecov test
 coverage](https://codecov.io/gh/tobiste/thermoclustr/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr)
-[![pkgdown](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/pkgdown.yaml)
+[![pkgdown](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
 The goal of {thermoclustr} is to provide tools to further analyze
@@ -30,7 +30,7 @@ devtools::install_github("tobiste/thermoclustr")
 ## Example
 
 The following minimal example shows how to import data, visualize the
-paths and the path density as well as how to filter, and cluster the tT
+paths and the path density as well as how to filter, and cluster the t-T
 paths into 3 path families.
 
 ``` r
@@ -48,7 +48,7 @@ theme_set(theme_classic())
 
 The HeFTy model contains the modeled paths, the initial model
 constraints, the weighted mean path, and some summary statistics on the
-mineral grains. {thermochron} imports the model as a `list` that
+mineral grains. {thermochlustr} imports the model as a `list` that
 contains the aforementioned features as list entries.
 
 Thus, to visualize the paths with need to extract the `path` object from
@@ -83,8 +83,8 @@ To cluster the data, the following steps are required:
 
 ``` r
 # Cluster the paths
-paths_cluster <- cluster_paths(tT_paths_cropped, k = 2)
-#> Warning in cluster_paths(tT_paths_cropped, k = 2): Cluster with less than 1% of
+paths_cluster <- cluster_paths(tT_paths_cropped, k = 3)
+#> Warning in cluster_paths(tT_paths_cropped, k = 3): Cluster with less than 1% of
 #> total paths detected 😢
 
 # Join with path dataset
@@ -95,7 +95,7 @@ paths_clustered <- merge(
 )
 ```
 
-Finally, the visualization of the clustered tT paths:
+Finally, the visualization of the clustered t-T paths:
 
 ``` r
 paths_clustered |>
