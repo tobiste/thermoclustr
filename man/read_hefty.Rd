@@ -4,10 +4,13 @@
 \alias{read_hefty}
 \title{Import inverse thermal history model}
 \usage{
-read_hefty(fname)
+read_hefty(fname, remove_orphans = TRUE)
 }
 \arguments{
 \item{fname}{path to the .txt file that contains the HeFTy outputs}
+
+\item{remove_orphans}{logical. Whether to remove "orphan" paths, i.e. paths
+that do not start at time = 0. \code{TRUE} sby default.}
 }
 \value{
 object of class \code{"HeFTy"}, i.e. \code{list} of the individual paths,

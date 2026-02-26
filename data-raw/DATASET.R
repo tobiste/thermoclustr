@@ -11,11 +11,11 @@
 # tT_paths1 <- read_hefty_xlsx(fname)
 # usethis::use_data(tT_paths1, overwrite = TRUE, compress = "xz")
 
-fname1 <- "inst/112-9-30-zr-inv.txt"
+fname1 <- "inst/112-73_30_H1_50-inv.txt"
 fname2 <- "inst/112-72_30_H1_50-inv.txt"
 tais1 <- read_hefty(fname1)
 tais2 <- read_hefty(fname2)
-saveRDS(tais1, "inst/112-9-30-zr-inv.rds")
+saveRDS(tais1, "inst/112-73_30_H1_50-inv.rds")
 saveRDS(tais2, "inst/112-72_30_H1_50-inv.rds")
 
 all(validUTF8(tT_paths1$summary$grain))
@@ -25,8 +25,8 @@ tT_paths2$summary$grain <- iconv(tT_paths2$summary$grain, from = "", to = "ASCII
 all(validUTF8(tT_paths1$summary$grain))
 all(validUTF8(tT_paths2$summary$grain))
 
-tT_paths1 <- tais2 |> crop_paths(time = c(0, 400), temperature = c(0, 250))
+tT_paths1 <- tais1 |> crop_paths(time = c(0, 400), temperature = c(0, 250))
 usethis::use_data(tT_paths1, overwrite = TRUE)
 
-tT_paths2 <- tais1
+tT_paths2 <- tais2 |> crop_paths(time = c(0, 400), temperature = c(0, 250))
 usethis::use_data(tT_paths2, overwrite = TRUE)

@@ -22,6 +22,8 @@
 #'
 #' @return ggplot
 #' @import ggplot2
+#' 
+#' @seealso [gof_weighting()] for rescaling goodness-of-fit values to weights.
 #'
 #' @name plt_density
 #'
@@ -30,7 +32,7 @@
 #' plot_path_density(tT_paths1)
 #' plot_path_density_filled(tT_paths1)
 #' plot_path_density_filled(tT_paths1, geom = "raster")
-#' plot_path_density_filled_weighted(tT_paths1, weights = tT_paths1$paths$Comp_GOF)
+#' plot_path_density_filled_weighted(tT_paths1, weights = gof_weighting(tT_paths1$paths$Comp_GOF))
 NULL
 
 #' @rdname plt_density
@@ -95,32 +97,15 @@ kde2d.weighted <- function(x, y, w, h, n = 25, lims = c(range(x), range(y))) {
 #' @importFrom ggplot2 aes geom_tile ggplot
 #' @importFrom dplyr left_join bind_cols
 plot_path_density_filled_weighted <- function(x, bins = 50L, densify = TRUE,
-                                              show.legend = NA, #geom = "density_2d_filled",
+                                              show.legend = NA, #geom = "raster",
                                               n = 100L, weights = NULL, ...) {
-  time <- temperature <- ndensity <- NULL
-
-  segments <- x$paths$segment
-  if (is.null(weights)) {
-    w <- rep(1, length(segments))
-  } else {
-    w <- x$paths$Comp_GOF
-  }
-
-  weights <- data.frame(segment = segments, w = w) |>
-    unique()
-
-  if (isTRUE(densify)) {
-    x <- densify_paths(x, ...) |>
-      left_join(weights, by = "segment")
-  }
-
-  kde_results <- kde2d.weighted(x$time, x$temperature, w = x$w, n = n, h = rep(bins, 2))
-
-  kde_data <- expand.grid(x = kde_results$x, y = kde_results$y)
-  kde_data$z <- as.vector(kde_results$z)
-
-  #if (geom == "density_2d_filled") {
-  ggplot(kde_data, aes(x = x, y = y, fill = z)) +
+  
+  kde_data <- path_density_weighted(x, bins=bins, densify=densify, n=n, weights=weights, ...)
+  
+  invisible(kde_data)
+  
+  #if (geom == "raster") {
+  ggplot(kde_data, aes(x = time, y = temperature, fill = ndensity)) +
     geom_tile(show.legend = show.legend)
   # } else {
   #   interpdf <- interp::interp2xyz(interp::interp(x=kde_data$x, y=kde_data$y, z=kde_data$z, duplicate="mean"), data.frame=TRUE)
@@ -128,4 +113,61 @@ plot_path_density_filled_weighted <- function(x, bins = 50L, densify = TRUE,
   #    # geom_tile() +
   #    geom_contour() 
   # }
+  # 
+}
+
+#' Create weightings from goodness-of-fit values
+#' 
+#' HeFTy goodness-of-fit (GOF) values range from 0 (worst fit) to 1 (best fit). 
+#' Because, GOF values greater than 0.5 are considered equally good ("acceptable"), 
+#' this function rescales the GOF values to weighting values.
+#' 
+#' @param x numeric vector of GOF values (between 0 and 1)
+#' @param na.rm logical. Whether missing values should be removed (`FALSE` by default.)
+#' 
+#' @return numeric vector of weights between 0 and 1
+#' 
+#' @seealso [plot_path_density_filled_weighted()] for calculating weighted density of t-T paths.
+#' 
+#' @export
+#' 
+#' @examples
+#' gof_values <- c(0.1, 0.3, 0.5, 0.7, 0.9)
+#' gof_weighting(gof_values)
+gof_weighting <- function(x, na.rm = FALSE){
+  2 *  pmin(x, 0.5, na.rm = na.rm)
+}
+
+path_density_weighted <- function(x, bins = 50L, densify = TRUE,
+                                  n = 100L, weights = NULL, ...){
+  time <- temperature <- ndensity <- NULL
+  
+  if(inherits(x, 'HeFTy')) x <-  x$paths
+  
+  segments <- x$segment
+  
+  if (is.null(weights)) {
+    w <- rep(1, length(segments))
+  } else {
+    w <- x$Comp_GOF
+  }
+  
+  weights <- data.frame(segment = segments, w = w) |>
+    unique()
+  
+  if (isTRUE(densify)) {
+    xdens <- densify_paths(x, ...)
+  } else {
+    xdens <- x
+  }
+  xdens <- left_join(xdens, weights, by = "segment")
+  
+  kde_results <- kde2d.weighted(xdens$time, xdens$temperature, w = xdens$w, n = n, h = rep(bins, 2))
+  
+  kde_data <- expand.grid(x = kde_results$x, y = kde_results$y)
+  kde_data$z <- as.vector(kde_results$z)
+  kde_data$ndensity <- kde_data$z/max(kde_data$z)
+  names(kde_data) <- c('time', 'temperature', 'density', 'ndensity')
+  
+  return(kde_data)
 }

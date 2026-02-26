@@ -2,9 +2,12 @@
 % Please edit documentation in R/path_distances.R
 \name{path_diss}
 \alias{path_diss}
+\alias{path_diss_parallel}
 \title{Dissimilarity of thermochronology cooling paths}
 \usage{
 path_diss(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...)
+
+path_diss_parallel(x, simplify = 0, ...)
 }
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}) or
@@ -76,5 +79,11 @@ set.seed(20250411)
 random_segments <- sample(unique(tT_paths1$paths$segment), size = 100)
 tT_paths_rnd <- subset(tT_paths1$paths, segment \%in\% random_segments)
 
-tT_diss_rnd <- path_diss(tT_paths_rnd)
+path_diss(tT_paths_rnd)
+
+random_segments2 <- sample(unique(tT_paths1$paths$segment), size = 1000, replace = TRUE)
+tT_paths_rnd2 <- subset(tT_paths1$paths, segment \%in\% random_segments2)
+setup_parallel()
+path_diss_parallel(tT_paths_rnd2)
+future::plan(sequential)
 }

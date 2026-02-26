@@ -73,5 +73,8 @@ data(tT_paths1)
 plot_path_density(tT_paths1)
 plot_path_density_filled(tT_paths1)
 plot_path_density_filled(tT_paths1, geom = "raster")
-plot_path_density_filled_weighted(tT_paths1, weights = tT_paths1$paths$Comp_GOF)
+plot_path_density_filled_weighted(tT_paths1, weights = gof_weighting(tT_paths1$paths$Comp_GOF))
+}
+\seealso{
+\code{\link[=gof_weighting]{gof_weighting()}} for rescaling goodness-of-fit values to weights.
 }

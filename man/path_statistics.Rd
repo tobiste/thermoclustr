@@ -4,12 +4,14 @@
 \alias{path_statistics}
 \title{Path statistics}
 \usage{
-path_statistics(x, breaks = 50)
+path_statistics(x, w = NULL, breaks = 50)
 }
 \arguments{
 \item{x}{either an object of class \code{"HeFTy"} (output of \code{\link[=read_hefty]{read_hefty()}}) or
 a \code{data.frame} containing the \code{time} and \code{temperature} columns of the modeled
 paths.}
+
+\item{w}{numeric vector. Weights for each path segment.}
 
 \item{breaks}{either a numeric vector of two or more unique cut points or a
 single number (greater than or equal to 2) giving the number of intervals
@@ -23,5 +25,8 @@ Provides binned statistics (mean, median, IQR, quantiles, etc.) of modeled t-T p
 }
 \examples{
 data(tT_paths1)
-path_statistics(tT_paths1)
+path_statistics(tT_paths1, w = gof_weighting(tT_paths1$paths$Comp_GOF))
+}
+\seealso{
+\code{\link[=gof_weighting]{gof_weighting()}} for rescaling goodness-of-fit values to weights.
 }

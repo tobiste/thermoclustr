@@ -141,3 +141,29 @@ find_elbow <- function(x) {
   
   which.max(dist_to_line)
 }
+
+
+
+#' Helper function to set up parallel workflows depending on the OS
+#'
+#' @param workers The number of parallel processes to use.
+#' @export
+#' @importFrom future plan
+#' @importFrom parallel detectCores
+#'
+#' @returns NULL
+setup_parallel <- function(workers = NULL) {
+  if (is.null(workers))
+    workers <- max(1, parallel::detectCores() - 1)
+  
+  if (.Platform$OS.type == "windows") {
+    
+    future::plan(future::multisession, workers = workers)
+    
+  } else {
+    
+    # macOS + Linux
+    future::plan(future::multicore, workers = workers)
+  }
+}
+

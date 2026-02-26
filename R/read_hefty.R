@@ -115,6 +115,8 @@ read_hefty_xlsx <- function(fname) {
 #' HeFTy output .txt file
 #'
 #' @param fname path to the .txt file that contains the HeFTy outputs
+#' @param remove_orphans logical. Whether to remove "orphan" paths, i.e. paths 
+#' that do not start at time = 0. `TRUE` sby default.
 #'
 #' @return object of class `"HeFTy"`, i.e. `list` of the individual paths,
 #' the constraints, the weighted mean path and the grain summary statistics.
@@ -125,7 +127,7 @@ read_hefty_xlsx <- function(fname) {
 #' @examples
 #' path2myfile <- system.file("112-9-30-zr-inv.txt", package = "thermochron")
 #' read_hefty(path2myfile)
-read_hefty <- function(fname) {
+read_hefty <- function(fname, remove_orphans = TRUE) {
   Fit <- value <- Comp_GOF <- time <- segment <- temperature <- V1 <- V2 <- V3 <- V4 <- V5 <- constraint <- NULL
   file <- parse_hefty(fname)
 
@@ -159,6 +161,8 @@ read_hefty <- function(fname) {
     dplyr::arrange(Fit, Comp_GOF) |>
     dplyr::mutate(segment = forcats::fct_reorder(segment, Comp_GOF))
 
+  if(isTRUE(remove_orphans)) paths <- clean_HeFTy(paths)
+  
   # extract weighted mean path
   wm_path_loc <- match("Weighted mean path", sapply(file, `[`, 1))
   wm_data <- file[wm_path_loc + c(1, 2)]

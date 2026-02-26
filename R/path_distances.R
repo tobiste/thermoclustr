@@ -45,6 +45,7 @@
 #'
 #' @importFrom sf st_simplify st_distance st_as_sf st_cast sf_use_s2
 #' @importFrom hopkins hopkins
+#' @name path_diss
 #'
 #' @export
 #'
@@ -66,7 +67,16 @@
 #' random_segments <- sample(unique(tT_paths1$paths$segment), size = 100)
 #' tT_paths_rnd <- subset(tT_paths1$paths, segment %in% random_segments)
 #'
-#' tT_diss_rnd <- path_diss(tT_paths_rnd)
+#' path_diss(tT_paths_rnd)
+#' 
+#' random_segments2 <- sample(unique(tT_paths1$paths$segment), size = 1000, replace = TRUE)
+#' tT_paths_rnd2 <- subset(tT_paths1$paths, segment %in% random_segments2)
+#' setup_parallel()
+#' path_diss_parallel(tT_paths_rnd2)
+#' future::plan(sequential)
+NULL
+
+#' @rdname path_diss
 path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify = 0, ...) {
   if (inherits(x, "HeFTy")) x <- x$paths
   stopifnot(inherits(x, "data.frame") & c("time", "temperature", "segment") %in% colnames(x))
@@ -88,6 +98,30 @@ path_diss <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, simplify
   class(res) <- append(class(res), "tTdiss")
   return(res)
 }
+
+#' @rdname path_diss
+path_diss_parallel <- function(x, simplify = 0, ...) {
+  if (inherits(x, "HeFTy")) x <- x$paths
+  stopifnot(inherits(x, "data.frame") & c("time", "temperature", "segment") %in% colnames(x))
+  # dist <- match.arg(dist)
+  
+  x_dist <- path_distances_R_parallel(x, simplify)
+  
+  paths <- x_dist$paths
+  dmat <- x_dist$dmat
+  
+  # Hopkin's statistics
+  h <- cluster_tendency(dmat, ...)
+  
+  # MDS
+  paths_mds <- stats::cmdscale(dmat)
+  rownames(paths_mds) <- paths$segment
+  
+  res <- list(paths = paths, diss = dmat, hopkins = h, dist = dist, mds = paths_mds)
+  class(res) <- append(class(res), "tTdiss")
+  return(res)
+}
+
 
 # path_dissC <- function(x, dist = c("Hausdorff", "Frechet"), simplify = 0, ...) {
 #   if (inherits(x, "HeFTy")) x <- x$paths
@@ -141,6 +175,25 @@ path_distances_R <- function(x, dist = c("Hausdorff", "Frechet"), densify = 0, s
   return(list(paths = paths, dmat = dmat))
 }
 
+path_distances_R_parallel <- function(x, simplify = 0, ...){
+  segment <- NULL
+  # dist <- match.arg(dist)
+  
+  suppressMessages({
+    sf::sf_use_s2(FALSE)
+    paths <- paths2lines(x, simplify)
+  })
+  
+  path_list <- 
+    split(x, x$segment) |> lapply(function(x) {
+       as.matrix(select(x, time, temperature))
+    })
+  
+  dmat <- hausdorff_list_fast(path_list)
+  
+  return(list(paths = paths, dmat = dmat))
+}
+
 
 # path_distances_C <- function(x, dist = c("Hausdorff", "Frechet"), simplify = 0){
 #   segment <- NULL
@@ -172,5 +225,77 @@ paths2lines <- function(x, simplify = 0){
     dplyr::summarise(do_union = FALSE) |>
     sf::st_cast("LINESTRING") |>
     sf::st_simplify(dTolerance = simplify)
+}
+
+
+
+#' Hausdorff Distance
+#'
+#' Hausdorff distance (aka Hausdorff dimension)
+#'
+#' @param P,Q numerical matrices, representing points in an m-dim. space.
+#' @param check logical. Checks if input arguments are valid. 
+#'
+#' @returns A single scalar, the Hausdorff distance (dimension).
+#'
+#' @name hausdorff-fast
+#' @noRd
+#'
+#' @examples
+#' P <- matrix(c(1, 1, 2, 2, 5, 4, 5, 4), 4, 2)
+#' Q <- matrix(c(4, 4, 5, 5, 2, 1, 2, 1), 4, 2)
+#' hausdorff_fast(P, Q)
+hausdorff_fast <- function(P, Q) {
+  max(
+    directed_hausdorff(P, Q),
+    directed_hausdorff(Q, P)
+  )
+}
+
+#' @importFrom RANN nn2
+directed_hausdorff <- function(P, Q) {
+  nn <- RANN::nn2(Q, query = P, k = 1)
+  max(nn$nn.dists)
+}
+
+
+#' Hausdorff distance matrix
+#'
+#' @param x list of matrices or vectors, each representing a segment of a path.
+#'
+#' @returns distance matrix
+#' 
+#' @noRd 
+#' @importFrom future.apply future_sapply
+#'
+#' @examples
+#' tT_paths_subset <- subset(tT_paths1$paths, Comp_GOF >= 0.2)
+#' tT_paths_list <- split(tT_paths_subset, tT_paths_subset$segment) |> lapply(function(x) {
+#'   as.matrix(select(x, time, temperature))
+#' })
+#' hausdorff_list_parallel(tT_paths_list)
+hausdorff_list_parallel <- function(x) {
+  keep <- vapply(x, function(m)
+    !is.null(m) && length(m) > 0L,
+    logical(1))
+  
+  mats <- x[keep]
+  n <- length(mats)
+  
+  combs <- which(lower.tri(matrix(0, n, n)), arr.ind = TRUE)
+  
+  d <- future_sapply(
+    seq_len(nrow(combs)),
+    function(k) {
+      i <- combs[k,1]
+      j <- combs[k,2]
+      hausdorff_fast(mats[[i]], mats[[j]])
+    }
+  )
+  
+  out <- matrix(0, n, n)
+  out[lower.tri(out)] <- d
+  
+  as.dist(out)
 }
 
