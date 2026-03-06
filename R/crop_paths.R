@@ -114,26 +114,3 @@ crop_paths <- function(x, time = c(-Inf, Inf), temperature = c(-Inf, Inf)) {
   }
 }
 
-
-#' Remove orphan paths
-#' 
-#' Sometimes HeFTy produces paths that do not start at the time = 0. 
-#' These "orphan" paths are not valid and should be removed. This function removes 
-#' paths that only exist at times greater than `min_time` (default = 0).
-#'
-#' @param x data.frame with time, temperature and segment columns
-#' @param min_time numeric. Minimum time to consider a path valid (default is 0). 
-#' Paths with segments that only exist at times greater than `min_time` will be removed. 
-#'
-#' @returns data.frame with orphan paths removed.
-#' @importFrom dplyr group_by summarise filter pull
-#' @export
-clean_HeFTy <- function(x, min_time = 0){
-  stopifnot(inherits(x, "data.frame"), c("segment", "time") %in% names(x))
-  orphan <- group_by(x, segment) |> 
-    summarise(time = min(time)) |> 
-    filter(time != min_time) |> 
-    pull(segment)
-  
-  filter(x, !segment %in% orphan)
-}

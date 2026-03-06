@@ -115,7 +115,7 @@ read_hefty_xlsx <- function(fname) {
 #' HeFTy output .txt file
 #'
 #' @param fname path to the .txt file that contains the HeFTy outputs
-#' @param remove_orphans logical. Whether to remove "orphan" paths, i.e. paths 
+#' @param remove_orphans logical. Whether to remove "orphan" paths, i.e. paths
 #' that do not start at time = 0. `TRUE` by default.
 #'
 #' @return object of class `"HeFTy"`, i.e. `list` of the individual paths,
@@ -161,8 +161,19 @@ read_hefty <- function(fname, remove_orphans = TRUE) {
     dplyr::arrange(Fit, Comp_GOF) |>
     dplyr::mutate(segment = forcats::fct_reorder(segment, Comp_GOF))
 
-  if(isTRUE(remove_orphans)) paths <- clean_HeFTy(paths)
+  # remove empty paths
+  zero_paths <- split(paths[, c('time', 'temperature')], paths$segment) |> 
+    sapply(nrow)
   
+  zero_paths_df <- data.frame(segment = names(zero_paths), n = zero_paths)
+  paths <- dplyr::left_join(paths, zero_paths_df, join_by(segment)) |> 
+    dplyr::filter(n > 0) |> 
+    dplyr::select(-n) |> 
+    remove_duplicate_paths()
+  
+  
+  if (isTRUE(remove_orphans)) paths <- clean_HeFTy(paths)
+
   # extract weighted mean path
   wm_path_loc <- match("Weighted mean path", sapply(file, `[`, 1))
   wm_data <- file[wm_path_loc + c(1, 2)]
@@ -224,9 +235,6 @@ read_hefty <- function(fname, remove_orphans = TRUE) {
   class(res) <- append(class(res), "HeFTy")
   return(res)
 }
-
-
-
 
 
 #' Legacy version of read_hefty
@@ -306,4 +314,51 @@ read_hefty_old <- function(fname) {
   )
   class(res) <- append(class(res), "HeFTy")
   return(res)
+}
+
+
+remove_duplicate_paths <- function(paths) {
+ stopifnot(inherits(paths, "data.frame"), c("segment", 'time', "temperature") %in% names(paths))
+
+  group_sig <- paths %>%
+    group_by(segment) %>%
+    arrange(time, temperature, .by_group = TRUE) %>%
+    summarise(sig = paste(time, temperature, collapse = ";"), .groups = "drop")
+  
+  # find duplicates
+  dup_segments <- group_sig$segment[duplicated(group_sig$sig) |
+                                      duplicated(group_sig$sig, fromLast = TRUE)]
+  
+  if (length(dup_segments) > 1) {
+    unique_segments <- group_sig |> 
+      distinct(sig, .keep_all = TRUE)
+    
+    paths |> filter(segment %in% unique_segments$segment)
+  } else {
+    paths
+  }
+}
+
+
+#' Remove orphan paths
+#'
+#' Sometimes HeFTy produces paths that do not start at the time = 0.
+#' These "orphan" paths are not valid and should be removed. This function removes
+#' paths that only exist at times greater than `min_time` (default = 0).
+#'
+#' @param x data.frame with time, temperature and segment columns
+#' @param min_time numeric. Minimum time to consider a path valid (default is 0).
+#' Paths with segments that only exist at times greater than `min_time` will be removed.
+#'
+#' @returns data.frame with orphan paths removed.
+#' @importFrom dplyr group_by summarise filter pull
+#' @export
+clean_HeFTy <- function(x, min_time = 0) {
+  stopifnot(inherits(x, "data.frame"), c("segment", "time") %in% names(x))
+  orphan <- group_by(x, segment) |>
+    summarise(time = min(time)) |>
+    filter(time != min_time) |>
+    pull(segment)
+
+  filter(x, !segment %in% orphan)
 }

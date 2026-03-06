@@ -108,7 +108,7 @@ path_nbclust <- function(x,
     labs(
       title = "Optimal number of clusters",
       x = "Number of clusters (k)",
-      y = "Overall average silhouette width"
+      y = "Average silhouette width"
     ) +
     geom_vline(xintercept = which.max(v), linetype = 2, color = linecolor)
 
