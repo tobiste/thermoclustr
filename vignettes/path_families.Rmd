@@ -45,8 +45,8 @@ tT_paths <- read_hefty(path2myfile)
 
 # Extract the paths and reorder the paths by the GOF values:
 paths <- tT_paths$paths |>
-  arrange(Fit, Comp_GOF) |>
-  mutate(segment = fct_reorder(segment, Comp_GOF))
+  dplyr::arrange(Fit, Comp_GOF) |>
+  dplyr::mutate(segment = forcats::fct_reorder(segment, Comp_GOF))
 ```
 
 
@@ -94,8 +94,8 @@ You may also filter the data by a GOF threshold or range. Maybe first you may ch
 theme_set(theme_classic())
 
 paths_filtered$paths |>
-  select(segment, Comp_GOF) |>
-  distinct() |> 
+  dplyr::select(segment, Comp_GOF) |>
+  dplyr::distinct() |> 
   ggplot(aes(Comp_GOF)) +
   geom_histogram(
     color = "white", , fill = "grey40",
@@ -238,7 +238,7 @@ We can calculate also some path statistics (e.g. median paths, 5% and 95% quanti
 
 ```{r cluster3}
 path_families_binned <- path_families |>
-  group_by(cluster) |>
+  dplyr::group_by(cluster) |>
   densify_cluster() |>
   path_statistics()
 
@@ -282,8 +282,8 @@ Have a final look on the distribution of the paths:
 
 ```{r gof_hist2}
 path_families |>
-  select(segment, cluster, Comp_GOF) |>
-  distinct() |> 
+  dplyr::select(segment, cluster, Comp_GOF) |>
+  dplyr::distinct() |> 
   ggplot(aes(Comp_GOF, fill = cluster)) +
   geom_histogram(color = "white", binwidth = .025) +
   scale_color_viridis_d(aesthetics = c("fill", "color"), begin = .1, end = .9) +
@@ -318,10 +318,10 @@ This visualization offers to explore correlations between the path similarities 
 
 ```{r mds_gof}
 # join the mds coordinates with the path properties
-left_join(
+dplyr::left_join(
   tT_diss_mds, 
-  distinct(select(paths, segment, Comp_GOF)), 
-  join_by(segment)
+  dplyr::distinct(dplyr::select(paths, segment, Comp_GOF)), 
+  dplyr::join_by(segment)
   ) |> 
 ggplot(aes(V1, V2, color = Comp_GOF, shape = cluster)) +
   geom_point() +
@@ -341,36 +341,36 @@ By default, *classical metric MDS* is used. Alternatively, other methods such as
 # Classical MDS
 tT_cmds <- stats::cmdscale(tT_diss$diss) 
 tT_cmds_coords <- data.frame(tT_cmds) |>
-  bind_cols(cluster_res) |> 
-  mutate(method = 'cMDS') 
+  dplyr::bind_cols(cluster_res) |> 
+  dplyr::mutate(method = 'cMDS') 
 
 # Kruskal's non-metric MDS (nMDS)
 tT_nmds <- MASS::isoMDS(tT_diss$diss)
 tT_nmds_coords <- data.frame(tT_nmds$points) |> 
-  bind_cols(cluster_res) |> 
-  mutate(method = "Kruskal's nMDS") 
+  dplyr::bind_cols(cluster_res) |> 
+  dplyr::mutate(method = "Kruskal's nMDS") 
 
 # Sammon's nMDS
 tT_sammon <- MASS::sammon(tT_diss$diss)
 tT_sammon_coords <- data.frame(tT_sammon$points) |> 
-  bind_cols(cluster_res) |> 
-  mutate(method = "Sammon's nMDS") 
+  dplyr::bind_cols(cluster_res) |> 
+  dplyr::mutate(method = "Sammon's nMDS") 
 
 # t-distributed Stochastic Neighbor Embedding (t-SNE)
 tT_tsne <- Rtsne::Rtsne(tT_diss$diss, is_distance = TRUE)
 tT_tsne_coords <- data.frame(tT_tsne$Y) |> 
-  bind_cols(cluster_res) |> 
-  mutate(method = "t-SNE") 
+  dplyr::bind_cols(cluster_res) |> 
+  dplyr::mutate(method = "t-SNE") 
 
 # Uniform Manifold Approximation and Projection (UMAP)
 if(require(RcppHNSW)) library(RcppHNSW)
 tT_umap <- uwot::umap2(tT_diss$diss)
 tT_umap_coords <- data.frame(tT_umap) |>
-  bind_cols(cluster_res) |> 
-  mutate(method = 'UMAP')
+  dplyr::bind_cols(cluster_res) |> 
+  dplyr::mutate(method = 'UMAP')
 
 # Combine and plot:
-bind_rows(
+dplyr::bind_rows(
   tT_cmds_coords,
   tT_nmds_coords,
   tT_sammon_coords,
