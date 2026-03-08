@@ -6,8 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/tobiste/thermoclustr/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr)
+<!-- [![Codecov test coverage](https://codecov.io/gh/tobiste/thermoclustr/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr) -->
 [![pkgdown](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
 
