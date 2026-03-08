@@ -8,6 +8,14 @@
 \description{
 Density estimates and cluster methods for HeFTy-modeled time-temperature cooling paths.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://tobiste.github.io/thermoclustr/}
+  \item Report bugs at \url{https://github.com/tobiste/thermoclustr/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Tobias Stephan \email{tobias.stephan1@yahoo.com} (\href{https://orcid.org/0000-0002-9290-014X}{ORCID})
 
