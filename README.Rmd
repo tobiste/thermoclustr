@@ -20,6 +20,8 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/tobiste/thermoclustr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr?branch=main)
 [![Codecov test coverage](https://codecov.io/gh/tobiste/thermoclustr/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr)
 [![pkgdown](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml)
+[![R-CMD-check](https://github.com/tobiste/thermochron/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tobiste/thermochron/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/tobiste/thermochron/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermochron)
 <!-- badges: end -->
 
 The goal of {thermoclustr} is to provide tools to further analyze thermal history 
