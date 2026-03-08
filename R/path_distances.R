@@ -44,7 +44,6 @@
 #' along the paths to speed up the processing time.
 #'
 #' @importFrom sf st_simplify st_distance st_as_sf st_cast sf_use_s2
-#' @importFrom hopkins hopkins
 #' @name path_diss
 #'
 #' @export

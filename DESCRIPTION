@@ -36,6 +36,9 @@ Suggests:
     patchwork,
     rmarkdown,
     roxygen2,
+    uwot,
+    Rtsne,
+    RcppHNSW,
     scales,
     spelling,
     testthat (>= 3.0.0)

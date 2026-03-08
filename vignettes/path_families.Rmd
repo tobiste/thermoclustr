@@ -1,5 +1,5 @@
 ---
-title: "Path families"
+title: "Path clustering"
 author: "Tobias Stephan"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -26,13 +26,16 @@ library(ggplot2)
 library(dplyr)
 library(forcats)
 library(scales)
+library(MASS)
+library(Rtsne)
+library(uwot)
 
 # set a seed for reproducibility as some algorithms generate random data
 set.seed(20250411)
 ```
 
 This document provides a brief working example to demonstrate how to
-cluster paths from HeFTy inverse thermal history models.
+cluster time-temperature paths from HeFTy inverse thermal history models.
 
 Load some example data:
 
@@ -329,4 +332,54 @@ ggplot(aes(V1, V2, color = Comp_GOF, shape = cluster)) +
     oob = squish
   ) +
   labs(title = "Multidimensional scaling of paths", x = "Dim 1", y = "Dim 2") 
+```
+
+By default, *classical metric MDS* is used. Alternatively, other methods such as *Kruskal's non-metric MDS*,
+*Sammon's non-metric MDS*, *Uniform Manifold Approximation and Projection* (UMAP), or *t-distributed Stochastic Neighbor Embedding* (t-SNE) can be used:
+ 
+```{r mds2, message=FALSE, warning=FALSE}
+# Classical MDS
+tT_cmds <- stats::cmdscale(tT_diss$diss) 
+tT_cmds_coords <- data.frame(tT_cmds) |>
+  bind_cols(cluster_res) |> 
+  mutate(method = 'cMDS') 
+
+# Kruskal's non-metric MDS (nMDS)
+tT_nmds <- MASS::isoMDS(tT_diss$diss)
+tT_nmds_coords <- data.frame(tT_nmds$points) |> 
+  bind_cols(cluster_res) |> 
+  mutate(method = "Kruskal's nMDS") 
+
+# Sammon's nMDS
+tT_sammon <- MASS::sammon(tT_diss$diss)
+tT_sammon_coords <- data.frame(tT_sammon$points) |> 
+  bind_cols(cluster_res) |> 
+  mutate(method = "Sammon's nMDS") 
+
+# t-distributed Stochastic Neighbor Embedding (t-SNE)
+tT_tsne <- Rtsne::Rtsne(tT_diss$diss, is_distance = TRUE)
+tT_tsne_coords <- data.frame(tT_tsne$Y) |> 
+  bind_cols(cluster_res) |> 
+  mutate(method = "t-SNE") 
+
+# Uniform Manifold Approximation and Projection (UMAP)
+if(require(RcppHNSW)) library(RcppHNSW)
+tT_umap <- uwot::umap2(tT_diss$diss)
+tT_umap_coords <- data.frame(tT_umap) |>
+  bind_cols(cluster_res) |> 
+  mutate(method = 'UMAP')
+
+# Combine and plot:
+bind_rows(
+  tT_cmds_coords,
+  tT_nmds_coords,
+  tT_sammon_coords,
+  tT_tsne_coords,
+  tT_umap_coords
+) |> 
+  ggplot(aes(X1, X2, color = cluster)) +
+  geom_point() +
+  facet_wrap(vars(method), scales = 'free') +
+  scale_color_viridis_d() +
+  labs(x = "Dim 1", y = "Dim 2")
 ```

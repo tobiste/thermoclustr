@@ -320,10 +320,10 @@ read_hefty_old <- function(fname) {
 remove_duplicate_paths <- function(paths) {
  stopifnot(inherits(paths, "data.frame"), c("segment", 'time', "temperature") %in% names(paths))
 
-  group_sig <- paths %>%
-    group_by(segment) %>%
-    arrange(time, temperature, .by_group = TRUE) %>%
-    summarise(sig = paste(time, temperature, collapse = ";"), .groups = "drop")
+  group_sig <- paths |> 
+    dplyr::group_by(segment) |> 
+    dplyr::arrange(time, temperature, .by_group = TRUE) |> 
+    dplyr::summarise(sig = paste(time, temperature, collapse = ";"), .groups = "drop")
   
   # find duplicates
   dup_segments <- group_sig$segment[duplicated(group_sig$sig) |
@@ -331,9 +331,9 @@ remove_duplicate_paths <- function(paths) {
   
   if (length(dup_segments) > 1) {
     unique_segments <- group_sig |> 
-      distinct(sig, .keep_all = TRUE)
+      dplyr::distinct(sig, .keep_all = TRUE)
     
-    paths |> filter(segment %in% unique_segments$segment)
+    dplyr::filter(paths, segment %in% unique_segments$segment)
   } else {
     paths
   }
