@@ -109,3 +109,27 @@ paths_clustered |>
 ```
 
 <img src="man/figures/README-plot2-1.png" width="100%" />
+
+## Documentation
+
+The detailed documentation can be found at
+<https://tobiste.github.io/thermoclustr/>
+
+## Author
+
+Tobias Stephan (<tstephan@lakeheadu.ca>)
+
+## Feedback, issues, and contributions
+
+I welcome feedback, suggestions, issues, and contributions! If you have
+found a bug, please file it
+[here](https://github.com/tobiste/thermoclustr/issues) with minimal code
+to reproduce the issue.
+
+## How to cite thermoclustr
+
+tba
+
+## License
+
+GPL-3.0 License
