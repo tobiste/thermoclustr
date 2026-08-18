@@ -10,6 +10,7 @@ Open R and install and load the necessary packages. You can install the
 packages by running the following code:
 
 ``` r
+
 install.packages("ggplot2")
 remotes::install_github("tobiste/thermoclustr")
 ```
@@ -17,6 +18,7 @@ remotes::install_github("tobiste/thermoclustr")
 Next, install the {thermoclustr} package by running the following code:
 
 ``` r
+
 library(ggplot2)
 library(thermoclustr)
 ```
@@ -24,6 +26,7 @@ library(thermoclustr)
 Define the path to your Hefty output (.txt file). For example:
 
 ``` r
+
 path2myfile <- "inst/112-73_30_H1_50-inv.txt"
 ```
 
@@ -40,6 +43,7 @@ To plot the density of the paths, you simply use the function
 [`plot_path_density()`](https://tobiste.github.io/thermoclustr/reference/plt_density.md):
 
 ``` r
+
 # set `theme_classic()` as the default ggplot theme
 theme_set(theme_classic())
 
@@ -67,6 +71,7 @@ parameters - `bins` - the number of filled contours.
   computation time.
 
 ``` r
+
 plot2 <- plot_path_density_filled(tT_paths, bins = 25, GOF_rank = 5, densify = TRUE, n = 100, max_distance = 1, samples = 100, show.legend = FALSE)
 print(plot2)
 ```
@@ -77,6 +82,7 @@ Finally, you can customize your ggplot, such as axes labels, change
 colors, and reverse the axes:
 
 ``` r
+
 plot2 +
   labs(
     title = "Kernel density of t-T paths",

@@ -7,6 +7,7 @@ models.
 Load some example data:
 
 ``` r
+
 path2myfile <- system.file("112-73_30_H1_50-inv.txt", package = "thermoclustr")
 tT_paths <- read_hefty(path2myfile)
 
@@ -21,6 +22,7 @@ constrain box from the min/max values given for the constraints (later
 used for plotting):
 
 ``` r
+
 # Extract mean path:
 mean_path <- tT_paths$weighted_mean_path
 
@@ -41,6 +43,7 @@ You can quickly inspect your Hefty output by calling individual list
 elements:
 
 ``` r
+
 print(tT_paths$summary)
 #>                            grain     mean        sd      min       max
 #> 1            good AFT Lm (<b5>m) 11.91381 0.3385423 11.17598  12.61495
@@ -61,6 +64,7 @@ To analyze a *subset* of the data, you can filter the data using a time
 and temperature range. For example:
 
 ``` r
+
 max_time <- 400
 max_temperature <- 250
 
@@ -75,6 +79,7 @@ You may also filter the data by a GOF threshold or range. Maybe first
 you may check how the GOF values are distributed:
 
 ``` r
+
 # set `theme_classic()` as the default ggplot theme
 theme_set(theme_classic())
 
@@ -102,6 +107,7 @@ the paths, you could do it likes this:
 Now we *visualize* the filtered t-T paths:
 
 ``` r
+
 ggplot(paths_filtered$paths, aes(time, temperature, group = segment, color = Comp_GOF)) +
   geom_path() +
   labs(
@@ -142,6 +148,7 @@ First, we calculate the dissimilarities between the paths using the
 **Hausdorff distance**:
 
 ``` r
+
 tT_diss <- path_diss(paths_filtered, dist = "Hausdorff")
 ```
 
@@ -181,6 +188,7 @@ The null and the alternative hypotheses are defined as follow:
 > the dataset D is significantly a clusterable data.
 
 ``` r
+
 tT_diss$hopkins
 #> statistic   p-value 
 #> 0.9898103 0.0000000
@@ -195,6 +203,7 @@ The **optimal number of clusters** can be estimated using
 and is based on the *average silhouette width*:
 
 ``` r
+
 path_nbclust(tT_diss)
 #> $optimal
 #> [1] 3
@@ -215,6 +224,7 @@ which returns a data.frame containing the path number and its assigned
 cluster:
 
 ``` r
+
 cluster_res <- paths_filtered |>
   cluster_paths(k = 3, method = "hclust")
 
@@ -232,6 +242,7 @@ head(cluster_res)
 You can quickly check how many paths are assigned to each cluster:
 
 ``` r
+
 count_cluster(cluster_res)
 #>   1   2   3 
 #> 152  41 131
@@ -243,6 +254,7 @@ clusters.
 We can now merge the cluster result with the original path data.frame:
 
 ``` r
+
 path_families <- right_join(
   cluster_res, paths_filtered$paths,
   join_by(segment)
@@ -253,6 +265,7 @@ We can calculate also some path statistics (e.g. median paths, 5% and
 95% quantiles) for each cluster:
 
 ``` r
+
 path_families_binned <- path_families |>
   dplyr::group_by(cluster) |>
   densify_cluster() |>
@@ -275,6 +288,7 @@ head(path_families_binned)
 Plot the cluster of the modeled t-T paths:
 
 ``` r
+
 ggplot(data = path_families_binned) +
   geom_ribbon(
     aes(x = time_median, ymin = temp_5, ymax = temp_95, group = cluster, fill = cluster),
@@ -309,6 +323,7 @@ ggplot(data = path_families_binned) +
 Have a final look on the distribution of the paths:
 
 ``` r
+
 path_families |>
   dplyr::select(segment, cluster, Comp_GOF) |>
   dplyr::distinct() |> 
@@ -338,6 +353,7 @@ function already calculated the MDS coordinates, which can now be
 plotted and colored by the cluster results.
 
 ``` r
+
 tT_diss_mds <- as.data.frame(tT_diss$mds) |> 
   bind_cols(cluster_res)
 
@@ -357,6 +373,7 @@ similarities (or clusters) and other properties of the paths, such as
 the goodness-of-fit values of the Hefty model:
 
 ``` r
+
 # join the mds coordinates with the path properties
 dplyr::left_join(
   tT_diss_mds, 
@@ -382,6 +399,7 @@ Manifold Approximation and Projection* (UMAP), or *t-distributed
 Stochastic Neighbor Embedding* (t-SNE) can be used:
 
 ``` r
+
 # Classical MDS
 tT_cmds <- stats::cmdscale(tT_diss$diss) 
 tT_cmds_coords <- data.frame(tT_cmds) |>

@@ -50,8 +50,8 @@ tT_diss <- path_diss(tT_paths_subset, densify = 1)
 
 set.seed(20250411)
 cluster_tendency(tT_diss) # H=0.77, p=2.88e-11
-#>    statistic      p-value 
-#> 7.655771e-01 2.883072e-11 
+#> statistic   p-value 
+#> 0.8397996 0.0000000 
 
 # Alternative dimension reducing algorithms can be used:
 # Kriskal's non-metric MDS
@@ -64,7 +64,7 @@ tT_nmds <- isoMDS(tT_diss$diss)$points
 #> converged
 cluster_tendency(tT_nmds)
 #>    statistic      p-value 
-#> 0.6601201750 0.0001442679 
+#> 6.967462e-01 2.146374e-06 
 # Uniform Manifold Approximation and Projection (UMAP)  
 library(uwot)
 tT_umap <- umap2(tT_diss$diss)
