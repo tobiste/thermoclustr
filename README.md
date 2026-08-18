@@ -6,8 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tobiste/thermoclustr/actions/workflows/R-CMD-check.yaml)
-<!-- [![Codecov test coverage](https://codecov.io/gh/tobiste/thermoclustr/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr) -->
 [![pkgdown](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/tobiste/thermoclustr/actions/workflows/pkgdown.yaml)
+<!-- [![Codecov test coverage](https://codecov.io/gh/tobiste/thermoclustr/graph/badge.svg)](https://app.codecov.io/gh/tobiste/thermoclustr) -->
 <!-- badges: end -->
 
 The goal of {thermoclustr} is to provide tools to further analyze
@@ -128,7 +128,9 @@ to reproduce the issue.
 
 ## How to cite thermoclustr
 
-tba
+Stephan, T., Pinto, T. F., and Enkelmann, E.: Technical Note: Cluster
+Analysis of Inverse Thermochronology Models, EGUsphere \[preprint\],
+<https://doi.org/10.5194/egusphere-2026-1279>, 2026.
 
 ## License
 
