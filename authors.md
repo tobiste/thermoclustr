@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/tobiste/thermoclustr/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/tobiste/thermoclustr/blob/v0.0.0.9011/DESCRIPTION)
 
 Stephan T, Fontes Pinto T (2026). *thermoclustr: Analyzing Inverse
 Thermal History Models*. R package version 0.0.0.9011,

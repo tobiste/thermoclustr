@@ -39,7 +39,7 @@ indicate random data. Values 0.7-1 indicate clustered data."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Cluster tendency of thermochronology cooling paths</h1>
-      <small class="dont-index">Source: <a href="https://github.com/tobiste/thermoclustr/blob/main/R/hopkins.R" class="external-link"><code>R/hopkins.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tobiste/thermoclustr/blob/v0.0.0.9011/R/hopkins.R" class="external-link"><code>R/hopkins.R</code></a></small>
       <div class="d-none name"><code>cluster_tendency.Rd</code></div>
     </div>
 
@@ -94,8 +94,8 @@ Hausdorff or Fréchet distance matrix using metric multidimensional scaling by d
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250411</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cluster_tendency</span><span class="op">(</span><span class="va">tT_diss</span><span class="op">)</span> <span class="co"># H=0.77, p=2.88e-11</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> statistic   p-value </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.8397996 0.0000000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    statistic      p-value </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7.655771e-01 2.883072e-11 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Alternative dimension reducing algorithms can be used:</span></span></span>
 <span class="r-in"><span><span class="co"># Kriskal's non-metric MDS</span></span></span>
@@ -108,7 +108,7 @@ Hausdorff or Fréchet distance matrix using metric multidimensional scaling by d
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-in"><span><span class="fu">cluster_tendency</span><span class="op">(</span><span class="va">tT_nmds</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    statistic      p-value </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6.967462e-01 2.146374e-06 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.6601201750 0.0001442679 </span>
 <span class="r-in"><span><span class="co"># Uniform Manifold Approximation and Projection (UMAP)  </span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jlmelville/uwot" class="external-link">uwot</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tT_umap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://jlmelville.github.io/uwot/reference/umap2.html" class="external-link">umap2</a></span><span class="op">(</span><span class="va">tT_diss</span><span class="op">$</span><span class="va">diss</span><span class="op">)</span></span></span>
